@@ -85,8 +85,8 @@ public class SearchController {
 			tracks.add(track);
 		}
 		//TODO::JangoTryToReralize
-		var test = new JangoAPI();
-		test.test();
+//		var test = new JangoAPI();
+//		test.test();
 		
 		page.addAttribute("artists", artists);
 		page.addAttribute("tracksList", tracks);
