@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head> 
+	<title>Login into Service</title> 
+	<link th:href="@{css/login.css}" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<h1>[Login]</h1>
+	</header>
+	<main>
+	<section>
+		<form method="post" id="login" th:action="@{/login}">
+			<label id="userLabel">Username:</label><br>
+			<input type="text" name="username">
+<!--			<span th:errorclass = "error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>-->
+			<br>
+			
+			<label id="userLabel">Password:</label><br>
+			<input id="userFields" type="password" name="password" >
+<!--			<span th:errorclass = "error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>-->
+			<br>
+			
+			<button type="submit" value="Submit">Submit</button>
+		</form>
+		<a id="auth" href="/register">Authorization</a>
+	</section>
+	</main>
+	<footer>
+		<span th:text="${error}"></span>
+	</footer>
+</body>
+</html>

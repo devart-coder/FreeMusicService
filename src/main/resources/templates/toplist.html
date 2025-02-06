@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head> <title>MusicTopList</title> </head>	
+<body>
+	<header style="border:2px solid" >
+		<nav><a href="/mainpage">[ Back ]</a></nav>
+		<h4>TopList</h4>	
+		<form method="post">
+			<label>Top</label>
+			<input type="number" placeholder="size" step="5" min="5" max="100" name="topSize">
+			<label>in</label>
+			<select>
+				<option selected>--</option>
+				<option 
+					th:each="upl:${playLists}"
+					th:text="${upl.name}"
+					th:value="${upl.name}"
+				></option>
+			</select>
+			<label>PlayList</label>
+			<button type="submit">Accept</button>
+		</form>
+	</header>
+	<main  style="border:2px solid" >
+		<section>
+			<table>
+				<tr>
+					<td>
+						<center>MostPopularSongs</center>
+						<table>
+							<thead >
+								<tr >
+									<th style="border:2px solid" >№</th>
+									<th style="border:2px solid" >Name</th>
+									<th style="border:2px solid" >Group</th>
+									<th style="border:2px solid" >Times</th>
+								</tr>
+							</thead>
+		
+							<tbody>
+								<tr th:each="tl : ${toplist}">
+									<td th:text="${tl.id}"></td>
+									<td th:text="${tl.songName}"></td>
+									<td th:text="${tl.groupName}"></td>
+									<td th:text="${tl.times}"></td>
+								</tr>
+							</tbody>	
+						</table>
+					</td>
+					<td>
+						<center>MostPopularGroups</center>
+						<table>
+							<thead>
+								<tr>
+									<th style="border:2px solid" >№</th>
+									<th style="border:2px solid ">Group</th>
+									<th style="border:2px solid" >Times<th>
+								</tr>
+							</thead>
+		
+							<tbody>
+								<tr th:each="tl : ${toplist}">
+								<td th:text="${tl.id}"></td>
+								<td th:text="${tl.groupName}"></td>
+								<td th:text="${tl.times}"></td>
+								</tr>
+							</tbody>	
+						</table>
+					</td>
+				</tr>
+				</center>
+			</table>
+		<section>
+	</main>
+	<footer style="border:2px solid"  >
+		<span>User: </span>
+		<a th:text="${user}"></a>
+	</footer>
+</body>
+</html>

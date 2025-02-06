@@ -1,0 +1,76 @@
+<html lang="ru">
+<head> 
+	<title>Local Music Service</title> 
+	<link th:href="@{css/search.css}" rel="stylesheet">
+</head>
+<body>
+	<img class="background" src="/images/volume_background_2.jpg">
+	<header>	
+		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
+		<div class="greetings">Welcome to Local Music Service</div>
+		<div class="topmenu">
+			<ul>
+				<li><a href="/home">Home</a></li>
+				<li><a href="/playlists">PlayLists</a></li>
+				<li><a href="/search">Songs</a></li>
+				<li><a href="/toplist">TopList</a></li>
+			</ul>
+		</div>
+	<header>
+	<main>
+		<form method="post">
+			<input type="hidden" name="_csrf" th:value="${_csrf.token}">
+			<input id="songNameInput" name="searchButton"  type = "text" placeholder="SongName">
+			<button type = "submit">
+				Search
+			</button>
+		</form >
+		<div class="table_left">
+		<table>
+			<thread>
+			<tr>	
+				<th>TrackImage</th>
+				<th>TrackName</th>
+				<th>ArtistImage</th>
+				<th>ArtistName</th>		
+			</tr>
+			</thread>
+			<tbody>
+				<tr th:each="list : ${tracksList}">
+					<td class="image">
+						<div class="playImage">
+							<image class="songPicture" th:src="${list.trackImagePath}">
+							<audio controls pause th:src=${list.url}></audio>
+						</div>
+					</td>
+					<td th:text="${list.name}"></td>
+					<td class="image">
+						<image class="songPicture" th:src="${list.artist.artistImagePath}">
+					</td>
+					<td th:text="${list.artist.artistName}">Null</td>
+				</tr>
+			</tbody>
+		</table>
+		</div>
+
+		<div class="artists" th:each="artist:${artists}" >	
+			<image class = "songPicture" th:src="${artist.artistImagePath}">
+			<p th:text="${artist.artistName}"></p>
+		</div>		
+	
+	</main>
+	<footer>
+		
+		<div class="footFields">
+			<span id="userLabel">User:</span>
+			<span id="userField" th:text="${user}"></a>
+		</div>
+		
+		<div class="footFields">
+			<span id="userLabel">Playlist:</span>
+			<span id="userField" th:text="${mainPlaylist}"></span>
+		</div>
+	
+	</footer>
+</body>
+</html>

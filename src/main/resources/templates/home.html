@@ -1,0 +1,43 @@
+<html lang="ru">
+<head> 
+	<title>Local Music Service</title> 
+	<link th:href="@{css/home.css}" rel="stylesheet">
+</head>
+
+<body>
+	<img src="/images/volume_background_2.jpg">
+	<header>	
+		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
+		
+		<div class="greetings">Welcome to Local Music Service</div>
+		
+		<div class="topmenu">
+			<ul>
+				<li><a href="/home">Home</a></li>
+				<li><a href="/playlists">PlayLists</a></li>
+				<li><a href="/search">Songs</a></li>
+				<li><a href="/toplist">TopList</a></li>
+			</ul>
+		</div>
+	<header>
+	<main>
+		<audio controls id="player">
+<!--			<source src = "http://localhost:8080/songs/audio/1.mp3"/>				 -->
+		</audio>
+	</main>
+	
+	<footer>
+		
+		<div class="footFields">
+			<span id="userLabel">User:</span>
+			<span id="userField" th:text="${user}"></a>
+		</div>
+		
+		<div class="footFields">
+			<span id="userLabel">Playlist:</span>
+			<span id="userField" th:text="${mainPlayList}"></span>
+		</div>
+	
+	</footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	 <title>MusicPlayLists</title> 
+ 	 <link th:href="@{css/playlists.css}" rel="stylesheet">
+ </head>
+<body>
+	<img src="/images/volume_background_2.jpg">
+	<header>	
+		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
+		<div class="greetings">Welcome to Local Music Service</div>
+		<div class="topmenu">
+			<ul>
+				<li><a href="/home">Home</a></li>
+				<li><a href="/playlists">PlayLists</a></li>
+				<li><a href="/songs">Songs</a></li>
+				<li><a href="/toplist">TopList</a></li>
+			</ul>
+		</div>
+	<header>
+	
+	<main>
+		<section>
+			<div class="createNewPlayListLabels">
+				<form method="post">
+				<span>New Playlist:</span>
+					<input type="hidden" name="_csrf" th:value="${_csrf.token}">
+					<input type="text" name="createButton" placeholder="Name">
+					<button class="createButton" type="submit">
+						Create
+					</button>
+					<span id="createPlayListNameError" th:text="${createPlayListNameError}"></span>
+				</form>
+			</div>
+		</section>
+
+		<section>
+			<table>
+				<thead>
+					<tr>
+						<th>
+							
+						</th>
+						<th>
+							Name
+						</th>
+						<th>
+							Songs
+						</th>
+						<th>
+							CreationTime
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="pl:${playLists}"  >
+						<td >
+						<form method="post">
+							<input  type="hidden" name="_csrf" th:value="${_csrf.token}">
+							<button class="deleteButton" type="submit" name="deleteButton" th:value="${pl.id}">
+							Delete
+							</botton>
+						</form>
+						</td>
+						<td th:text="${pl.name}" ></td>
+						<td th:text="${pl.size}"></td>
+						<td th:text="${pl.creationTime}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</main>
+	<footer>
+		<div class="footFields">
+			<span id="userLabel">User:</span>
+			<span id = "userField" th:text="${user}"></a>
+		</div>
+		
+		<div class="footFields">
+			<span id="userLabel">Playlist:</span>
+			<span id="userField" th:text="${mainPlayList}"></span>
+		</div>
+		
+		<form method="post">	
+			<input type="hidden" name="_csrf" th:value="${_csrf.token}">
+			<select th:name="mainButton">
+				<option 
+					th:each="pl:${playLists}"
+					th:text="${pl.name}"
+					th:value="${pl.name}"
+				></option>
+			</select>
+			<label for="mainButton"> set </label>
+			<button type="submit">[Main]</button>
+		</form>
+	</footer>
+</body>
+</html>
