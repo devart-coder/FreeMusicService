@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head> <title>MusicTopList</title> </head>	
+<head> 
+	<title>Local Music Service</title> 
+	<link th:href="@{css/search.css}" rel="stylesheet">
+</head>	
 <body>
-	<header style="border:2px solid" >
-		<nav><a href="/mainpage">[ Back ]</a></nav>
-		<h4>TopList</h4>	
-		<form method="post">
-			<label>Top</label>
-			<input type="number" placeholder="size" step="5" min="5" max="100" name="topSize">
-			<label>in</label>
-			<select>
-				<option selected>--</option>
-				<option 
-					th:each="upl:${playLists}"
-					th:text="${upl.name}"
-					th:value="${upl.name}"
-				></option>
-			</select>
-			<label>PlayList</label>
-			<button type="submit">Accept</button>
-		</form>
-	</header>
-	<main  style="border:2px solid" >
+	<img class="background" src="/images/volume_background_2.jpg">
+	<header>	
+		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
+		<div class="greetings">Welcome to Local Music Service</div>
+		<div class="topmenu">
+			<ul>
+				<li><a href="/home">Home</a></li>
+				<li><a href="/playlists">PlayLists</a></li>
+				<li><a href="/search">Songs</a></li>
+				<li><a href="/toplist">TopList</a></li>
+			</ul>
+		</div>
+	<header>	
+		<main  style="border:2px solid" >
 		<section>
 			<table>
 				<tr>

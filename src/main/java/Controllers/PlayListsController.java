@@ -1,19 +1,16 @@
 package Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import Entities.PlayList;
-import Entities.User;
 import Repositories.MainPlayListRepository;
 import Repositories.PlayListsRepository;
 
@@ -36,8 +33,7 @@ public class PlayListsController {
 		Long deleteButton,
 		@RequestParam(required = false) 
 		String mainButton,
-		@AuthenticationPrincipal 
-		User user,
+		Authentication auth,
 		Model page
 	) {
 		if(createButton != null) {
@@ -45,14 +41,14 @@ public class PlayListsController {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
 				return "playlists";
 			}
-			playListsRepository.save(new PlayList(createButton, user.getUsername()));
-		}else if( deleteButton != null && !compare(deleteButton, user.getUsername() ) )
+			playListsRepository.save(new PlayList(createButton, auth.getName()));
+		}else if( deleteButton != null && !compare(deleteButton, auth.getName() ) )
 			playListsRepository.deleteById(deleteButton);
 		else if( mainButton != null) 
-			mainPlayListRepository.updatePlaylistNameByUsername(mainButton, user.getUsername());
+			mainPlayListRepository.updatePlaylistNameByUsername(mainButton, auth.getName());
 
-		page.addAttribute("mainPlayList",getMainPlayList(user));
-		page.addAttribute("playLists",getAllPlayLists(user));		
+		page.addAttribute("mainPlayList",getMainPlayList(auth));
+		page.addAttribute("playLists",getAllPlayLists(auth));		
 		return "playlists";
 	}
 	private boolean compare( Long deleteButton, String username ) {
@@ -67,23 +63,22 @@ public class PlayListsController {
 	}
 
 	@ModelAttribute("playLists")
-	public Iterable<PlayList> getAllPlayLists( @AuthenticationPrincipal User user ) {
+	public Iterable<PlayList> getAllPlayLists( Authentication auth ) {
 		return 
 			playListsRepository
-			.findAllByUsername( user.getUsername() );
+			.findAllByUsername( auth.getName() );
 	}
 
 	@ModelAttribute("mainPlayList")
-	public String getMainPlayList( @AuthenticationPrincipal User user ) {
+	public String getMainPlayList( Authentication auth ) {
 		return 
 			mainPlayListRepository
-			.findByUsername( user.getUsername() )
+			.findByUsername( auth.getName() )
 			.getPlaylistName();
 	}
 	
 	@ModelAttribute("user")
-	public String getUsername( @AuthenticationPrincipal User user ) {
-		return 
-			user.getUsername();
+	public String getUsername( Authentication user ) {
+		return user.getName();
 	}
 }

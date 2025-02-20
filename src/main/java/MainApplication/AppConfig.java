@@ -7,12 +7,13 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 @Configuration
 @ComponentScan(
 	basePackages = {
-		"RestControllers",
-		"Controllers",
-		"Entities",
-		"MainApplication",
-		"Repositories",
-		"Services"
+		"RestControllers"
+		,"Controllers"
+		,"Entities"
+		,"MainApplication"
+		,"Repositories"
+		,"Services"
+		,"Security"
 	}
 )
 @EnableJdbcRepositories(basePackages = "Repositories")
