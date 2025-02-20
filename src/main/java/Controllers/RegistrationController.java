@@ -20,6 +20,7 @@ public class RegistrationController {
 	private final UserRepository userRepo;
 	@Autowired
 	private final PasswordEncoder passwordEncoder;
+	
 	RegistrationController(UserRepository userRepo, PasswordEncoder passwordEncoder){
 		this.userRepo=userRepo;
 		this.passwordEncoder=passwordEncoder;

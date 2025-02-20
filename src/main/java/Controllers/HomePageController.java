@@ -1,7 +1,10 @@
 package Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +41,8 @@ public class HomePageController {
 		return "home";
 	}
 	@ModelAttribute("mainPlayList")
-	public String getMainPlayList( @AuthenticationPrincipal User user ) {
-		String username = user.getUsername();
+	public String getMainPlayList( Authentication user ) {
+		String username = user.getName();
 		var mainResult = mainPlayListsRepository.findByUsername( username );
 		if(mainResult == null) {
 			var playList = new PlayList(defaultPlayListName, username);
@@ -51,7 +54,7 @@ public class HomePageController {
 	}	
 
 	@ModelAttribute("user")
-	public String getUser(@AuthenticationPrincipal User user) {
-		return user.getUsername();
+	public String getUser(Authentication user) {
+		return user.getName();
 	}
 }
