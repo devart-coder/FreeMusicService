@@ -20,10 +20,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Entities.Artist;
-import Entities.JangoAPI;
 import Entities.Track;
-import Entities.ZaicevNetAPI;
-import Entities.ZaicevNetURL;
+import Entities.ZaicevNetAPI.ZaicevNetAPI;
+import Entities.ZaicevNetAPI.ZaicevNetURL;
 import Repositories.MainPlayListRepository;
 
 

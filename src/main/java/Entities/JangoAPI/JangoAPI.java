@@ -1,4 +1,4 @@
-package Entities;
+package Entities.JangoAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;

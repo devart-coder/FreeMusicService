@@ -1,4 +1,4 @@
-package Entities;
+package Entities.ZaicevNetAPI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import Entities.TrackWrapper;
 
 public class ZaicevNetAPI {
 	private RestTemplate rest=new RestTemplate();

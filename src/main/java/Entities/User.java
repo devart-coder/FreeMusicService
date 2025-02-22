@@ -13,7 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Table("users")
-public class User implements UserDetails{
+public class User{
 	@Id
 	private Long id;
 	private String username;
@@ -30,17 +30,17 @@ public class User implements UserDetails{
 		this.setPassword(password);
 	}public User(){}
 	
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return Arrays.asList(new SimpleGrantedAuthority(role));
-	}
+//	@Override
+//	public Collection<? extends GrantedAuthority> getAuthorities() {
+//		return Arrays.asList(new SimpleGrantedAuthority(role));
+//	}
 
-	@Override
+//	@Override
 	public String getPassword() {
 		return password;
 	}
 
-	@Override
+//	@Override
 	public String getUsername() {
 		return username;
 	}

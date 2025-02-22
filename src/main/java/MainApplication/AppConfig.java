@@ -10,9 +10,7 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 		"RestControllers"
 		,"Controllers"
 		,"Entities"
-		,"MainApplication"
 		,"Repositories"
-		,"Services"
 		,"Security"
 	}
 )

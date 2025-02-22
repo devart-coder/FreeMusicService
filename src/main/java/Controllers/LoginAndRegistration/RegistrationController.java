@@ -1,4 +1,4 @@
-package Controllers;
+package Controllers.LoginAndRegistration;
 
 import java.util.Date;
 
@@ -36,9 +36,9 @@ public class RegistrationController {
 		@RequestParam(required = false)
 		String password
 	) {
+		//TODO::Add user check and remake new user
 		var user = new User(username, passwordEncoder.encode(password));
 		user.setCreationTime(new Date());
-		System.out.println("FromPOST: " +user );
 		userRepo.save(user);
 		return "redirect:/login";
 	}

@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>Applications</groupId>
-	<artifactId>MusicLocalService</artifactId>
+	<artifactId>FreeLocalService</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>MusicLocalService</name>
 	<description>Project for studing spring boot by &quot;SptringBootStartHere&quot;</description>
