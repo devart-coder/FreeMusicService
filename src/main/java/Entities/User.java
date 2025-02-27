@@ -1,16 +1,10 @@
 package Entities;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Table("users")
 public class User{
@@ -20,43 +14,34 @@ public class User{
 	private String password;
 	private String role="ROLE_USER";
 	private boolean enabled=true; 
-	private Date creationTime;
+	private Date createdAt;
 
 	public User(String username, String password) {
-		this.setUsername(username);
-		this.setPassword(password);
-	}public User(String username, String password,String role) {
-		this.setUsername(username);
-		this.setPassword(password);
-	}public User(){}
-	
-//	@Override
-//	public Collection<? extends GrantedAuthority> getAuthorities() {
-//		return Arrays.asList(new SimpleGrantedAuthority(role));
-//	}
+		this.username=username;
+		this.password=password;
+	}
 
-//	@Override
+	public User(String username, String password,String role ) {
+		this.username=username;
+		this.password=password;
+		this.role=role;
+	}
+	
 	public String getPassword() {
 		return password;
 	}
 
-//	@Override
 	public String getUsername() {
 		return username;
 	}
 
 	public Date getCreationTime() {
-		return creationTime;
+		return createdAt;
 	}
 
 	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
+		this.createdAt = creationTime;
 	}
-	@Override
-	public int hashCode() {
-		return Objects.hash(creationTime, password, getUsername());
-	}
-	
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -84,6 +69,12 @@ public class User{
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + ", enabled="
-				+ enabled + ", creationTime=" + creationTime + "]";
+				+ enabled + ", creationTime=" + createdAt + "]";
+	}
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 }

@@ -17,14 +17,10 @@ import Repositories.UserRepository;
 @RequestMapping("/register")
 public class RegistrationController {
 	@Autowired
-	private final UserRepository userRepo;
+	private UserRepository userRepo;
 	@Autowired
-	private final PasswordEncoder passwordEncoder;
+	private PasswordEncoder passwordEncoder;
 	
-	RegistrationController(UserRepository userRepo, PasswordEncoder passwordEncoder){
-		this.userRepo=userRepo;
-		this.passwordEncoder=passwordEncoder;
-	}
 	@GetMapping
 	public String registerForm() {
 		return "register";
@@ -36,10 +32,16 @@ public class RegistrationController {
 		@RequestParam(required = false)
 		String password
 	) {
-		//TODO::Add user check and remake new user
-		var user = new User(username, passwordEncoder.encode(password));
-		user.setCreationTime(new Date());
-		userRepo.save(user);
-		return "redirect:/login";
+		var user = userRepo.findByUsername(username);
+		if(user == null) {
+			var newUser = new User(username, passwordEncoder.encode(password));
+			newUser.setCreatedAt(new Date());
+			userRepo.save(newUser);
+			return "redirect:/login";
+		}
+		else {
+			System.out.println("User '"+user.getUsername()+"' exists.");
+			return "register";
+		}
 	}
 }

@@ -4,7 +4,7 @@ public class ZaicevNetURL {
 	private final String url;
 	private String searchName = "?q=";
 	//TODO:Implements SearchingByTrackName
-	private String searchByTrack = "/tracks";
+//	private String searchByTrack = "/tracks";
 	private String artistLimit="&limitArtist=";
 	private String trackLimit="&limitTrack=";
 	public ZaicevNetURL(String url) {

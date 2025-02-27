@@ -7,14 +7,15 @@
 			<h1><center>[ Authorization ]</center></h1>
 		</header>
 		<main style="border:2px solid">
-			<form method="POST">
-<!--				<intput type="hidden" name="_csrf" th:value="${_csrf.token}">-->
+			<form method="post">
 				<ul>
-				
-				<label>Username: </label><br> 
+				<label>Username: </label></br> 
+				<input type="hidden" name="_csrf" th:value="${_csrf.token}">
 				<input type="text" name="username" placeholder="Insert your username" maxlength=25 >
+				</br> 
 				
-				<label>Password: </label><br>
+				<label>Password: </label></br>
+				<input type="hidden" name="_csrf" th:value="${_csrf.token}">
 				<input type="password" name="password" placeholder="Insert your password" maxlength=25 >
 				
 				<button type="submit">Submit</button>
