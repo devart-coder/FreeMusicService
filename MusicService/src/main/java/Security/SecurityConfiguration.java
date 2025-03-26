@@ -9,13 +9,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestClient;
 
 import Security.Providers.UserAuthProvider;
 
@@ -29,39 +33,49 @@ public class SecurityConfiguration{
 	@Bean
 	ClientRegistrationRepository clientRepository() {
 		var client = ClientRegistration
-				.withRegistrationId(UUID.randomUUID().toString())
+				.withRegistrationId("FMS")
 				.clientId("client")
-				.clientSecret("{noop}secret")
-				.clientName("Custom")
-				.authorizationUri("http://localhost:8080/oauth2/authorize")
-				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.clientSecret("secret")
+				.clientName("FMS")
 				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-				.issuerUri("http://127.0.0.1:8080")
-				.jwkSetUri("http://127.0.0.1:8080/oauth/jwks")
-				.redirectUri("http://localhost:8080/login/oauth2/my_auth")
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.redirectUri("http://localhost:8080/login/oauth2/code/fms")
+				.issuerUri("http://127.0.0.1:9090")
+				.authorizationUri("http://127.0.0.1:9090/oauth2/authorize")
+				.jwkSetUri("http://127.0.0.1:9090/oauth2/jwks")
+				.tokenUri("http://127.0.0.1:9090/oauth2/token")
+				.userInfoUri("http://127.0.0.1:9090/userinfo")
 				.scope(OidcScopes.OPENID)
-				.tokenUri("http://127.0.0.1:8080/token")
-				.userInfoUri(null)
 				.build();
 		return new InMemoryClientRegistrationRepository(client);		
 	}
-	
+//	@Bean
+//	OAuth2AuthorizedClientManager manager( ClientRegistrationRepository clientRepos, OAuth2AuthorizedClientRepository authRepos) {
+//		return new DefaultOAuth2AuthorizedClientManager(clientRepos,authRepos);
+//	}
+//	@Bean
+//	RestClient restClien(RestClient.Builder builder, OAuth2AuthorizedClientManager manager) {
+//		var interceptor = new OAuth2ClientHttpRequestInterceptor(manager);
+//		return builder.requestInterceptor(interceptor).build();
+//	}
 	
 	@Bean
 	SecurityFilterChain filterChain (UserAuthProvider provider, HttpSecurity https) throws Exception {
 		return 
 		https
 		.oauth2Client(Customizer.withDefaults())		
-		.oauth2Login(Customizer.withDefaults())
+		.oauth2Login(login->login
+			.defaultSuccessUrl("/home").permitAll())
 		.authenticationProvider(provider)
 		.authorizeHttpRequests(
 			requests -> requests
 			.requestMatchers("/register")
 			.permitAll()
-			.requestMatchers("/home","/playlists","/songs","/toplist")
-			.hasAnyRole("USER")
+//			.requestMatchers("/home","/playlists","/songs","/toplist")
+//			.hasAnyRole("USER")
 			.anyRequest()
 			.authenticated()
+//			.permitAll()
 		)
 		.formLogin(
 			form -> form
