@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>Applications</groupId>
-	<artifactId>FreeMusicService</artifactId>
-	<packaging>pom</packaging>
+	<artifactId>MusicService</artifactId>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>FreeMusicService</name>
+	<name>MusicService</name>
 	<description>Project for studing spring boot by &quot;SptringBootStartHere&quot;</description>
 	<url/>
 	<licenses>
@@ -119,18 +119,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-        </plugin>
-    </plugins>
-		
-		
-		
+		</plugins>
 	</build>
-	<modules>
-		<module>AuthorizationServer</module>
-		<module>ResourceServer</module>
-		<module>MusicService</module>
-	</modules>
 </project>
