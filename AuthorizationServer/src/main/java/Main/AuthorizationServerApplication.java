@@ -4,7 +4,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
@@ -12,16 +12,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -31,8 +31,13 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import Repositories.UserRepository;
+import Security.Providers.UserAuthProvider;
+import Security.Services.InDataBaseUserDetailService;
+
 @SpringBootApplication
 @Configuration
+@EnableJdbcRepositories(basePackages = "Repositories")
 public class AuthorizationServerApplication {
 
 	public static void main(String[] args) {
@@ -62,24 +67,33 @@ public class AuthorizationServerApplication {
 	}
 	@Bean
 	PasswordEncoder password() {
-		return NoOpPasswordEncoder.getInstance();
+		var encoders = Map.of(
+			"noop",NoOpPasswordEncoder.getInstance()
+			,"bcrypt",new BCryptPasswordEncoder()
+		);
+		var encoder =  new DelegatingPasswordEncoder("bcrypt", encoders);
+		encoder.setDefaultPasswordEncoderForMatches(new BCryptPasswordEncoder());
+		return encoder;
 	}
-	
 	@Bean
 	UserDetailsService users() {
-		var user = User
-			.withUsername("devart")
-			.password("{noop}devart")
-			.roles("USER")
-			.build();
-		var admin = User
-			.withUsername("admin")
-			.password("{noop}admin")
-			.roles("USER")
-			.build();
-		return new InMemoryUserDetailsManager(List.of(user,admin));
+//		var user = User
+//			.withUsername("devart")
+//			.password("{bcrypt}devart")
+//			.roles("USER")
+//			.build();
+//		var admin = User
+//			.withUsername("admin")
+//			.password("{bcrypt}admin")
+//			.roles("USER")
+//			.build();
+//		return new InMemoryUserDetailsManager(List.of(user,admin));
+		return new InDataBaseUserDetailService();
 	}
-	
+	@Bean
+	UserAuthProvider provider() {
+		return new UserAuthProvider();
+	}
 	@Bean
 	JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException{
 		var generator = KeyPairGenerator.getInstance("RSA");

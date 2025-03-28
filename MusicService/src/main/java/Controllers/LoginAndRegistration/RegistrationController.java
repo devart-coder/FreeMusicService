@@ -38,7 +38,7 @@ public class RegistrationController {
 			newUser.setUsername(username);
 			newUser.setPassword(passwordEncoder.encode(password));
 			newUser.setCreatedAt(new Date());
-			newUser.setRole("USER");
+			newUser.setRole("ROLE_USER");
 			newUser.setEnabled(true);
 			userRepo.save(newUser);
 			return "redirect:/login";

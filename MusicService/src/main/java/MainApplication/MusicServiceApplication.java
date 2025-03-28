@@ -17,10 +17,10 @@ import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
 )
 @EnableJdbcRepositories(basePackages = "Repositories")
 @SpringBootApplication
-public class MusicLocalServiceApplication {
+public class MusicServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MusicLocalServiceApplication.class, args);
+		SpringApplication.run(MusicServiceApplication.class, args);
 	}
 
 }

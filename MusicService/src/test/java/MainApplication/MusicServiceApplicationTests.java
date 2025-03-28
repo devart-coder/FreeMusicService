@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class MusicLocalServiceApplicationTests {
+class MusicServiceApplicationTests {
 	@Autowired
 	private MockMvc mock;
 	@Test
