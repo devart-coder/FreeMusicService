@@ -23,14 +23,11 @@ import Entities.Artist;
 import Entities.Track;
 import Entities.ZaicevNetAPI.ZaicevNetAPI;
 import Entities.ZaicevNetAPI.ZaicevNetURL;
-import Repositories.MainPlayListRepository;
 
 
 @Controller
 @RequestMapping("/search")
 public class SearchController {
-	@Autowired
-	private MainPlayListRepository mainPlaylistRepository;
 	private	final String searchURL="https://zaycev.net/api/external/pages/search";
 	
 	@GetMapping

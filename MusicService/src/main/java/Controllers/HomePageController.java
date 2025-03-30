@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import Entities.MainPlayListEntity;
 import Entities.PlayListEntity;
 import Entities.UserEntity;
-import Repositories.MainPlayListRepository;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
 import Services.PlayListService;
@@ -34,8 +32,6 @@ public class HomePageController {
 	private UserRepository userRepository;
 	@Autowired
 	private PlayListsRepository playListRepository;
-	@Autowired
-	private MainPlayListRepository mainPlayListsRepository; 
 	
 	@GetMapping
 	public String home (
@@ -53,29 +49,15 @@ public class HomePageController {
 		String username = user.getName();
 		var u = userRepository.findByUsername(username);
 		var p = u.getPlaylist();
-//		if(p==null) {
-			//TODO:PlayList:AddStaticMethod:DefaultPlayList
-//			u.setPlaylist(List.of(PlayListService.withDefault()));
-//		}
-//		p = u.getPlaylist();
-//		for(PlayList m : p) {
-			logger.warn(u.toString());
-//			logger.error(p==null ? "null" : p.toString());
-//		}
-		return "Def";
+		String mainName = ""; 
+		for(var playlist : p) {
+			logger.warn(playlist.toString());
+			if(playlist.isMain())
+				mainName= playlist.getName();
+		}
+		return mainName;
 	}	
-//		var mainResult = mainPlayListsRepository.findByUsername( username );
-//		if(mainResult == null) {
-//			var newUser = new User("DefaultUser","DefaultPassword");
-//			var playList = new PlayList(newUser);
-//			mainResult = new MainPlayList(playList); 
-//			playListRepository.save(playList);
-//			mainPlayListsRepository.save(mainResult);
-//		}
-//		return mainResult.getPlaylistname();
-//		return "Default";
-//	}	
-
+	
 	@ModelAttribute("user")
 	public String getUser(Authentication user) {
 		return user.getName();

@@ -56,6 +56,6 @@ public class UserEntity{
 	private Date createdAt = new Date();
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name="user_id",referencedColumnName = "id")
+	@JoinColumn(name="user_id")
 	private List<PlayListEntity> playlist = List.of(new PlayListEntity());
 }

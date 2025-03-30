@@ -32,14 +32,13 @@ public class PlayListEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 	
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	@ColumnDefault(value = "'Default'")
 	private String name = "Default";
 
-	
-	@Column(name = "main",nullable = false,columnDefinition = "boolean ")
-	@ColumnDefault(value = "false")
-	private boolean main = false;
+	@Column(name = "main",nullable = false, columnDefinition = "boolean")
+	@ColumnDefault(value = "true")
+	private boolean main = true;
 
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
@@ -48,8 +47,5 @@ public class PlayListEntity {
 	@Column(nullable = false)
 	@ColumnDefault(value = "now()")
 	private Date createdBy = new Date();
-
-	@ManyToOne
-	private MainPlayListEntity mainPlayList = new MainPlayListEntity();
 	
 }

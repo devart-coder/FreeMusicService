@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import Entities.MainPlayListEntity;
 import Entities.PlayListEntity;
 import Entities.UserEntity;
-import Repositories.MainPlayListRepository;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
 import Services.PlayListService;
@@ -48,7 +46,7 @@ public class RegistrationController {
 			return "redirect:/login";
 		}
 		else {
-			logger.warn("User '"+user.getUsername()+"' exists.");
+			logger.error("User '"+user.getUsername()+"' exists.");
 			return "register";
 		}
 	}
