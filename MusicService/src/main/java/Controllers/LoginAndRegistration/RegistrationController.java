@@ -1,7 +1,10 @@
 package Controllers.LoginAndRegistration;
 
 import java.util.Date;
+import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,12 +13,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import Entities.User;
+import Entities.MainPlayListEntity;
+import Entities.PlayListEntity;
+import Entities.UserEntity;
+import Repositories.MainPlayListRepository;
+import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import Services.PlayListService;
 
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private UserRepository userRepo;
 	@Autowired
@@ -34,17 +43,12 @@ public class RegistrationController {
 	) {
 		var user = userRepo.findByUsername(username);
 		if(user == null) {
-			var newUser = new User();
-			newUser.setUsername(username);
-			newUser.setPassword(passwordEncoder.encode(password));
-			newUser.setCreatedAt(new Date());
-			newUser.setRole("ROLE_USER");
-			newUser.setEnabled(true);
+			var newUser = new UserEntity( username, passwordEncoder.encode(password));
 			userRepo.save(newUser);
 			return "redirect:/login";
 		}
 		else {
-			System.out.println("User '"+user.getUsername()+"' exists.");
+			logger.warn("User '"+user.getUsername()+"' exists.");
 			return "register";
 		}
 	}

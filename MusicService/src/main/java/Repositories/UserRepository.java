@@ -1,9 +1,9 @@
 package Repositories;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import Entities.User;
+import Entities.UserEntity;
 
-public interface UserRepository extends CrudRepository<User, Long> {
-	User findByUsername(String username);
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+	UserEntity findByUsername(String username);
 }

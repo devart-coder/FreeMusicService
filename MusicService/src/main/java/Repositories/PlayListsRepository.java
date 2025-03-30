@@ -1,9 +1,11 @@
 package Repositories;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.Optional;
 
-import Entities.PlayList;
+import org.springframework.data.jpa.repository.JpaRepository;
+import Entities.PlayListEntity;
+import Entities.UserEntity;
 
-public interface PlayListsRepository extends CrudRepository<PlayList, Long>{
-	Iterable<PlayList> findAllByUsername(String username);
+public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>{
+//	Optional<User> findAllByUserId(User user);
 }

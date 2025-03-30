@@ -1,17 +1,17 @@
 package Repositories;
 
-import org.springframework.data.jdbc.repository.query.Modifying;
-import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import Entities.MainPlayList;
+import Entities.MainPlayListEntity;
 
 
-public interface MainPlayListRepository extends CrudRepository<MainPlayList,Long>{
-	@Modifying
-	@Query("update mainplaylist set main_playlistname = :name where username = :username")
-	public void updatePlaylistNameByUsername( @Param("name") String name, @Param("username") String username );
-	@Query("select main_playlistname from mainplaylist where username = :username")
-	public MainPlayList findByUsername( @Param("username") String username );
+public interface MainPlayListRepository extends JpaRepository<MainPlayListEntity,Long>{
+//	@Modifying
+//	@Query("update mainplaylist m set m.playlistname = :name where username = :username")
+//	public void updatePlaylistNameByUsername( String name, String username );
+//	@Query("select m.playlistname from mainplaylist m where username = :username")
+//	public MainPlayList findByUsername( String username );
 }

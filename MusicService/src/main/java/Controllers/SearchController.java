@@ -112,6 +112,7 @@ public class SearchController {
 	}
 	@ModelAttribute("mainPlaylist")
 	private String getPlaylistName( Authentication auth) {
-		return mainPlaylistRepository.findByUsername(auth.getName()).getPlaylistName();
+		return "nobody";
+//		return mainPlaylistRepository.findByUsername(auth.getName()).getPlaylistname();
 	}
 }

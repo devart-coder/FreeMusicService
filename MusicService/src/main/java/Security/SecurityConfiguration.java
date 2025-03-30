@@ -38,44 +38,15 @@ import Security.Services.InDataBaseUserDetailService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration{
-//	@Bean
-//	ClientRegistrationRepository clientRepository() {
-//		var client = ClientRegistration
-//				.withRegistrationId("FMS")
-//				.clientId("client")
-//				.clientSecret("secret")
-//				.clientName("FMS")
-//				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//				.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
-//				.issuerUri("http://127.0.0.1:9090")
-//				.authorizationUri("http://127.0.0.1:9090/oauth2/authorize")
-//				.jwkSetUri("http://127.0.0.1:9090/oauth2/jwks")
-//				.tokenUri("http://127.0.0.1:9090/oauth2/token")
-//				.userInfoUri("http://127.0.0.1:9090/userinfo")
-//				.scope(OidcScopes.OPENID)
-//				.build();
-//		return new InMemoryClientRegistrationRepository(client);		
-//	}
-//	@Bean
-//	OAuth2AuthorizedClientManager manager( ClientRegistrationRepository clientRepos, OAuth2AuthorizedClientRepository authRepos) {
-//		return new DefaultOAuth2AuthorizedClientManager(clientRepos,authRepos);
-//	}
-//	@Bean
-//	RestClient restClien(RestClient.Builder builder, OAuth2AuthorizedClientManager manager) {
-//		var interceptor = new OAuth2ClientHttpRequestInterceptor(manager);
-//		return builder.requestInterceptor(interceptor).build();
-//	}
-	
 	@Bean
 	SecurityFilterChain filterChain (UserAuthProvider provider, HttpSecurity https) throws Exception {
 		return 
 		https
 		.oauth2Client(Customizer.withDefaults())		
-		.oauth2Login(login->login
-			.defaultSuccessUrl("/home")
-			.permitAll()
-		)
+//		.oauth2Login(login->login
+//			.defaultSuccessUrl("/home")
+//			.permitAll()
+//		)
 		.authenticationProvider(provider)
 		.authorizeHttpRequests(
 			requests -> requests

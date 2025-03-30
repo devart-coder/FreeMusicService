@@ -7,14 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import Entities.User;
-
+import Entities.UserEntity;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+@RequiredArgsConstructor
 public class SecureUser implements UserDetails {
-	private static final long serialVersionUID = -5191799633594168456L;
-	private final User user;
-	public SecureUser(User user) {
-		this.user=user;
-	}
+	private final UserEntity user;
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(user.getRole()));
@@ -33,5 +31,7 @@ public class SecureUser implements UserDetails {
 	public String toString() {
 		return "SecureUser [user=" + user + "]";
 	}
-
+	public Long getId() {
+		return user.getId()
+;	}
 }
