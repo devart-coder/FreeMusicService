@@ -45,17 +45,14 @@ public class HomePageController {
 	}
 	@ModelAttribute("mainPlayList")
 	public String getMainPlayList( Authentication user ) {
-		
-		String username = user.getName();
-		var u = userRepository.findByUsername(username);
-		var p = u.getPlaylist();
-		String mainName = ""; 
+		var u = userRepository.findByUsername(user.getName());
+		var p = u.getPlaylists();
+		//TODO::PLayLists:AddCheckByNull
 		for(var playlist : p) {
-			logger.warn(playlist.toString());
 			if(playlist.isMain())
-				mainName= playlist.getName();
+				return playlist.getName();
 		}
-		return mainName;
+		return "[Null]";
 	}	
 	
 	@ModelAttribute("user")

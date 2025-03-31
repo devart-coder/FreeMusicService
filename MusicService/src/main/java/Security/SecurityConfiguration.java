@@ -43,10 +43,10 @@ public class SecurityConfiguration{
 		return 
 		https
 		.oauth2Client(Customizer.withDefaults())		
-//		.oauth2Login(login->login
-//			.defaultSuccessUrl("/home")
-//			.permitAll()
-//		)
+		.oauth2Login(login->login
+			.defaultSuccessUrl("/home")
+			.permitAll()
+		)
 		.authenticationProvider(provider)
 		.authorizeHttpRequests(
 			requests -> requests

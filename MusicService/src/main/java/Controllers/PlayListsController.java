@@ -1,11 +1,13 @@
 package Controllers;
 
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,39 +51,59 @@ public class PlayListsController {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
 				return "playlists";
 			}
-			var playList = new PlayListEntity();
-			playList.setMain(false);
-			playList.setName(createButton);
-			user.getPlaylist().add(playList);
+			var playList = new PlayListEntity(createButton);
+			user.getPlaylists().add(playList);
 			playListsRepository.save(playList);
 		}
 		else if( deleteButton != null ) {
-			if( user.getPlaylist().removeIf(p->p.getId().equals(deleteButton)&&!p.getName().equals("Default")) )
+			if( user.getPlaylists().removeIf(p->p.getId().equals(deleteButton)&&!p.getName().equals("Default")) )
 				playListsRepository.deleteById(deleteButton);
 		}
 		else if( mainButton != null) {
-//			mainPlayListRepository.updatePlaylistNameByUsername(mainButton, auth.getName());
+			for(var p : user.getPlaylists()) {
+				if(p.isMain()) {
+					try {
+						p.setMain(false);
+						playListsRepository.setMainById(false, p.getId());
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if(p.getName().equals(mainButton)) {
+					try {
+						p.setMain(true);
+						playListsRepository.setMainById(true, p.getId());
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		} 
 		page.addAttribute("mainPlayList",getMainPlayList(auth));
-		page.addAttribute("playLists",getAllPlayLists(auth));		
+		page.addAttribute("playLists",getAllUsersPlayLists(auth));		
 		return "playlists";
 	}
 	@ModelAttribute("playLists")
-	public Iterable<PlayListEntity> getAllPlayLists( Authentication auth ) {
+	public Iterable<PlayListEntity> getAllUsersPlayLists( Authentication auth ) {
 		var user = userRepository.findByUsername(auth.getName());
-		return user.getPlaylist();	
+		//TODO::User:AddCheckByNull
+		return user.getPlaylists().stream()
+				.sorted((x,y) -> Boolean.compare(y.isMain(), x.isMain()))
+				.toList();	
 	}
 
 	@ModelAttribute("mainPlayList")
 	public String getMainPlayList( Authentication auth ) {
-		var user=userRepository.findByUsername(auth.getName());
-		var playLists = user.getPlaylist();
-		String mainName = "Null";
+		var context = SecurityContextHolder.getContext();
+		System.out.println(context.getAuthentication());
+		var user = userRepository.findByUsername(auth.getName());
+		//TODO:User:AddCheckByNull
+		var playLists = user.getPlaylists();
 		for(var playList : playLists) {
 			if(playList.isMain())
 				return playList.getName();
 		}
-		return mainName;
+		return "[Null]";
 	}
 	
 	@ModelAttribute("user")

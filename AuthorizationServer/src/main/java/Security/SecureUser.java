@@ -7,12 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import Entities.User;
+import Entities.UserEntity;
 
 public class SecureUser implements UserDetails {
 	private static final long serialVersionUID = -5191799633594168456L;
-	private final User user;
-	public SecureUser(User user) {
+	private final UserEntity user;
+	public SecureUser(UserEntity user) {
 		this.user=user;
 	}
 	@Override
