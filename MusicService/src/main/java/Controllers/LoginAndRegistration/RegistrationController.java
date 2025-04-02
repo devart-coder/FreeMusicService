@@ -17,7 +17,6 @@ import Entities.PlayListEntity;
 import Entities.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
-import Services.PlayListService;
 
 @Controller
 @RequestMapping("/register")

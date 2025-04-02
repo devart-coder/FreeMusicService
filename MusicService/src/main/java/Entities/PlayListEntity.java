@@ -8,8 +8,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "playlists")
@@ -17,27 +20,24 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PlayListEntity {
-	public PlayListEntity(String playlistName) {
-		this.name=playlistName;
-	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Getter
 	private Long Id;
-	
+
 	@Column(nullable = false, unique = true)
 	@ColumnDefault(value = "'Default'")
-	private String name = "Default";
+	private String name;
 
 	@Column(name = "main",nullable = false, columnDefinition = "boolean")
 	@ColumnDefault(value = "false")
-	private boolean main = false;
+	private boolean main;
 
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
-	private Long size=0l;
+	private Long size;
 
-	@Column(nullable = false)
+	@Column(nullable = false, updatable = false)
 	@ColumnDefault(value = "now()")
-	private Date createdBy = new Date();
-	
+	private Date createdBy;
 }

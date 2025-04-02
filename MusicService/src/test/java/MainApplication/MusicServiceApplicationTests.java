@@ -19,7 +19,7 @@ class MusicServiceApplicationTests {
 	@Test
 	void loginFormChecker() throws Exception {
 		mock.perform(
-			formLogin().user("admin").password("admin")
+			formLogin().user("devart").password("devart")
 		)
 		.andExpect( authenticated() )
 		.andExpect( redirectedUrl("/home") )

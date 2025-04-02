@@ -1,12 +1,14 @@
 package Entities.ZaicevNetAPI;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+//import org.springframework.http.HttpEntity;
+//import org.springframework.http.HttpHeaders;
+//import org.springframework.http.MediaType;
+//import org.springframework.http.ResponseEntity;
+
 //Action[2]:
 //curl 'https://zaycev.net/api/external/track/filezmeta' 
 //-X POST 
@@ -15,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 
 //Action[3]:
 //curl 'https://zaycev.net/api/external/track/play/d03ad36c8e7d4e0b' 
-
-
 
 import org.springframework.web.client.RestTemplate;
 
@@ -30,45 +30,48 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import Entities.TrackWrapper;
 
 public class ZaicevNetAPI {
-	private RestTemplate rest=new RestTemplate();
+//	private RestTemplate rest=new RestTemplate();
 	private	final String searchURL;
 	private String basedUrl= "https://zaycev.net/api/external/track/filezmeta";
 	
 	public ZaicevNetAPI( String url ) { this.searchURL=url; }
 	
 	public String findByName(String name) {
-		return rest.getForObject(searchURL, String.class);
+//		return rest.getForObject(searchURL, String.class);
+		return "";
 	}
 	
 	public List<TrackWrapper> getMusicList( JsonNode tracks) throws JsonMappingException, JsonProcessingException{
-		Map<String, JsonNode > converter = new HashMap<>();
-		converter.put("trackIds", tracks);
+//		Map<String, JsonNode > converter = new HashMap<>();
+//		converter.put("trackIds", tracks);
 	
-		HttpHeaders header = new HttpHeaders();
-		header.setContentType(MediaType.APPLICATION_JSON);
+//		HttpHeaders header = new HttpHeaders();
+//		header.setContentType(MediaType.APPLICATION_JSON);
+//		
+//		HttpEntity<Map<String, JsonNode >> entity = new HttpEntity<>(converter, header);
+//		ResponseEntity<String> response = rest.postForEntity(basedUrl, entity, String.class);
 		
-		HttpEntity<Map<String, JsonNode >> entity = new HttpEntity<>(converter, header);
-		ResponseEntity<String> response = rest.postForEntity(basedUrl, entity, String.class);
+//		ObjectMapper mapper = new ObjectMapper();
+//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		
-		JsonNode nodesTree = mapper.readTree(response.getBody()).findValue("tracks");
-		List<TrackWrapper> wrapperList = mapper.treeToValue(nodesTree, new TypeReference<List<TrackWrapper>>() { });
-		return wrapperList;
+//		JsonNode nodesTree = mapper.readTree(response.getBody()).findValue("tracks");
+//		List<TrackWrapper> wrapperList = mapper.treeToValue(nodesTree, new TypeReference<List<TrackWrapper>>() { });
+//		return wrapperList;
+		return List.of();
 	}
 	public Map<String,String> getUrlList(List<TrackWrapper> list) {
-		Map<String,String> urlMap = new HashMap<>(list.size());
-		for(var track : list) {
-			String url = rest.getForObject(
-					"https://zaycev.net/api/external/track/play/"
-					+track.getStreamCode()
-					, JsonNode.class
-				)
-				.findValue("url")
-				.toString(); 
-			urlMap.put(track.getId(),url.substring(1,url.length()-1) );
-		}
-		return urlMap;
+//		Map<String,String> urlMap = new HashMap<>(list.size());
+//		for(var track : list) {
+//			String url = rest.getForObject(
+//					"https://zaycev.net/api/external/track/play/"
+//					+track.getStreamCode()
+//					, JsonNode.class
+//				)
+//				.findValue("url")
+//				.toString(); 
+//			urlMap.put(track.getId(),url.substring(1,url.length()-1) );
+//		}
+//		return urlMap;
+		return Map.of();
 	} 
 }

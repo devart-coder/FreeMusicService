@@ -17,7 +17,6 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.stereotype.Component;
 
 import Security.SecureUser;
-//import Security.Services.InDataBaseUserDetailService;
 import Security.Services.InDataBaseUserDetailService;
 
 public class UserAuthProvider implements AuthenticationProvider {

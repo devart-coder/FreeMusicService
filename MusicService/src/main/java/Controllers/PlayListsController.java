@@ -20,6 +20,7 @@ import Entities.PlayListEntity;
 import Entities.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/playlists")
@@ -52,12 +53,17 @@ public class PlayListsController {
 				return "playlists";
 			}
 			var playList = new PlayListEntity(createButton);
-			user.getPlaylists().add(playList);
-			playListsRepository.save(playList);
+			user.getPlaylists().add(playList);//deleteFromUser
+			playListsRepository.save(playList);//addToDB
 		}
 		else if( deleteButton != null ) {
-			if( user.getPlaylists().removeIf(p->p.getId().equals(deleteButton)&&!p.getName().equals("Default")) )
-				playListsRepository.deleteById(deleteButton);
+			if( user.getPlaylists()
+					.removeIf(p->p
+						.getId()
+						.equals(deleteButton)
+						&&!p.getName().equals("Default")) 
+				)//removeFromUser
+				playListsRepository.deleteById(deleteButton);//removeFromDB
 		}
 		else if( mainButton != null) {
 			for(var p : user.getPlaylists()) {
