@@ -14,7 +14,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 @Data
 @Entity
@@ -23,6 +23,7 @@ public class UserSettings implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@Getter
 	private Long id;
 
 	@OneToOne

@@ -17,4 +17,9 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	@Modifying
 	@Query(value="update playlists p set p.main = ?1 where p.id = ?2",nativeQuery = true)
 	void setMainById(Boolean flag, Long id);
+	Optional<PlayListEntity> findByName(String name);
+	List<PlayListEntity> findAllByUser(UserEntity user);
+	List<PlayListEntity> findAllByUserUsername(String username);
+	List<PlayListEntity> findAllByUserId(Long id);
+	
 }

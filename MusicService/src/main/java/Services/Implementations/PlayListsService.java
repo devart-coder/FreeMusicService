@@ -3,49 +3,76 @@ package Services.Implementations;
 import java.util.List;
 import java.util.Optional;
 
+import javax.naming.NameNotFoundException;
+
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import Entities.PlayListEntity;
+import Entities.UserEntity;
 import Repositories.PlayListsRepository;
 import Services.Interfaces.PlayListsDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-@NoArgsConstructor
 @Data
+@Slf4j
+@RequiredArgsConstructor
 public class PlayListsService implements PlayListsDetails {
 	@Autowired
-	private PlayListsRepository playListRepos;
-	private PlayListEntity playList;
+	private final PlayListsRepository playListRepos;
 	
 	@Override
 	public void save(PlayListEntity newPlayList) {
-		// TODO Auto-generated method stub
-
+		try {
+			var result = playListRepos.save(newPlayList);
+			if(result == null)
+				throw new Exception("PlayList was't save.");
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 
 	@Override
-	public Optional<PlayListEntity> findById(Long Id) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public PlayListEntity findById(Long Id) {
+		try {
+			return 
+				playListRepos
+				.findById(Id)
+				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' not found.", Id)) );
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
-	public Optional<PlayListEntity> findByName(String name) {
-		// TODO Auto-generated method stub
-		return Optional.empty();
+	public PlayListEntity findByName(String name) {
+		try {
+		return 
+			playListRepos
+			.findByName(name)
+			.orElseThrow( () -> new Exception(String.format("Playlist with name '%s' not found.", name)) );
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
 	}
 
+	@Override
+	public List<PlayListEntity> findAllByUser(UserEntity user) {
+		return playListRepos.findAllByUser(user);
+	}
+	
 	@Override
 	public List<PlayListEntity> findAllByUserName(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		return playListRepos.findAllByUserUsername(name);
 	}
 
 	@Override
-	public List<PlayListEntity> findAllByUseId(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PlayListEntity> findAllByUserId(Long id) {
+		return playListRepos.findAllByUserId(id);
 	}
 
 	@Override
@@ -77,5 +104,7 @@ public class PlayListsService implements PlayListsDetails {
 		// TODO Auto-generated method stub
 
 	}
+
+	
 
 }

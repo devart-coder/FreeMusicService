@@ -33,6 +33,9 @@ public class PlayListEntity {
 	@ColumnDefault(value = "false")
 	private boolean main;
 
+	@ManyToOne
+	private UserEntity user;
+	
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
 	private Long size;

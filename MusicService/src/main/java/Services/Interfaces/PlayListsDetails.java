@@ -4,16 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import Entities.PlayListEntity;
+import Entities.UserEntity;
+import Services.Implementations.UserService;
 
 public interface PlayListsDetails {
 	//Create
 	void save(PlayListEntity newPlayList);
 
 	//Read
-	Optional<PlayListEntity> findById(Long Id);
-	Optional<PlayListEntity> findByName(String name);
+	PlayListEntity findById(Long Id);
+	PlayListEntity findByName(String name);
+	List<PlayListEntity> findAllByUserId(Long id);
 	List<PlayListEntity> findAllByUserName(String name);
-	List<PlayListEntity> findAllByUseId(Long id);
+	List<PlayListEntity> findAllByUser(UserEntity user);
 	
 	//Update
 	void updateName(String newName);
@@ -23,4 +26,5 @@ public interface PlayListsDetails {
 	//Delete
 	void deleteById(Long Id);
 	void deleteByName(String name);
+
 }
