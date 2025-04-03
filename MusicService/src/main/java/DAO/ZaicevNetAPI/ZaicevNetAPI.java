@@ -1,4 +1,4 @@
-package Entities.ZaicevNetAPI;
+package DAO.ZaicevNetAPI;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import Entities.TrackWrapper;
+import DAO.TrackWrapper;
 
 public class ZaicevNetAPI {
 //	private RestTemplate rest=new RestTemplate();

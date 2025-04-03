@@ -39,7 +39,7 @@ import Security.Services.InDataBaseUserDetailService;
 @SpringBootApplication
 @Configuration
 @EnableJpaRepositories(basePackages = "Repositories")
-@EntityScan(basePackages = {"Entities"})
+@EntityScan(basePackages = {"DAO"})
 public class AuthorizationServerApplication {
 
 	public static void main(String[] args) {

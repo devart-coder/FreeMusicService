@@ -1,12 +1,15 @@
-package Entities;
+package DAO.User;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.ForeignKey;
 
+import DAO.PlayLists.PlayListEntity;
+import DAO.User.Settings.UserSettings;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,25 +21,19 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity(name = "users")
 @Table(name = "users")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class UserEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public UserEntity(String username, String password) {
-		this.username=username;
-		this.password=password;
-	}
-	public UserEntity(String username, String password, String role) {
-		this.username=username;
-		this.password=password;
-		this.role=role;
-	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)

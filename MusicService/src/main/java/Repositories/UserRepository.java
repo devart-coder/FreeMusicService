@@ -2,7 +2,7 @@ package Repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import Entities.UserEntity;
+import DAO.User.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 	UserEntity findByUsername(String username);

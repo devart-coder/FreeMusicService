@@ -1,4 +1,4 @@
-package Entities.ZaicevNetAPI;
+package DAO.ZaicevNetAPI;
 
 public class ZaicevNetURL {
 	private final String url;

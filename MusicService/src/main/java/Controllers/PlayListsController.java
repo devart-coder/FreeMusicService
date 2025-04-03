@@ -16,17 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import Entities.PlayListEntity;
-import Entities.UserEntity;
+import DAO.PlayLists.PlayListEntity;
+import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import Services.Implementations.PlayListsService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/playlists")
 public class PlayListsController {
-	@Autowired
-	private PlayListsRepository playListsRepository;
+//	@Autowired
+	private PlayListsService playListsService = new PlayListsService();
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -52,38 +53,42 @@ public class PlayListsController {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
 				return "playlists";
 			}
-			var playList = new PlayListEntity(createButton);
-			user.getPlaylists().add(playList);//deleteFromUser
-			playListsRepository.save(playList);//addToDB
+			var playList = new PlayListEntity();
+			playList.setName(mainButton);
+			playList.setUser(user);
+			playListsService.save(playList);
+//			var playList = new PlayListEntity(createButton);
+//			user.getPlaylists().add(playList);//deleteFromUser
+//			playListsRepository.save(playList);//addToDB
 		}
 		else if( deleteButton != null ) {
-			if( user.getPlaylists()
-					.removeIf(p->p
-						.getId()
-						.equals(deleteButton)
-						&&!p.getName().equals("Default")) 
-				)//removeFromUser
-				playListsRepository.deleteById(deleteButton);//removeFromDB
+//			if( user.getPlaylists()
+//					.removeIf(p->p
+//						.getId()
+//						.equals(deleteButton)
+//						&&!p.getName().equals("Default")) 
+//				)//removeFromUser
+//				playListsRepository.deleteById(deleteButton);//removeFromDB
 		}
 		else if( mainButton != null) {
-			for(var p : user.getPlaylists()) {
-				if(p.isMain()) {
-					try {
-						p.setMain(false);
-						playListsRepository.setMainById(false, p.getId());
-					}catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
-				if(p.getName().equals(mainButton)) {
-					try {
-						p.setMain(true);
-						playListsRepository.setMainById(true, p.getId());
-					}catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
+//			for(var p : user.getPlaylists()) {
+//				if(p.isMain()) {
+//					try {
+//						p.setMain(false);
+//						playListsRepository.setMainById(false, p.getId());
+//					}catch(Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				if(p.getName().equals(mainButton)) {
+//					try {
+//						p.setMain(true);
+//						playListsRepository.setMainById(true, p.getId());
+//					}catch(Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
 		} 
 		page.addAttribute("mainPlayList",getMainPlayList(auth));
 		page.addAttribute("playLists",getAllUsersPlayLists(auth));		

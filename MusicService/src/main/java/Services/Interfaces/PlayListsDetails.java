@@ -3,8 +3,8 @@ package Services.Interfaces;
 import java.util.List;
 import java.util.Optional;
 
-import Entities.PlayListEntity;
-import Entities.UserEntity;
+import DAO.PlayLists.PlayListEntity;
+import DAO.User.UserEntity;
 import Services.Implementations.UserService;
 
 public interface PlayListsDetails {

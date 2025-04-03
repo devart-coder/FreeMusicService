@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/home")
 public class HomePageController {
-	private final String defaultPlayListName = "Default";
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired

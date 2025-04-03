@@ -8,20 +8,20 @@ import javax.naming.NameNotFoundException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import Entities.PlayListEntity;
-import Entities.UserEntity;
+import DAO.PlayLists.PlayListEntity;
+import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Services.Interfaces.PlayListsDetails;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 @Data
 @Slf4j
-@RequiredArgsConstructor
 public class PlayListsService implements PlayListsDetails {
 	@Autowired
-	private final PlayListsRepository playListRepos;
+	private PlayListsRepository playListRepos;
 	
 	@Override
 	public void save(PlayListEntity newPlayList) {
@@ -77,8 +77,7 @@ public class PlayListsService implements PlayListsDetails {
 
 	@Override
 	public void updateName(String newName) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override

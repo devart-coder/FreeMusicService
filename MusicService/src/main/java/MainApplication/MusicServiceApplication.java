@@ -11,12 +11,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 	basePackages = {
 		"RestControllers"
 		,"Controllers"
-		,"Entities"
+		,"DAO"
 		,"Security"
 	}
 )
 @EnableJpaRepositories(basePackages = "Repositories")
-@EntityScan(basePackages = "Entities")
+@EntityScan(basePackages = "DAO")
 @SpringBootApplication
 public class MusicServiceApplication {
 

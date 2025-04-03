@@ -19,10 +19,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import Entities.Artist;
-import Entities.Track;
-import Entities.ZaicevNetAPI.ZaicevNetAPI;
-import Entities.ZaicevNetAPI.ZaicevNetURL;
+import DAO.Artist;
+import DAO.Track;
+import DAO.ZaicevNetAPI.ZaicevNetAPI;
+import DAO.ZaicevNetAPI.ZaicevNetURL;
 
 
 @Controller

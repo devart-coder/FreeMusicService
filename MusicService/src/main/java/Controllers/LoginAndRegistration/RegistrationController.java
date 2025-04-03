@@ -1,11 +1,14 @@
 package Controllers.LoginAndRegistration;
 
+import static DAO.User.UserEntityBuilder.builder;
+
 import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,8 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import Entities.PlayListEntity;
-import Entities.UserEntity;
+import DAO.PlayLists.PlayListEntity;
+import DAO.User.UserEntity;
+import DAO.User.UserEntityBuilder;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
 
@@ -25,7 +29,7 @@ public class RegistrationController {
 	@Autowired
 	private UserRepository userRepo;
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordEncoder encoder;
 	
 	@GetMapping
 	public String registerForm() {
@@ -40,7 +44,11 @@ public class RegistrationController {
 	) {
 		var user = userRepo.findByUsername(username);
 		if(user == null) {
-			var newUser = new UserEntity( username, passwordEncoder.encode(password));
+//			var newUser = new UserEntity( username, passwordEncoder.encode(password));
+			var newUser=
+			UserEntityBuilder
+			.builder()
+			.defaultUser(username, encoder.encode(password));
 			userRepo.save(newUser);
 			return "redirect:/login";
 		}

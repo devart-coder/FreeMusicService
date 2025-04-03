@@ -1,4 +1,4 @@
-package Entities.JangoAPI;
+package DAO.JangoAPI;
 
 import java.util.List;
 

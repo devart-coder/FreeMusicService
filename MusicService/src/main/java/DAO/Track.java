@@ -1,4 +1,4 @@
-package Entities;
+package DAO;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;

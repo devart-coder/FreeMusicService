@@ -1,8 +1,10 @@
-package Entities;
+package DAO.PlayLists;
 
 import java.util.Date;
 
 import org.hibernate.annotations.ColumnDefault;
+
+import DAO.User.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +22,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "playlists")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class PlayListEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
