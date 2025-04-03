@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import DAO.PlayLists.PlayListBuilder;
 import DAO.PlayLists.PlayListEntity;
 import DAO.User.Settings.UserSettings;
 import lombok.AccessLevel;
@@ -15,46 +16,45 @@ import lombok.RequiredArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserEntityBuilder {
-	private String username;
-	private String password;
-	private String role="ROLE_USER";
-	private boolean enabled=true; 
-	private Date createdAt= new Date();
-	private List<PlayListEntity> playlists=List.of(new PlayListEntity() );
-	private UserSettings properties=new UserSettings(); 
+	private UserEntity user;
+//	private String username;
+//	private String password;
+//	private String role="ROLE_USER";
+//	private boolean enabled=true; 
+//	private Date createdAt= new Date();
+//	private List<PlayListEntity> playlists=List.of(PlayListBuilder.defaultPlaylist() );
+//	private UserSettings properties=new UserSettings(); 
 	
 	public static UserEntityBuilder builder() {
 		return new UserEntityBuilder();
 	}
-	public UserEntity defaultUser(String username, String password) {
-		return builder().setUsername(username).setPassword(password).build();
-	}
 	public UserEntityBuilder setUsername(String username) {
-		this.username=username;
+		this.user.setUsername(username);
 		return this;
 	}
 	public UserEntityBuilder setPassword(String password) {
-		this.password=password;
+		this.user.setPassword(password);
 		return this;
 	}
 	public UserEntityBuilder setRole(String role) {
-		this.role=role;
+		this.user.setRole(role);
 		return this;
 	}
 	public UserEntityBuilder setCreatedAt(Date createdAt) {
-		this.createdAt=createdAt;
+		this.user.setCreatedAt(createdAt);
 		return this;
 	}
 	public UserEntityBuilder setPlaylists(List<PlayListEntity> playlists) {
-		this.playlists=playlists;
+		this.user.setPlaylists(playlists);
 		return this;
 	}
 	public UserEntityBuilder setUserSettings(UserSettings properties) {
-		this.properties=properties;
+//		this.user.user;
 		return this;
 	}
 	public UserEntity build() {
-		return new UserEntity (null, username, password, role, enabled, createdAt, playlists, properties);
+		return this.user;
+//		return new UserEntity (null, username, password, role, enabled, createdAt, playlists, properties);
 	}
 
 }
