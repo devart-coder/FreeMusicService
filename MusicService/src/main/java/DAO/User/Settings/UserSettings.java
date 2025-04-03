@@ -35,11 +35,10 @@ public class UserSettings implements Serializable{
 	private String email;
 	
 	@Column(name = "phone",nullable = true)
-	private String phone;
+	private String phoneNumber;
 	
 	@Column(name = "avatar_path",nullable = false)
 	@ColumnDefault(value = "''")
 	private String imagePath;
-
 
 }

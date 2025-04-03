@@ -1,5 +1,6 @@
 package DAO.PlayLists;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -46,5 +47,5 @@ public class PlayListEntity {
 
 	@Column(nullable = false, updatable = false)
 	@ColumnDefault(value = "now()")
-	private Date createdBy;
+	private LocalDate createdBy;
 }

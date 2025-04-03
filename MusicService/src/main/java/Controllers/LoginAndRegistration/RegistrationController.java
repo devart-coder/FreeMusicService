@@ -2,6 +2,7 @@ package Controllers.LoginAndRegistration;
 
 import static DAO.User.UserEntityBuilder.builder;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import DAO.PlayLists.PlayListBuilder;
 import DAO.PlayLists.PlayListEntity;
 import DAO.User.UserEntity;
 import DAO.User.UserEntityBuilder;
+import DAO.User.Settings.UserSettingsBuilder;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
 
@@ -41,15 +44,10 @@ public class RegistrationController {
 		String username,
 		@RequestParam(required = false)
 		String password
-	) {
+	){
 		var user = userRepo.findByUsername(username);
 		if(user == null) {
-//			var newUser = new UserEntity( username, passwordEncoder.encode(password));
-			var newUser = UserEntityBuilder
-			.builder()
-			.setUsername(username)
-			.setPassword(encoder.encode(password))
-			.build();
+			var newUser = UserEntityBuilder.defaulUser(username, encoder.encode(password));
 			userRepo.save(newUser);
 			return "redirect:/login";
 		}

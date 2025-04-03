@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 public class TrackWrapper {
 	@JsonSetter("id")
 	private String id;
-	
+
 	@JsonSetter("streaming")
 	private String streamCode;
-	
+
 	@JsonSetter("download")
 	private String downloadCode;
 }

@@ -1,6 +1,7 @@
 package DAO.User;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class UserEntity implements Serializable {
 	
 	@Column(nullable = false,updatable = false)
 	@ColumnDefault(value = "now()")
-	private Date createdAt;
+	private LocalDate createdAt;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")

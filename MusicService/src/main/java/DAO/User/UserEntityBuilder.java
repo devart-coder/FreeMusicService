@@ -1,5 +1,6 @@
 package DAO.User;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,23 +11,28 @@ import org.springframework.stereotype.Component;
 import DAO.PlayLists.PlayListBuilder;
 import DAO.PlayLists.PlayListEntity;
 import DAO.User.Settings.UserSettings;
+import DAO.User.Settings.UserSettingsBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserEntityBuilder {
-	private UserEntity user;
-//	private String username;
-//	private String password;
-//	private String role="ROLE_USER";
-//	private boolean enabled=true; 
-//	private Date createdAt= new Date();
-//	private List<PlayListEntity> playlists=List.of(PlayListBuilder.defaultPlaylist() );
-//	private UserSettings properties=new UserSettings(); 
+	private UserEntity user = new UserEntity();
 	
 	public static UserEntityBuilder builder() {
 		return new UserEntityBuilder();
+	}
+	public static UserEntity defaulUser(String username, String password) {
+		return 
+			builder()
+			.setUsername(username)
+			.setPassword(password)
+			.setRole("ROLE_USER")
+			.setPlaylists(List.of(PlayListBuilder.defaultPlaylist()))
+			.setUserSettings(UserSettingsBuilder.builder().setEmail("").setImagePath("").setPhoneNumber("").build())
+			.setCreatedAt(LocalDate.now())
+			.build();
 	}
 	public UserEntityBuilder setUsername(String username) {
 		this.user.setUsername(username);
@@ -40,7 +46,7 @@ public class UserEntityBuilder {
 		this.user.setRole(role);
 		return this;
 	}
-	public UserEntityBuilder setCreatedAt(Date createdAt) {
+	public UserEntityBuilder setCreatedAt(LocalDate createdAt) {
 		this.user.setCreatedAt(createdAt);
 		return this;
 	}
@@ -49,12 +55,13 @@ public class UserEntityBuilder {
 		return this;
 	}
 	public UserEntityBuilder setUserSettings(UserSettings properties) {
-//		this.user.user;
+		if(properties.getUser()==null)
+			properties.setUser(user);
+		this.user.setProperties(properties);
 		return this;
 	}
 	public UserEntity build() {
+		//TODO:AddNullPointersCheckers
 		return this.user;
-//		return new UserEntity (null, username, password, role, enabled, createdAt, playlists, properties);
 	}
-
 }

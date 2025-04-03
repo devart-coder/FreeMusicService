@@ -3,12 +3,12 @@ package DAO;
 import com.fasterxml.jackson.annotation.JsonSetter;
 
 public class Artist {
-	
+
 	private String artistId;
-	
+
 	@JsonSetter(value = "name")
-	private String artistName="Unknown";
-	
+	private String artistName = "Unknown";
+
 	@JsonSetter(value = "imageJpg")
 	private String artistImagePath;
 
@@ -30,8 +30,8 @@ public class Artist {
 
 	@Override
 	public String toString() {
-		return "Artist [artistId=" + getArtistId() + ", artistName=" + artistName + ", artistImagePath=" + artistImagePath
-				+ "]";
+		return "Artist [artistId=" + getArtistId() + ", artistName=" + artistName + ", artistImagePath="
+				+ artistImagePath + "]";
 	}
 
 	public String getArtistId() {
