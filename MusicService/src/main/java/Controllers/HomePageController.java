@@ -42,7 +42,7 @@ public class HomePageController {
 		var p = u.getPlaylists();
 		//TODO::PLayLists:AddCheckByNull
 		for(var playlist : p) {
-			if(playlist.isMain())
+			if(playlist.getMain())
 				return playlist.getName();
 		}
 		return "[Null]";

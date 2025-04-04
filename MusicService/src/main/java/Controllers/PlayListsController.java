@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import DAO.PlayLists.PlayListBuilder;
 import DAO.PlayLists.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
@@ -53,13 +54,11 @@ public class PlayListsController {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
 				return "playlists";
 			}
-			var playList = new PlayListEntity();
-			playList.setName(mainButton);
-			playList.setUser(user);
-			playListsService.save(playList);
-//			var playList = new PlayListEntity(createButton);
-//			user.getPlaylists().add(playList);//deleteFromUser
-//			playListsRepository.save(playList);//addToDB
+			var playlist = PlayListBuilder.builder()
+				.setName(mainButton)
+				.setUserEntity(user)
+				.build();
+			playListsService.save(playlist);
 		}
 		else if( deleteButton != null ) {
 //			if( user.getPlaylists()
@@ -99,7 +98,7 @@ public class PlayListsController {
 		var user = userRepository.findByUsername(auth.getName());
 		//TODO::User:AddCheckByNull
 		return user.getPlaylists().stream()
-				.sorted((x,y) -> Boolean.compare(y.isMain(), x.isMain()))
+				.sorted((x,y) -> Boolean.compare(y.getMain(), x.getMain()))
 				.toList();	
 	}
 
@@ -111,7 +110,7 @@ public class PlayListsController {
 		//TODO:User:AddCheckByNull
 		var playLists = user.getPlaylists();
 		for(var playList : playLists) {
-			if(playList.isMain())
+			if(playList.getMain())
 				return playList.getName();
 		}
 		return "[Null]";

@@ -36,7 +36,7 @@ public class PlayListEntity {
 
 	@Column(name = "main",nullable = false, columnDefinition = "boolean")
 	@ColumnDefault(value = "false")
-	private boolean main;
+	private Boolean main;
 
 	@ManyToOne
 	private UserEntity user;

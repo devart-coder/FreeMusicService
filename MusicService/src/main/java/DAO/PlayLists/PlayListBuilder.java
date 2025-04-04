@@ -1,9 +1,6 @@
 package DAO.PlayLists;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import DAO.User.UserEntity;
@@ -18,12 +15,7 @@ public class PlayListBuilder {
 		return new PlayListBuilder();
 	}
 	public static PlayListEntity defaultPlaylist() { 
-		return builder()
-				.setName("Default")
-				.setMain(true)
-				.setSize(0l)
-				.setCreatedBy(LocalDate.now())
-				.build();
+		return builder().setMain(true).build();
 	}
 	public PlayListBuilder setName(String name) {
 		this.playlist.setName(name);
@@ -48,7 +40,18 @@ public class PlayListBuilder {
 		return this;
 	}
 	public PlayListEntity build() {
-		//TODO:AddNullPointersCheckers
+		if(this.playlist.getName() ==null)
+			this.playlist.setName("Default");
+		
+		else if(this.playlist.getMain()==null)
+			this.playlist.setMain(false);
+		
+		else if (this.playlist.getCreatedBy()==null)
+			this.playlist.setCreatedBy(LocalDate.now());
+		
+		else if (this.playlist.getSize()==null)
+			this.playlist.setSize(0l);
+		
 		return this.playlist ;
 	}
 }

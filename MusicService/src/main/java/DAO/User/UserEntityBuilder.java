@@ -23,7 +23,7 @@ public class UserEntityBuilder {
 	public static UserEntityBuilder builder() {
 		return new UserEntityBuilder();
 	}
-	public static UserEntity defaulUser(String username, String password) {
+	public static UserEntity defaulUserWith(String username, String password) {
 		return 
 			builder()
 			.setUsername(username)
