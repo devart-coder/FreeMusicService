@@ -47,8 +47,12 @@ public class RegistrationController {
 	){
 		var user = userRepo.findByUsername(username);
 		if(user == null) {
-			var newUser = UserEntityBuilder.defaulUserWith(username, encoder.encode(password));
-			userRepo.save(newUser);
+			try {
+				var newUser = UserEntityBuilder.defaulUserWith(username, encoder.encode(password));
+				userRepo.save(newUser);
+			}catch(Exception e) {
+				logger.error(e.getMessage());
+			}
 			return "redirect:/login";
 		}
 		else {

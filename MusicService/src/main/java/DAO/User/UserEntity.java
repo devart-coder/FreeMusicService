@@ -57,12 +57,12 @@ public class UserEntity implements Serializable {
 	
 	@Column(nullable = false,updatable = false)
 	@ColumnDefault(value = "now()")
-	private LocalDate createdAt;
+	private LocalDate createdBy;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private List<PlayListEntity> playlists;
 	
 	@OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
-	private UserSettings properties; 
+	private UserSettings settings; 
 }

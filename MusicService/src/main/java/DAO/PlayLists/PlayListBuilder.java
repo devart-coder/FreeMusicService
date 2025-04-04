@@ -1,13 +1,17 @@
 package DAO.PlayLists;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import DAO.User.UserEntity;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
 public class PlayListBuilder {
 	private PlayListEntity playlist = new PlayListEntity();
 	
@@ -27,7 +31,7 @@ public class PlayListBuilder {
 	}
 	public PlayListBuilder setUserEntity(UserEntity user) {
 		if(user.getPlaylists()==null)
-			user.setPlaylists(List.of(playlist));
+			user.setPlaylists(Arrays.asList(playlist));
 		this.playlist.setUser(user);
 		return this;
 	}
@@ -35,23 +39,23 @@ public class PlayListBuilder {
 		this.playlist.setSize(size);
 		return this;
 	}
-	public PlayListBuilder setCreatedBy(LocalDate date){
-		this.playlist.setCreatedBy(date);
-		return this;
-	}
 	public PlayListEntity build() {
-		if(this.playlist.getName() ==null)
+		if(this.playlist.getName() ==null) {
 			this.playlist.setName("Default");
-		
-		else if(this.playlist.getMain()==null)
+			log.warn(String.format("'name' field set default value: '%s'.",this.playlist.getName()));
+		}
+		if(this.playlist.getMain()==null) {
 			this.playlist.setMain(false);
-		
-		else if (this.playlist.getCreatedBy()==null)
-			this.playlist.setCreatedBy(LocalDate.now());
-		
-		else if (this.playlist.getSize()==null)
+			log.warn(String.format("'main' field set default value: '%s'.",this.playlist.getMain()));
+		}
+		if (this.playlist.getSize()==null) {
 			this.playlist.setSize(0l);
-		
+			log.warn(String.format("'size' field set default value: '%s'.",this.playlist.getSize()));
+		}
+		if(this.playlist.getCreatedBy()==null) {
+			this.playlist.setCreatedBy(LocalDate.now());
+			log.warn(String.format("'createdBy' field set default value: '%s'",this.playlist.getCreatedBy()));
+		}
 		return this.playlist ;
 	}
 }

@@ -58,7 +58,8 @@ public class PlayListsController {
 				.setName(mainButton)
 				.setUserEntity(user)
 				.build();
-			playListsService.save(playlist);
+			user.getPlaylists().add(playlist);//deleteFromUser
+			playListsService.save(playlist);//addFromPLayList
 		}
 		else if( deleteButton != null ) {
 //			if( user.getPlaylists()
