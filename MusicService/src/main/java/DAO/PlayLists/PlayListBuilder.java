@@ -10,8 +10,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PlayListBuilder {
 	private PlayListEntity playlist = new PlayListEntity();
 	

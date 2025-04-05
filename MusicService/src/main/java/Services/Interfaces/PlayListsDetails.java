@@ -1,11 +1,11 @@
 package Services.Interfaces;
 
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.security.core.Authentication;
 
 import DAO.PlayLists.PlayListEntity;
 import DAO.User.UserEntity;
-import Services.Implementations.UserService;
 
 public interface PlayListsDetails {
 	//Create
@@ -17,14 +17,17 @@ public interface PlayListsDetails {
 	List<PlayListEntity> findAllByUserId(Long id);
 	List<PlayListEntity> findAllByUserName(String name);
 	List<PlayListEntity> findAllByUser(UserEntity user);
+	List<PlayListEntity> findAllByAuth(Authentication auth);
 	
 	//Update
-	void updateName(String newName);
-	void updateMain(boolean newMain);
-	void updateSize(Long newSize);
 	
 	//Delete
 	void deleteById(Long Id);
+	void delete(PlayListEntity playlist);
 	void deleteByName(String name);
+
+	PlayListEntity findByUserNameAndMain(String username, Boolean main);
+
+	PlayListEntity findByUserIdAndMain(Long userid, Boolean main);
 
 }

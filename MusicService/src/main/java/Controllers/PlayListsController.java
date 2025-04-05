@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/playlists")
 public class PlayListsController {
-//	@Autowired
+	@Autowired
 	private PlayListsService playListsService = new PlayListsService();
 	@Autowired
 	private UserRepository userRepository;
@@ -55,40 +55,41 @@ public class PlayListsController {
 				return "playlists";
 			}
 			var playlist = PlayListBuilder.builder()
-				.setName(mainButton)
+				.setName(createButton)
 				.setUserEntity(user)
 				.build();
-			user.getPlaylists().add(playlist);//deleteFromUser
+//			user.getPlaylists().add(playlist);
 			playListsService.save(playlist);//addFromPLayList
 		}
 		else if( deleteButton != null ) {
-//			if( user.getPlaylists()
-//					.removeIf(p->p
-//						.getId()
-//						.equals(deleteButton)
-//						&&!p.getName().equals("Default")) 
-//				)//removeFromUser
-//				playListsRepository.deleteById(deleteButton);//removeFromDB
+			if( user.getPlaylists()
+					.removeIf(p->p
+						.getId()
+						.equals(deleteButton)
+						&&!p.getName().equals("Default")
+						&&p.getMain()!=true) 
+				)
+				playListsService.deleteById(deleteButton);
 		}
 		else if( mainButton != null) {
-//			for(var p : user.getPlaylists()) {
-//				if(p.isMain()) {
-//					try {
-//						p.setMain(false);
-//						playListsRepository.setMainById(false, p.getId());
-//					}catch(Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//				if(p.getName().equals(mainButton)) {
-//					try {
-//						p.setMain(true);
-//						playListsRepository.setMainById(true, p.getId());
-//					}catch(Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
+			for(var p : user.getPlaylists()) {
+				if(p.getMain()) {
+					try {
+						p.setMain(false);
+//						playListsService.updateMainById(false, p.getId());
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if(p.getName().equals(mainButton)) {
+					try {
+						p.setMain(true);
+//						playListService.setMainById(true, p.getId());
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		} 
 		page.addAttribute("mainPlayList",getMainPlayList(auth));
 		page.addAttribute("playLists",getAllUsersPlayLists(auth));		
@@ -98,22 +99,20 @@ public class PlayListsController {
 	public Iterable<PlayListEntity> getAllUsersPlayLists( Authentication auth ) {
 		var user = userRepository.findByUsername(auth.getName());
 		//TODO::User:AddCheckByNull
-		return user.getPlaylists().stream()
+		return playListsService
+				.findAllByUser(user)
+				.stream()
 				.sorted((x,y) -> Boolean.compare(y.getMain(), x.getMain()))
 				.toList();	
 	}
 
 	@ModelAttribute("mainPlayList")
 	public String getMainPlayList( Authentication auth ) {
-		var context = SecurityContextHolder.getContext();
-		System.out.println(context.getAuthentication());
 		var user = userRepository.findByUsername(auth.getName());
-		//TODO:User:AddCheckByNull
-		var playLists = user.getPlaylists();
-		for(var playList : playLists) {
-			if(playList.getMain())
-				return playList.getName();
-		}
+		var playlist = playListsService.findByUserIdAndMain(user.getId(), true);
+		if(playlist != null)
+				return playlist.getName();
+			
 		return "[Null]";
 	}
 	

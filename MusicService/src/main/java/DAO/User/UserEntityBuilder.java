@@ -2,12 +2,7 @@ package DAO.User;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
 import DAO.PlayLists.PlayListBuilder;
 import DAO.PlayLists.PlayListEntity;
@@ -15,7 +10,6 @@ import DAO.User.Settings.UserSettings;
 import DAO.User.Settings.UserSettingsBuilder;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

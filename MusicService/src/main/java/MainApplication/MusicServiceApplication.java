@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		,"Controllers"
 		,"DAO"
 		,"Security"
+		,"Services"
 	}
 )
 @EnableJpaRepositories(basePackages = "Repositories")

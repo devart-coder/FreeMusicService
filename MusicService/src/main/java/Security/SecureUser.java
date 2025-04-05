@@ -17,12 +17,10 @@ public class SecureUser implements UserDetails {
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return List.of(new SimpleGrantedAuthority(user.getRole()));
 	}
-
 	@Override
 	public String getPassword() {
 		return user.getPassword();
 	}
-
 	@Override
 	public String getUsername() {
 		return user.getUsername();

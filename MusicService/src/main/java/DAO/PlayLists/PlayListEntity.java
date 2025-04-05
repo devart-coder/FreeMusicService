@@ -30,7 +30,7 @@ public class PlayListEntity {
 	@Getter
 	private Long Id;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	@ColumnDefault(value = "'Default'")
 	private String name;
 

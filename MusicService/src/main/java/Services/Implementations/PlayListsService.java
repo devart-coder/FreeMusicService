@@ -7,7 +7,10 @@ import javax.naming.NameNotFoundException;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
+import DAO.PlayLists.PlayListBuilder;
 import DAO.PlayLists.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
@@ -19,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Slf4j
+@Component
 public class PlayListsService implements PlayListsDetails {
 	@Autowired
 	private PlayListsRepository playListRepos;
@@ -40,7 +44,7 @@ public class PlayListsService implements PlayListsDetails {
 			return 
 				playListRepos
 				.findById(Id)
-				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' not found.", Id)) );
+				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' not found.", Id==null ? "null":Id)) );
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -50,10 +54,10 @@ public class PlayListsService implements PlayListsDetails {
 	@Override
 	public PlayListEntity findByName(String name) {
 		try {
-		return 
-			playListRepos
-			.findByName(name)
-			.orElseThrow( () -> new Exception(String.format("Playlist with name '%s' not found.", name)) );
+			return 
+				playListRepos
+				.findByName(name)
+				.orElseThrow( () -> new Exception(String.format("Playlist with name '%s' not found.", name)) );
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
@@ -62,48 +66,99 @@ public class PlayListsService implements PlayListsDetails {
 
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) {
-		return playListRepos.findAllByUser(user);
+		try {
+			return 
+				playListRepos
+				.findAllByUser(user)
+				.orElseThrow( ()-> new Exception(String.format("Any playlist with username '%s' not exists", user==null?"null":user.getUsername())) );
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
 	}
 	
 	@Override
-	public List<PlayListEntity> findAllByUserName(String name) {
-		return playListRepos.findAllByUserUsername(name);
+	public List<PlayListEntity> findAllByUserName(String username) {
+		try {
+			return 
+				playListRepos
+				.findAllByUserUsername(username)
+				.orElseThrow( ()-> new Exception(String.format("Any playlist with username '%s' not exists", username==null?"null":username)) );
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
 	public List<PlayListEntity> findAllByUserId(Long id) {
-		return playListRepos.findAllByUserId(id);
-	}
-
-	@Override
-	public void updateName(String newName) {
-		
-	}
-
-	@Override
-	public void updateMain(boolean newMain) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void updateSize(Long newSize) {
-		// TODO Auto-generated method stub
-
+		try {
+			return 
+				playListRepos
+				.findAllByUserId(id)
+				.orElseThrow( ()-> new Exception(String.format("Any playlist with id '%s' not exists", id==null?"null":id)) );
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
 	}
 
 	@Override
 	public void deleteById(Long Id) {
-		// TODO Auto-generated method stub
-
+		try {
+			if(Id == null)
+				throw new Exception("PlaylistId is null.");
+			playListRepos.deleteById(Id);
+		}catch (Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 
 	@Override
 	public void deleteByName(String name) {
-		// TODO Auto-generated method stub
-
+		try{
+			if(name == null)
+				throw new Exception("'name' is null");
+			playListRepos.deleteByName(name);
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 
-	
+	@Override
+	public void delete(PlayListEntity playlist) {
+		// TODO Auto-generated method stub
+		try{
+			if(playlist == null)
+				throw new Exception("Reference 'PlayListEntity' is null");
+			playListRepos.delete(playlist);
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+	}
+
+	@Override
+	public PlayListEntity findByUserIdAndMain(Long userid , Boolean main) {
+		var m = playListRepos.findByUserIdAndMain(userid,main);
+		return m.orElseGet(()->PlayListBuilder.defaultPlaylist());
+	}
+	@Override
+	public PlayListEntity findByUserNameAndMain(String username , Boolean main) {
+		var m = playListRepos.findByUserUsernameAndMain(username,main);
+		return m.orElseGet(()->PlayListBuilder.defaultPlaylist());
+	}
+
+	@Override
+	public List<PlayListEntity> findAllByAuth(Authentication auth) {
+		try {
+		return 
+			playListRepos
+			.findAllByUserUsername(auth.getName())
+			.orElseThrow(()-> new Exception(String.format("Any playlist with username '%s' not exists", auth.getName()==null?"null":auth.getName())));
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
+	}
 
 }
