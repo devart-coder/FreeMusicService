@@ -78,6 +78,18 @@ public class PlayListsService implements PlayListsDetails {
 	}
 	
 	@Override
+	public List<PlayListEntity> findAllByAuth(Authentication auth) {
+		try {
+		return 
+			playListRepos
+			.findAllByUserUsername(auth.getName())
+			.orElseThrow(()-> new Exception(String.format("Any playlist with username '%s' not exists", auth.getName()==null?"null":auth.getName())));
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+		return null;
+	}
+	@Override
 	public List<PlayListEntity> findAllByUserName(String username) {
 		try {
 			return 
@@ -127,7 +139,6 @@ public class PlayListsService implements PlayListsDetails {
 
 	@Override
 	public void delete(PlayListEntity playlist) {
-		// TODO Auto-generated method stub
 		try{
 			if(playlist == null)
 				throw new Exception("Reference 'PlayListEntity' is null");
@@ -148,17 +159,6 @@ public class PlayListsService implements PlayListsDetails {
 		return m.orElseGet(()->PlayListBuilder.defaultPlaylist());
 	}
 
-	@Override
-	public List<PlayListEntity> findAllByAuth(Authentication auth) {
-		try {
-		return 
-			playListRepos
-			.findAllByUserUsername(auth.getName())
-			.orElseThrow(()-> new Exception(String.format("Any playlist with username '%s' not exists", auth.getName()==null?"null":auth.getName())));
-		}catch(Exception e) {
-			log.error(e.getMessage());
-		}
-		return null;
-	}
+	
 
 }

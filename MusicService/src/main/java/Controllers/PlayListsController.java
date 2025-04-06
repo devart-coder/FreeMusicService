@@ -97,13 +97,11 @@ public class PlayListsController {
 	}
 	@ModelAttribute("playLists")
 	public Iterable<PlayListEntity> getAllUsersPlayLists( Authentication auth ) {
-		var user = userRepository.findByUsername(auth.getName());
-		//TODO::User:AddCheckByNull
-		return playListsService
-				.findAllByUser(user)
-				.stream()
-				.sorted((x,y) -> Boolean.compare(y.getMain(), x.getMain()))
-				.toList();	
+		return 
+			playListsService.findAllByAuth(auth)
+			.stream()
+			.sorted((x,y) -> Boolean.compare(y.getMain(), x.getMain()))
+			.toList();	
 	}
 
 	@ModelAttribute("mainPlayList")

@@ -1,6 +1,6 @@
 package Services.Interfaces;
-
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.security.core.Authentication;
 
@@ -9,25 +9,39 @@ import DAO.User.UserEntity;
 
 public interface PlayListsDetails {
 	//Create
-	void save(PlayListEntity newPlayList);
+		void save(PlayListEntity newPlayList);
+		void save(Supplier<? extends PlayListEntity> newPlayList);
 
-	//Read
-	PlayListEntity findById(Long Id);
-	PlayListEntity findByName(String name);
-	List<PlayListEntity> findAllByUserId(Long id);
-	List<PlayListEntity> findAllByUserName(String name);
-	List<PlayListEntity> findAllByUser(UserEntity user);
-	List<PlayListEntity> findAllByAuth(Authentication auth);
+	//Search/Read
+	//All
+		List<PlayListEntity> findAllByUserId(Long id);
+		List<PlayListEntity> findAllByUserName(String name);
+		List<PlayListEntity> findAllByUser(UserEntity user);
+		List<PlayListEntity> findAllByAuth(Authentication auth);
+	//Once
+		PlayListEntity findOnceById(Long Id);
+		PlayListEntity findOnceByName(String name);
+		PlayListEntity findOnceByUserNameAndMain(String username, Boolean main);
+		PlayListEntity findOnceByUserIdAndMain(Long userid, Boolean main);
 	
 	//Update
+	//ByEntity
+		void updateName(PlayListEntity playlist,String newName);
+		void updateMain(PlayListEntity playlist,Boolean newMain);
+		void updateSize(PlayListEntity playlist,Long newSize);
+	//ById
+		void updateNameById(Long playlist,String newName);
+		void updateMainById(Long playlist,Boolean newMain);
+		void updateSizeById(Long playlist,Long newSize);
+	//ByName
+		void updateMainByName(String name,Boolean newMain);
+		void updateSizeByName(String name,Long newSize);
 	
 	//Delete
-	void deleteById(Long Id);
-	void delete(PlayListEntity playlist);
-	void deleteByName(String name);
+		void delete(PlayListEntity playlist);
+		void delete(Supplier<? extends PlayListEntity> playlist);
+		void deleteById(Long Id);
+		void deleteByName(String name);
 
-	PlayListEntity findByUserNameAndMain(String username, Boolean main);
-
-	PlayListEntity findByUserIdAndMain(Long userid, Boolean main);
 
 }
