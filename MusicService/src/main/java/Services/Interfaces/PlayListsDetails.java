@@ -11,7 +11,6 @@ public interface PlayListsDetails {
 	//Create
 		void save(PlayListEntity newPlayList);
 		void save(Supplier<? extends PlayListEntity> newPlayList);
-
 	//Search/Read
 	//All
 		List<PlayListEntity> findAllByUserId(Long id);
@@ -23,13 +22,12 @@ public interface PlayListsDetails {
 		PlayListEntity findOnceByName(String name);
 		PlayListEntity findOnceByUserNameAndMain(String username, Boolean main);
 		PlayListEntity findOnceByUserIdAndMain(Long userid, Boolean main);
-	
 	//Update
 	//ByEntity
-		void updateName(PlayListEntity playlist,String newName);
-		void updateMain(PlayListEntity playlist,Boolean newMain);
-		void updateSize(PlayListEntity playlist,Long newSize);
-	//ById
+		void updateNameBy(PlayListEntity playlist,String newName);
+		void updateMainBy(PlayListEntity playlist,Boolean newMain);
+		void updateSizeBy(PlayListEntity playlist,Long newSize);
+	//ById 
 		void updateNameById(Long playlist,String newName);
 		void updateMainById(Long playlist,Boolean newMain);
 		void updateSizeById(Long playlist,Long newSize);

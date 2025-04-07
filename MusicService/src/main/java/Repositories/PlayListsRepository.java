@@ -17,10 +17,8 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	Optional<PlayListEntity> findByUserIdAndMain(Long userId,Boolean main);
 	Optional<PlayListEntity> findByUserUsernameAndMain(String username, Boolean main);
 	
-	void deleteByName(String name);
 	void deleteById(Long id);
-	void deleteByIdAndUserId(Long userId);
-	void deleteByIdAndUserName(Long userId);
+	void deleteByName(String name);
 	
 	
 }
