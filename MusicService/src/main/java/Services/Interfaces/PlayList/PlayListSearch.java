@@ -15,7 +15,7 @@ public interface PlayListSearch {
 		List<PlayListEntity> findAllByUser(UserEntity user);
 		List<PlayListEntity> findAllByAuth(Authentication auth);
 	//Once
-		PlayListEntity findOnceById(Long Id);
+		PlayListEntity findOnceById(Long Id) throws Exception;
 		PlayListEntity findOnceByName(String name);
 		PlayListEntity findOnceByUserNameAndMain(String username, Boolean main);
 		PlayListEntity findOnceByUserIdAndMain(Long userid, Boolean main);

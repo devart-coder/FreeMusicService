@@ -29,35 +29,30 @@ public class PlayListService implements PlayListDetails {
 	private PlayListsRepository playListRepos;
 	
 	@Override
-	public void save(PlayListEntity newPlayList) {
-		try {
-			var result = playListRepos.save(newPlayList);
-			if(result == null)
-				throw new Exception("PlayList was not saved.");
-		}catch(Exception e) {
-			log.error(e.getMessage());
-		}
+	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
+		if(newPlayList == null)
+			throw new Exception("'Playlist' was not saved.");
+		return  playListRepos.save(newPlayList);
 	}
 	@Override
-	public void saveAll(Iterable<? extends PlayListEntity> newPlayList) {
-		playListRepos.saveAll(newPlayList);
+	public List<PlayListEntity> saveAll(Iterable<PlayListEntity> newPlayList) throws Exception {
+		if(newPlayList == null)
+			throw new Exception("'Playlist' was not saved.");
+		return playListRepos.saveAll(newPlayList);
 	}
 	@Override
-	public void save(Supplier<? extends PlayListEntity> newPlayList) {
-		this.save(newPlayList.get());
+	public PlayListEntity save(Supplier<? extends PlayListEntity> newPlayList) throws Exception {
+		return save(newPlayList.get());
 	}
 	
 	@Override
-	public PlayListEntity findOnceById(Long Id) {
-		try {
+	public PlayListEntity findOnceById(Long Id) throws Exception {
+			if(Id == null)
+				throw new Exception("Id is empty.");
 			return 
 				playListRepos
 				.findById(Id)
-				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' was not found.", Id==null ? "null":Id)) );
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		return null;
+				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' was not found.", Id.toString())) );
 	}
 	@Override
 	public PlayListEntity findOnceByName(String name) {
