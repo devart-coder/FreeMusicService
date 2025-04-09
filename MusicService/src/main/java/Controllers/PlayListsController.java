@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import DAO.PlayLists.PlayListBuilder;
-import DAO.PlayLists.PlayListEntity;
+import DAO.PlayList.PlayListBuilder;
+import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
-import Services.Implementations.PlayListsService;
+import Services.Implementations.PlayListService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/playlists")
 public class PlayListsController {
 	@Autowired
-	private PlayListsService playListsService = new PlayListsService();
+	private PlayListService playListsService = new PlayListService();
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -54,22 +54,14 @@ public class PlayListsController {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
 				return "playlists";
 			}
-			var playlist = PlayListBuilder.builder()
+			playListsService.save( ()->
+				PlayListBuilder.builder()
 				.setName(createButton)
 				.setUserEntity(user)
-				.build();
-//			user.getPlaylists().add(playlist);
-			playListsService.save(playlist);//addFromPLayList
+				.build() );
 		}
 		else if( deleteButton != null ) {
-			if( user.getPlaylists()
-					.removeIf(p->p
-						.getId()
-						.equals(deleteButton)
-						&&!p.getName().equals("Default")
-						&&p.getMain()!=true) 
-				)
-				playListsService.deleteById(deleteButton);
+			playListsService.deleteByIdWithNotMainNotDefaultName(deleteButton, "Default");
 		}
 		else if( mainButton != null) {
 			for(var p : user.getPlaylists()) {
@@ -106,11 +98,9 @@ public class PlayListsController {
 
 	@ModelAttribute("mainPlayList")
 	public String getMainPlayList( Authentication auth ) {
-		var user = userRepository.findByUsername(auth.getName());
-		var playlist = playListsService.findByUserIdAndMain(user.getId(), true);
+		var playlist = playListsService.findOnceByAuthAndMain(auth, true);
 		if(playlist != null)
-				return playlist.getName();
-			
+			return playlist.getName();
 		return "[Null]";
 	}
 	

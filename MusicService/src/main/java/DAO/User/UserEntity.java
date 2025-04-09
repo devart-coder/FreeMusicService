@@ -9,7 +9,7 @@ import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.ForeignKey;
 
-import DAO.PlayLists.PlayListEntity;
+import DAO.PlayList.PlayListEntity;
 import DAO.User.Settings.UserSettings;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -1,4 +1,4 @@
-package DAO.PlayLists;
+package DAO.PlayList;
 
 import java.time.LocalDate;
 import java.util.Arrays;

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import DAO.PlayLists.PlayListBuilder;
-import DAO.PlayLists.PlayListEntity;
+import DAO.PlayList.PlayListBuilder;
+import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import DAO.User.UserEntityBuilder;
 import DAO.User.Settings.UserSettingsBuilder;

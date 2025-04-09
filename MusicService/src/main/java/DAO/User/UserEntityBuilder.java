@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import DAO.PlayLists.PlayListBuilder;
-import DAO.PlayLists.PlayListEntity;
+import DAO.PlayList.PlayListBuilder;
+import DAO.PlayList.PlayListEntity;
 import DAO.User.Settings.UserSettings;
 import DAO.User.Settings.UserSettingsBuilder;
 import lombok.AccessLevel;
