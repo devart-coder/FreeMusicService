@@ -69,7 +69,10 @@ public class PlayListJpaTesting {
 	private PlayListEntity playlist;
 	
 	@BeforeEach
-	public void init() { playlist=null; }
+	public void init() throws Exception { 
+		playlist=PlayListBuilder.defaultPlaylist(); 
+		service.save(playlist);
+	}
 	//SaveTests
 	@Test 
 	public void saveSupplierTest() throws Exception {
@@ -78,7 +81,7 @@ public class PlayListJpaTesting {
 		assertEquals(excepted,playlist);
 	}
 	@Test 
-	public void saveEntityTestByNull() throws Exception {
+	public void saveTestWhereEntityIsNull() throws Exception {
 		var e = assertThrows(Exception.class, ()->service.save(playlist));
 		assertTrue(e.getMessage().contains("not saved"));
 	}
@@ -94,18 +97,16 @@ public class PlayListJpaTesting {
 		var list = service.findOnceById(exceptedList.get(0).getId());
 		assertEquals(exceptedList,List.of(list));
 	}
-	//SearxhTests
-//	@Test
-//	public void findOnceByIdTest() throws Exception {
-//		playlist = PlayListBuilder.defaultPlaylist();
-//		var p = service.findOnceById(playlist.getId());
-//		assertEquals(p, playlist);
-//	}
-//	@Test
-//	public void findOnceNameTest() throws Exception {
-//		playlist = PlayListBuilder.defaultPlaylist();
-//		var p = service.findOnceByName(playlist.getName());
-//		assertEquals(p, playlist);
-//	}
-//	
+	//SearchTests
+	@Test
+	public void findOnceByIdTest() throws Exception {
+		var p = service.findOnceById(playlist.getId());
+		assertEquals(p, playlist);
+	}
+	@Test
+	public void findOnceNameTest() throws Exception {
+		var p = service.findOnceByName(playlist.getName());
+		assertEquals(p, playlist);
+	}
+	
 }
