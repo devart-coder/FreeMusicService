@@ -18,7 +18,7 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	Optional<List<PlayListEntity>> findAllByUserUsername(String username);
 	Optional<List<PlayListEntity>> findAllByUserId(Long id);
 	
-	Optional<PlayListEntity> findOnceByName(String name);
+	Optional<PlayListEntity> findOnceByUserIdAndName(Long userId,String name);
 	Optional<PlayListEntity> findOnceByUserIdAndMain(Long userId,Boolean main);
 	Optional<PlayListEntity> findOnceByUserUsernameAndMain(String username, Boolean main);
 	

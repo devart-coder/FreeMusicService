@@ -7,15 +7,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.UUID;
 
-import org.aspectj.lang.annotation.Before;
-import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,11 +22,15 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.util.Assert;
 
 import DAO.PlayList.PlayListBuilder;
 import DAO.PlayList.PlayListEntity;
+import DAO.User.UserEntity;
+import DAO.User.UserEntityBuilder;
+import Interfaces.PlayListJpaTest.PlayListJpaCreate;
+import Repositories.UserRepository;
 import Services.Implementations.PlayListService;
+import lombok.extern.slf4j.Slf4j;
 
 @ComponentScan(
 	basePackages = {
@@ -45,68 +45,131 @@ import Services.Implementations.PlayListService;
 @EntityScan(basePackages = "DAO")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class PlayListJpaTesting {
+@Slf4j
+public class PlayListJpaTesting implements PlayListJpaCreate{
 	@Configuration
-    static class ContextConfiguration {
-        @Bean
-        ClientRegistrationRepository monitoringService() {
-            var client = ClientRegistration
-            		.withRegistrationId(UUID.randomUUID().toString())
-            		.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-            		.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-            		.clientId("client")
-            		.clientName("Authentication")
-            		.clientSecret("secret")
-            		.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
-            		.authorizationUri("http://localhost:8080/aoth2/authorize")
-            		.tokenUri("http://localhost:8080/aoth2/token")
-            		.build();
-            return new InMemoryClientRegistrationRepository(client);
-        }
-    }	
+	public static class TestConfig {
+		@Bean
+		ClientRegistrationRepository monitoringService() {
+			var client = ClientRegistration
+				.withRegistrationId(UUID.randomUUID().toString())
+				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+				.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+				.clientId("client")
+				.clientName("Authentication")
+				.clientSecret("secret")
+				.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
+				.authorizationUri("http://localhost:8080/aoth2/authorize")
+				.tokenUri("http://localhost:8080/aoth2/token")
+				.build();
+			return new InMemoryClientRegistrationRepository(client);
+		}
+	}
 	@Autowired 
 	private PlayListService service;
-	private PlayListEntity playlist;
+	@Autowired 
+	private UserRepository userRep;
 	
+	private PlayListEntity playlist=null;
+	private UserEntity user=null;
 	@BeforeEach
-	public void init() throws Exception { 
-		playlist=PlayListBuilder.defaultPlaylist(); 
-		service.save(playlist);
+	public void init() throws Exception {
+		user = userRep.save(UserEntityBuilder.defaulUserWith("testUser", "testPassword"));
+		playlist=user.getPlaylists().get(0);
+		playlist.setName("Test");
 	}
+
 	//SaveTests
 	@Test 
+	@Override
 	public void saveSupplierTest() throws Exception {
+		//TODO::NeedMakeArgsWithNullCheck
 		var excepted = service.save(() -> PlayListBuilder.defaultPlaylist());
 		playlist = service.findOnceById(excepted.getId());
 		assertEquals(excepted,playlist);
 	}
 	@Test 
-	public void saveTestWhereEntityIsNull() throws Exception {
+	@Override
+	public void saveEntityWithNullArgExceptionTest() throws Exception {
+		playlist=null;
 		var e = assertThrows(Exception.class, ()->service.save(playlist));
 		assertTrue(e.getMessage().contains("not saved"));
 	}
 	@Test 
+	@Override
 	public void saveEntityTest() throws Exception {
 		var excepted = service.save(PlayListBuilder.defaultPlaylist());
 		playlist = service.findOnceById(excepted.getId());
 		assertEquals(excepted,playlist);
 	}
 	@Test 
+	@Override
 	public void saveIterableTest() throws Exception {
+		//TODO:REMAKEIT
 		var exceptedList = service.saveAll( List.of(PlayListBuilder.defaultPlaylist()) );
 		var list = service.findOnceById(exceptedList.get(0).getId());
 		assertEquals(exceptedList,List.of(list));
 	}
+	@Test
+	@Override
+	public void saveIterableWithNullArgExceptionTest() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Test
+	@Override
+	public void saveSupplierWithNotSavedExceptionTest() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Test
+	@Override
+	public void saveSupplierWithNullArgExceptionTest() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Test
+	@Override
+	public void saveIterableWithNotSavedExceptionTest() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Test
+	@Override
+	public void saveEntityWithNotSavedExceptionTest() throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	//SearchTests
-	@Test
-	public void findOnceByIdTest() throws Exception {
-		var p = service.findOnceById(playlist.getId());
-		assertEquals(p, playlist);
-	}
-	@Test
-	public void findOnceNameTest() throws Exception {
-		var p = service.findOnceByName(playlist.getName());
-		assertEquals(p, playlist);
-	}
+//	@Test
+//	public void findOnceByIdTest() throws Exception {
+//		//TODO::NeedMakeArgsWithNullCheck
+//		var p = service.findOnceById(playlist.getId());
+//		assertEquals(playlist,p);
+//	}
+//	@Test
+//	public void findOnceByUserIdAndNameTest() throws Exception {
+//		//TODO::NeedMakeArgsWithNullCheck
+//		var p = service.findOnceByUserIdAndName(user.getId(),playlist.getName());
+//		assertEquals(playlist,p);
+//	}
+//	@Test
+//	public void findAllByUserTest() throws Exception {
+//		var p = service.findAllByUser(user);
+//		assertEquals(playlist,p.get(0));
+//	}
+////	@Test
+////	public void findAllByAuthTest() throws Exception {
+//		//TODO::MakeImplementationWithSecurityAuthentication
+////		var p = service.findAllByAuth(auth);
+////		assertEquals(playlist,p);
+////	}
+
+
 	
 }

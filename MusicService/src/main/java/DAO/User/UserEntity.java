@@ -27,12 +27,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity(name = "users")
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 public class UserEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -41,28 +41,42 @@ public class UserEntity implements Serializable {
 	@Getter
 	private Long id;
 	
+	@Setter
+	@Getter
 	@Column(nullable = false)
 	private String username;
 	
+	@Setter
+	@Getter
 	@Column(nullable = false)
 	private String password;
 	
+	@Setter
+	@Getter
 	@Column(nullable = false)
 	@ColumnDefault(value = "'ROLE_USER'")
 	private String role;
 	
-	@Column(nullable = false, columnDefinition = "boolean")
+	@Setter
+	@Getter
+	@Column(nullable = false,columnDefinition = "boolean")
 	@ColumnDefault(value = "true")
 	private boolean enabled; 
 	
+	@Setter
+	@Getter
 	@Column(nullable = false,updatable = false)
 	@ColumnDefault(value = "now()")
 	private LocalDate createdBy;
 	
+	@Setter
+	@Getter
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private List<PlayListEntity> playlists;
 	
+	@Setter
+	@Getter
 	@OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
 	private UserSettings settings; 
 }

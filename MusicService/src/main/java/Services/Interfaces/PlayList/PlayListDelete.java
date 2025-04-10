@@ -9,6 +9,6 @@ public interface PlayListDelete {
 	void delete(PlayListEntity playlist);
 	void delete(Supplier<? extends PlayListEntity> playlist);
 	void deleteById(Long Id);
-	void deleteByName(String name);
-	void deleteByIdWithNotMainNotDefaultName(Long id, String name);
+	void deleteByName(String name) throws Exception;
+	void deleteByIdWithNotMainNotDefaultName(Long id, String name) throws Exception;
 }

@@ -10,13 +10,14 @@ import DAO.User.UserEntity;
 public interface PlayListSearch {
 //Search/Read
 	//All
+		List<PlayListEntity> findAll();
 		List<PlayListEntity> findAllByUserId(Long id);
 		List<PlayListEntity> findAllByUserName(String name);
-		List<PlayListEntity> findAllByUser(UserEntity user);
+		List<PlayListEntity> findAllByUser(UserEntity user) throws Exception;
 		List<PlayListEntity> findAllByAuth(Authentication auth);
 	//Once
 		PlayListEntity findOnceById(Long Id) throws Exception;
-		PlayListEntity findOnceByName(String name);
+		PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception;
 		PlayListEntity findOnceByUserNameAndMain(String username, Boolean main);
 		PlayListEntity findOnceByUserIdAndMain(Long userid, Boolean main);
 

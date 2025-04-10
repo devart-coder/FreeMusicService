@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/playlists")
+@Slf4j
 public class PlayListsController {
 	@Autowired
 	private PlayListService playListsService = new PlayListService();
@@ -54,14 +55,24 @@ public class PlayListsController {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
 				return "playlists";
 			}
-			playListsService.save( ()->
-				PlayListBuilder.builder()
-				.setName(createButton)
-				.setUserEntity(user)
-				.build() );
+			try {
+				playListsService.save( ()->
+					PlayListBuilder.builder()
+					.setName(createButton)
+					.setUserEntity(user)
+					.build() );
+			} catch (Exception e) {
+				//TODO:ThrowErrorToTheModel
+				log.error(e.getMessage());
+			}
 		}
 		else if( deleteButton != null ) {
-			playListsService.deleteByIdWithNotMainNotDefaultName(deleteButton, "Default");
+			try {
+				playListsService.deleteByIdWithNotMainNotDefaultName(deleteButton, "Default");
+			} catch (Exception e) {
+				//TODO:ThrowErrorToTheModel
+				log.error(e.getMessage());
+			}
 		}
 		else if( mainButton != null) {
 			for(var p : user.getPlaylists()) {
