@@ -70,7 +70,7 @@ public class PlayListsController {
 			try {
 				playListsService.deleteByIdWithNotMainNotDefaultName(deleteButton, "Default");
 			} catch (Exception e) {
-				//TODO:ThrowErrorToTheModel
+				//TODO:AddErrorMessageToTheModel
 				log.error(e.getMessage());
 			}
 		}
