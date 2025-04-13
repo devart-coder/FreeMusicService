@@ -1,6 +1,6 @@
 package Services.Implementations;
 
-import Services.Interfaces.UserServiceDetails;
+import Services.Interfaces.User.UserServiceDetails;
 
 public class UserService implements UserServiceDetails{
 
