@@ -1,6 +1,5 @@
 package DAO.ZaicevNetAPI;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +17,10 @@ import java.util.Map;
 //Action[3]:
 //curl 'https://zaycev.net/api/external/track/play/d03ad36c8e7d4e0b' 
 
-import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import DAO.TrackWrapper;
 

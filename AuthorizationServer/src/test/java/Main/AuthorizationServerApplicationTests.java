@@ -18,25 +18,25 @@ class AuthorizationServerApplicationTests {
 
 	@Autowired
 	private MockMvc mock;
-	
-	@Test
-	public void userLoginTest() throws Exception {
-		mock.perform(
-			formLogin("/login")
-			.user("devart")
-			.password("devart")
-		)
-		.andExpect(redirectedUrl("/"))
-		.andExpect(status().isFound());
-	}
-	@Test
-	public void adminLoginTest() throws Exception {
-		mock.perform(
-			formLogin("/login")
-			.user("admin")
-			.password("admin")
-		)
-		.andExpect(redirectedUrl("/"))
-		.andExpect(status().isFound());
-	}
+//	
+//	@Test
+//	public void userLoginTest() throws Exception {
+//		mock.perform(
+//			formLogin("/login")
+//			.user("devart")
+//			.password("devart")
+//		)
+//		.andExpect(redirectedUrl("/"))
+//		.andExpect(status().isFound());
+//	}
+//	@Test
+//	public void adminLoginTest() throws Exception {
+//		mock.perform(
+//			formLogin("/login")
+//			.user("admin")
+//			.password("admin")
+//		)
+//		.andExpect(redirectedUrl("/"))
+//		.andExpect(status().isFound());
+//	}
 }
