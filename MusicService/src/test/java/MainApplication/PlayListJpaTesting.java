@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -70,24 +71,10 @@ class PlayListJpaTesting{
 			playlist=user.getPlaylists().get(0);
 			playlist.setName("Test");
 		}
+		
 		@Configuration
-	    static class TestConfig {
-		 	@Bean
-		 	ClientRegistrationRepository monitoringService() {
-		 		var client = ClientRegistration
-		 			.withRegistrationId(UUID.randomUUID().toString())
-		 			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-		 			.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-		 			.clientId("client")
-		 			.clientName("Authentication")
-		 			.clientSecret("secret")
-		 			.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
-		 			.authorizationUri("http://localhost:8080/aoth2/authorize")
-		 			.tokenUri("http://localhost:8080/aoth2/token")
-		 			.build();
-		 		return new InMemoryClientRegistrationRepository(client);
-		 	}
-		}
+	    static class TestConfig { }
+		
 		@Test 
 		@Override
 		public void saveSupplierTest() throws Exception {
@@ -125,33 +112,33 @@ class PlayListJpaTesting{
 		
 		}
 
-	@Test
-	@Override
-	public void saveSupplierWithNotSavedExceptionTest() throws Exception {
-		// TODO Auto-generated method stub
+		@Test
+		@Override
+		public void saveSupplierWithNotSavedExceptionTest() throws Exception {
+			// TODO Auto-generated method stub
 		
-	}
+		}
 
-	@Test
-	@Override
-	public void saveSupplierWithNullArgExceptionTest() throws Exception {
-		// TODO Auto-generated method stub
+		@Test
+		@Override
+		public void saveSupplierWithNullArgExceptionTest() throws Exception {
+			// TODO Auto-generated method stub
 		
-	}
+		}
 
-	@Test
-	@Override
-	public void saveIterableWithNotSavedExceptionTest() throws Exception {
-		// TODO Auto-generated method stub
+		@Test
+		@Override
+		public void saveIterableWithNotSavedExceptionTest() throws Exception {
+			// TODO Auto-generated method stub
 		
-	}
+		}
 
-	@Test
-	@Override
-	public void saveEntityWithNotSavedExceptionTest() throws Exception {
-		// TODO Auto-generated method stub
+		@Test
+		@Override
+		public void saveEntityWithNotSavedExceptionTest() throws Exception {
+			// TODO Auto-generated method stub
 		
-	}
+		}
 	}
 	
 	@AutoConfigureTestDatabase(replace = Replace.NONE)
@@ -171,30 +158,16 @@ class PlayListJpaTesting{
 		private PlayListEntity playlist=null;
 		private UserEntity user=null;
 		
+		@Configuration
+	    static class TestConfig { }
+		
 		@BeforeEach
 		public void init() throws Exception {
 			user = userRep.save(UserEntityBuilder.defaulUserWith("testUser", "testPassword"));
 			playlist=user.getPlaylists().get(0);
 			playlist.setName("Test");
 		}
-		@Configuration
-	    static class TestConfig {
-		 	@Bean
-		 	ClientRegistrationRepository monitoringService() {
-		 		var client = ClientRegistration
-		 			.withRegistrationId(UUID.randomUUID().toString())
-		 			.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-		 			.clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-		 			.clientId("client")
-		 			.clientName("Authentication")
-		 			.clientSecret("secret")
-		 			.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
-		 			.authorizationUri("http://localhost:8080/aoth2/authorize")
-		 			.tokenUri("http://localhost:8080/aoth2/token")
-		 			.build();
-		 		return new InMemoryClientRegistrationRepository(client);
-		 	}
-		}
+
 		@Test
 		public void findOnceByIdTest() throws Exception {
 			//TODO::NeedMakeArgsWithNullCheck
