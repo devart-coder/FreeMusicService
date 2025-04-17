@@ -1,2 +1,2 @@
-create database if not exists musicservicedb;
+create SCHEMA if not exists musicservicedb;
 use musicservicedb;
