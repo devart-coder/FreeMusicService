@@ -21,7 +21,7 @@ import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
-import Services.Implementations.PlayListService;
+import Services.PlayList.PlayListService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -47,7 +47,7 @@ public class PlayListsController {
 		String mainButton,
 		Authentication auth,
 		Model page
-	) 
+	) throws Exception 
 	{
 		var user = userRepository.findByUsername(auth.getName());
 		if(createButton != null) {
@@ -62,7 +62,7 @@ public class PlayListsController {
 					.setUserEntity(user)
 					.build() );
 			} catch (Exception e) {
-				//TODO:ThrowErrorToTheModel
+				//TODO:SendErrorToTheModel
 				log.error(e.getMessage());
 			}
 		}
@@ -99,7 +99,7 @@ public class PlayListsController {
 		return "playlists";
 	}
 	@ModelAttribute("playLists")
-	public Iterable<PlayListEntity> getAllUsersPlayLists( Authentication auth ) {
+	public Iterable<PlayListEntity> getAllUsersPlayLists( Authentication auth ) throws Exception {
 		return 
 			playListsService.findAllByAuth(auth)
 			.stream()

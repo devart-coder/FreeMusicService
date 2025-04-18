@@ -1,4 +1,4 @@
-package Services.Implementations;
+package Services.PlayList;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import DAO.PlayList.PlayListBuilder;
 import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
-import Services.Interfaces.PlayList.PlayListDetails;
+import Services.PlayList.Interfaces.PlayListDetails;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,15 +29,21 @@ public class PlayListService implements PlayListDetails {
 	private PlayListsRepository playListRepos;
 	
 	@Override
+	public boolean existsById(Long id) throws IllegalArgumentException {
+		if(id == null || id < 0)
+			throw new IllegalArgumentException(ID_IS_EMPTY);
+		return playListRepos.existsById(id);
+	}
+	@Override
 	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
 		if(newPlayList == null)
-			throw new Exception("'Playlist' was not saved.");
+			throw new IllegalArgumentException(PLAYLIST_NOT_SAVED);
 		return  playListRepos.save(newPlayList);
 	}
 	@Override
 	public List<PlayListEntity> saveAll(Iterable<PlayListEntity> newPlayList) throws Exception {
 		if(newPlayList == null)
-			throw new Exception("'Playlist' was not saved.");
+			throw new IllegalArgumentException(PLAYLIST_NOT_SAVED);
 		return playListRepos.saveAll(newPlayList);
 	}
 	@Override
@@ -46,20 +52,21 @@ public class PlayListService implements PlayListDetails {
 	}
 	
 	@Override
-	public PlayListEntity findOnceById(Long Id) throws Exception {
-			if(Id == null)
-				throw new Exception("Id is empty.");
+	public PlayListEntity findOnceById(Long id) throws Exception {
+			if(id == null)
+				throw new IllegalArgumentException(ID_IS_EMPTY);
 			return 
 				playListRepos
-				.findById(Id)
-				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' was not found.", Id.toString())) );
+				.findById(id)
+				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' was not found.", id.toString())) );
 	}
+	
 	@Override
 	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
 		if(userId == null)
-			throw new Exception("'UserId' is empty.");
+			throw new IllegalArgumentException(USERID_IS_EMPTY);
 		if(name.equals(null))
-			throw new Exception("'name' is empty.");
+			throw new IllegalArgumentException(NAME_IS_EMPTY);
 		return 
 			playListRepos
 			.findOnceByUserIdAndName(userId,name)
@@ -68,47 +75,34 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
 		if(user == null)
-			throw new Exception("'User' field is empty");
+			throw new IllegalArgumentException(USER_IS_EMPTY);
 		return 
 			playListRepos
 			.findAllByUser(user)
 			.orElseThrow( ()-> new Exception(String.format("Any playlist with username '%s' does not exists", user==null?"null":user.getUsername())) );
 	}
 	@Override
-	public List<PlayListEntity> findAllByAuth(Authentication auth) {
-		try {
+	public List<PlayListEntity> findAllByAuth(Authentication auth) throws Exception {
+		//TOTO::ArgsCheckByNull
 		return 
 			playListRepos
 			.findAllByUserUsername(auth.getName())
-			.orElseThrow(()-> new Exception(String.format("Any playlist with username '%s' does not exists", auth.getName()==null?"null":auth.getName())));
-		}catch(Exception e) {
-			log.error(e.getMessage());
-		}
-		return null;
+			.orElseThrow(()->
+				new Exception(String.format("Any playlist with username '%s' does not exists", auth.getName()==null?"null":auth.getName())));
 	}
 	@Override
-	public List<PlayListEntity> findAllByUserName(String username) {
-		try {
+	public List<PlayListEntity> findAllByUserName(String username) throws Exception {
 			return 
 				playListRepos
 				.findAllByUserUsername(username)
 				.orElseThrow( ()-> new Exception(String.format("Any playlist with username '%s' does not exists", username==null?"null":username)) );
-		}catch(Exception e) {
-			log.error(e.getMessage());
-		}
-		return null;
 	}
 	@Override
-	public List<PlayListEntity> findAllByUserId(Long id) {
-		try {
+	public List<PlayListEntity> findAllByUserId(Long id) throws Exception {
 			return 
 				playListRepos
 				.findAllByUserId(id)
 				.orElseThrow( ()-> new Exception(String.format("Any playlist with id '%s' does not exists", id==null?"null":id)) );
-		}catch(Exception e) {
-			log.error(e.getMessage());
-		}
-		return null;
 	}
 	@Override
 	public PlayListEntity findOnceByUserIdAndMain(Long userid , Boolean main) {
@@ -225,6 +219,7 @@ public class PlayListService implements PlayListDetails {
 				playListRepos.deleteByIdAndMainFalse(id)
 				.orElseThrow( ()-> new Exception(String.format("Can't delete playlist with id:%s",id)));
 	}
+	
 	
 
 	

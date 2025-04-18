@@ -25,7 +25,9 @@ import DAO.User.UserEntity;
 import DAO.User.UserEntityBuilder;
 import Interfaces.PlayListJpaTest.PlayListJpaCreate;
 import Repositories.UserRepository;
-import Services.Implementations.PlayListService;
+import Services.PlayList.PlayListService;
+import Services.PlayList.Interfaces.PlayListCreate;
+import Services.PlayList.Interfaces.PlayListDetails;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,8 +42,7 @@ class PlayListJpaTesting{
 	@Nested
 	class  SavedTestsGroup implements PlayListJpaCreate{
 		@Autowired 
-		private PlayListService service;
-		
+		private PlayListDetails service;
 		@Autowired 
 		private UserRepository userRep;
 	
@@ -61,7 +62,6 @@ class PlayListJpaTesting{
 		@Test 
 		@Override
 		public void saveSupplierTest() throws Exception {
-			//TODO::NeedMakeArgsWithNullCheck
 			var excepted = service.save(() -> PlayListBuilder.defaultPlaylist());
 			playlist = service.findOnceById(excepted.getId());
 			assertEquals(excepted,playlist);
@@ -71,7 +71,7 @@ class PlayListJpaTesting{
 		public void saveEntityWithNullArgExceptionTest() throws Exception {
 			playlist=null;
 			var e = assertThrows(Exception.class, ()->service.save(playlist));
-			assertTrue(e.getMessage().contains("not saved"));
+			assertEquals(e.getMessage(),PlayListCreate.PLAYLIST_NOT_SAVED);
 		}
 		@Test 
 		@Override
@@ -121,6 +121,21 @@ class PlayListJpaTesting{
 		public void saveEntityWithNotSavedExceptionTest() throws Exception {
 			// TODO Auto-generated method stub
 		
+		}
+		@Override
+		public void saveSupplierWithDuplicationTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void saveIterableWithDuplicationTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void saveEntityWithDuplicationTest() throws Exception {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 	

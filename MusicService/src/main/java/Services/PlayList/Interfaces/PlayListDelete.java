@@ -1,4 +1,4 @@
-package Services.Interfaces.PlayList;
+package Services.PlayList.Interfaces;
 
 import java.util.function.Supplier;
 

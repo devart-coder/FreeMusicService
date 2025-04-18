@@ -1,4 +1,4 @@
-package Services.Interfaces.PlayList;
+package Services.PlayList.Interfaces;
 
 import DAO.PlayList.PlayListEntity;
 

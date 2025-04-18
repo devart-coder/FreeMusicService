@@ -1,4 +1,4 @@
-package Services.Interfaces.PlayList;
+package Services.PlayList.Interfaces;
 
 import java.util.List;
 
@@ -11,10 +11,10 @@ public interface PlayListSearch {
 //Search/Read
 	//All
 		List<PlayListEntity> findAll();
-		List<PlayListEntity> findAllByUserId(Long id);
-		List<PlayListEntity> findAllByUserName(String name);
+		List<PlayListEntity> findAllByUserId(Long id) throws Exception;
+		List<PlayListEntity> findAllByUserName(String name) throws Exception;
 		List<PlayListEntity> findAllByUser(UserEntity user) throws Exception;
-		List<PlayListEntity> findAllByAuth(Authentication auth);
+		List<PlayListEntity> findAllByAuth(Authentication auth) throws Exception;
 	//Once
 		PlayListEntity findOnceById(Long Id) throws Exception;
 		PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception;
