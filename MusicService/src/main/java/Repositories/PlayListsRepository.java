@@ -13,7 +13,10 @@ import DAO.User.UserEntity;
 import jakarta.transaction.Transactional;
 
 public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>{
-	
+
+//	boolean existsByUserId(Long userId);
+//	boolean existsByName(String name);
+
 	Optional<List<PlayListEntity>> findAllByUser(UserEntity user);
 	Optional<List<PlayListEntity>> findAllByUserUsername(String username);
 	Optional<List<PlayListEntity>> findAllByUserId(Long id);

@@ -36,6 +36,7 @@ import Services.PlayList.Interfaces.PlayListDetails;
 import Services.PlayList.Interfaces.PlayListErrors;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 class PlayListJpaTesting{
 	@AutoConfigureTestDatabase(replace = Replace.NONE)
 	@EnableAutoConfiguration
@@ -216,11 +217,11 @@ class PlayListJpaTesting{
 		@Test
 		@Override
 		public void findOnceByUserNameAndMainTest() throws Exception {
-			var p = service.findOnceByUserNameAndMain(user.getUsername(), true);
+			var p = service.findOnceByUsernameAndMain(user.getUsername(), true);
 			assertEquals(playlist, p);
 			assertNotEquals(unMainPlaylist, p);
 			
-			p = service.findOnceByUserNameAndMain(user.getUsername(), false);
+			p = service.findOnceByUsernameAndMain(user.getUsername(), false);
 			assertEquals(unMainPlaylist, p);
 			assertNotEquals(playlist, p);
 		}
@@ -245,9 +246,9 @@ class PlayListJpaTesting{
 		}
 		@Test
 		@Override
-		public void findAllByUserNameTest() throws Exception {
+		public void findAllByUsernameTest() throws Exception {
 			var expected = user.getPlaylists();
-			var playlists = service.findAllByUserName(user.getUsername());
+			var playlists = service.findAllByUsername(user.getUsername());
 			assertArrayEquals(expected.toArray(), playlists.toArray());
 		}
 		@Test
@@ -263,26 +264,35 @@ class PlayListJpaTesting{
 				,List.of(playlist,unMainPlaylist,playlistsFromSecondUser).toArray()
 			);
 		}
-//		@Override
-//		public void findByNullArgsWithThrowTest() throws Exception {
-//			Exception e;
-//			
-//			e = assertThrows(Exception.class,() -> service.findOnceById(null));
-//				assertEquals(e.getMessage(), PlayListErrors.ID_IS_EMPTY);
-//				
-//			e = assertThrows(Exception.class,() -> service.findOnceById(-1l));
-//				assertEquals(e.getMessage(), PlayListErrors.ID_LESS_ZERRO);
-//
-//			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(null,playlist.getName()));
-//				assertEquals(e.getMessage(), PlayListErrors.USERID_IS_EMPTY);
-//			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),null));
-//				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_EMPTY);
-//			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(-1l,playlist.getName()));
-//				assertEquals(e.getMessage(), PlayListErrors.USERID_LESS_ZERRO);
-//			//TODO::NeedMoreChecksFormethod	
-//			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(-1l,playlist.getName()));
-//				assertEquals(e.getMessage(), PlayListErrors.USERID_LESS_ZERRO);
-//		}
+		@Test
+		@Override
+		public void findByNullArgsWithThrowTest() throws Exception {
+			Exception e;
+			//ById
+			e = assertThrows(Exception.class,() -> service.findOnceById(null));
+				assertEquals(e.getMessage(), PlayListErrors.ID_IS_NULL);
+			e = assertThrows(Exception.class,() -> service.findOnceById(-1l));
+				assertEquals(e.getMessage(), PlayListErrors.ID_LESS_ZERRO);
+			//ByUserIdAndName	
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(null,playlist.getName()));
+				assertEquals(e.getMessage(), PlayListErrors.USERID_IS_NULL);
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),null));
+				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_NULL);
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),""));
+				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_EMPTY);
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId()," 	"));
+				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_EMPTY);
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(-1l,playlist.getName()));
+				assertEquals(e.getMessage(), PlayListErrors.USERID_LESS_ZERRO);
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),"SomeUnExistsName"));
+				assertEquals(e.getMessage(), PlayListErrors.NOT_FOUNTED_WITH_NAME.formatted("SomeUnExistsName"));
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(123456l,playlist.getName()));
+				assertEquals(e.getMessage(), PlayListErrors.NOT_FOUNTED_WITH_USER_ID.formatted(123456l));
+			//All
+			e = assertThrows(Exception.class,() -> service.findAllByUsername(null));
+				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_EMPTY);
+				
+		}
 	}
 
 }

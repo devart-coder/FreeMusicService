@@ -3,6 +3,7 @@ package Services.PlayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.naming.NameNotFoundException;
 
@@ -29,13 +30,27 @@ public class PlayListService implements PlayListDetails {
 	//TODO::implementsComparableInterface
 	@Autowired
 	private PlayListsRepository playListRepos;
+
+	private void isValid(Long id) throws Exception {
+		if(id == null)
+			throw new Exception(PlayListErrors.USERID_IS_NULL);
+		if(id < 0)
+			throw new Exception(PlayListErrors.USERID_LESS_ZERRO);
+	}
+	private void isValid(String name) throws Exception {
+		if(name == null )
+			throw new Exception(PlayListErrors.NAME_IS_NULL);
+		if (name.isEmpty() || name.isBlank())
+			throw new Exception(PlayListErrors.NAME_IS_EMPTY);
+	}
+	private void notNull(Object obj) throws Exception {
+		if(obj==null)
+			throw new Exception(PlayListErrors.NULL_ARGUMENT);
+	}
 	
 	@Override
 	public boolean existsById(Long id) throws Exception {
-		if(id == null)
-			throw new Exception(PlayListErrors.ID_IS_EMPTY);
-		if(id < 0)
-			throw new Exception(PlayListErrors.ID_LESS_ZERRO);
+		isValid(id);
 		return playListRepos.existsById(id);
 	}
 	@Override
@@ -58,32 +73,43 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public PlayListEntity findOnceById(Long id) throws Exception {
 			if(id == null)
-				throw new Exception(PlayListErrors.ID_IS_EMPTY);
+				throw new Exception(PlayListErrors.ID_IS_NULL);
 			if(id < 0)
 				throw new Exception(PlayListErrors.ID_LESS_ZERRO);
 			return 
 				playListRepos
 				.findById(id)
-				.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNT_WITH_ID.formatted( id.toString() )) );
+				.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNTED_WITH_ID.formatted( id.toString() )) );
 	}
 	@Override
 	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
-		if(userId == null)
-			throw new Exception(PlayListErrors.USERID_IS_EMPTY);
-		if(userId < 0)
-			throw new Exception(PlayListErrors.USERID_LESS_ZERRO);
-		if(name.equals(null))
-			throw new Exception(PlayListErrors.NAME_IS_EMPTY);
-		//TODO:WhenUserServiceWillBeImplementsNeedAddExistsByUserIdMethod
-		return 
-			playListRepos
-			.findOnceByUserIdAndName(userId,name)
-			.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNT_WITH_NAME.formatted(name)) );
+		isValid(userId);
+		isValid(name);
+		
+		List<PlayListEntity> list = findAllByUserId(userId);
+		if(list.isEmpty())
+			throw new Exception(PlayListErrors.NOT_FOUNTED_WITH_USER_ID.formatted(userId));
+		list = list
+			.stream()
+			.filter(p->p.getName().equals(name))
+			.toList();
+		if(list.isEmpty())
+			throw new Exception(PlayListErrors.NOT_FOUNTED_WITH_NAME.formatted(name));
+		if(list.size()>1)
+			//TODO:NeedAddNewExceptionMessage
+			throw new Exception("Duplicates playlists");
+		return list.get(0);
+		
+		//TODO::AddCheckWithUserIdExists
+		//TODO::AddCheckWithNameExists
+//		return 
+//			playListRepos
+//			.findOnceByUserIdAndName(userId,name)
+//			.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNTED_WITH_NAME.formatted(name)) );
 	}
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
-		if(user == null)
-			throw new Exception(PlayListErrors.NULL_ARGUMENT);
+		notNull(user);
 		return 
 			playListRepos
 			.findAllByUser(user)
@@ -99,7 +125,9 @@ public class PlayListService implements PlayListDetails {
 				new Exception(String.format("Any playlist with username '%s' does not exists", auth.getName()==null?"null":auth.getName())));
 	}
 	@Override
-	public List<PlayListEntity> findAllByUserName(String username) throws Exception {
+	public List<PlayListEntity> findAllByUsername(String username) throws Exception {
+			if(username == null)
+				throw new Exception(PlayListErrors.NAME_IS_EMPTY);
 			return 
 				playListRepos
 				.findAllByUserUsername(username)
@@ -118,10 +146,10 @@ public class PlayListService implements PlayListDetails {
 		return m.orElseGet(()->PlayListBuilder.defaultPlaylist());
 	}
 	public PlayListEntity findOnceByAuthAndMain(Authentication auth, boolean b) {
-		return findOnceByUserNameAndMain(auth.getName(), b);
+		return findOnceByUsernameAndMain(auth.getName(), b);
 	}
 	@Override
-	public PlayListEntity findOnceByUserNameAndMain(String username , Boolean main) {
+	public PlayListEntity findOnceByUsernameAndMain(String username , Boolean main) {
 		var m = playListRepos.findOnceByUserUsernameAndMain(username,main);
 		return m.orElseGet(()->PlayListBuilder.defaultPlaylist());
 	}
