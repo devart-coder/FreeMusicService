@@ -16,6 +16,7 @@ import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Services.PlayList.Interfaces.PlayListDetails;
+import Services.PlayList.Interfaces.PlayListErrors;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,44 +30,53 @@ public class PlayListService implements PlayListDetails {
 	private PlayListsRepository playListRepos;
 	
 	@Override
-	public boolean existsById(Long id) throws IllegalArgumentException {
-		if(id == null || id < 0)
-			throw new IllegalArgumentException(ID_IS_EMPTY);
+	public boolean existsById(Long id) throws Exception {
+		if(id == null)
+			throw new Exception(PlayListErrors.ID_IS_EMPTY);
+		if(id < 0)
+			throw new Exception(PlayListErrors.ID_LESS_ZERRO);
 		return playListRepos.existsById(id);
 	}
 	@Override
 	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
 		if(newPlayList == null)
-			throw new IllegalArgumentException(PLAYLIST_NOT_SAVED);
+			throw new Exception(PlayListErrors.PLAYLIST_NOT_SAVED);
 		return  playListRepos.save(newPlayList);
 	}
 	@Override
 	public List<PlayListEntity> saveAll(Iterable<PlayListEntity> newPlayList) throws Exception {
 		if(newPlayList == null)
-			throw new IllegalArgumentException(PLAYLIST_NOT_SAVED);
+			throw new Exception(PlayListErrors.PLAYLIST_NOT_SAVED);
 		return playListRepos.saveAll(newPlayList);
 	}
 	@Override
 	public PlayListEntity save(Supplier<? extends PlayListEntity> newPlayList) throws Exception {
 		return save(newPlayList.get());
 	}
+
+	
+	
+	
+	
+	
+	
+	
 	
 	@Override
 	public PlayListEntity findOnceById(Long id) throws Exception {
 			if(id == null)
-				throw new IllegalArgumentException(ID_IS_EMPTY);
+				throw new IllegalArgumentException(PlayListErrors.ID_IS_EMPTY);
 			return 
 				playListRepos
 				.findById(id)
 				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' was not found.", id.toString())) );
 	}
-	
 	@Override
 	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
 		if(userId == null)
-			throw new IllegalArgumentException(USERID_IS_EMPTY);
+			throw new IllegalArgumentException(PlayListErrors.USERID_IS_EMPTY);
 		if(name.equals(null))
-			throw new IllegalArgumentException(NAME_IS_EMPTY);
+			throw new IllegalArgumentException(PlayListErrors.NAME_IS_EMPTY);
 		return 
 			playListRepos
 			.findOnceByUserIdAndName(userId,name)
@@ -75,7 +85,7 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
 		if(user == null)
-			throw new IllegalArgumentException(USER_IS_EMPTY);
+			throw new IllegalArgumentException(PlayListErrors.USER_IS_EMPTY);
 		return 
 			playListRepos
 			.findAllByUser(user)

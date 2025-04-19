@@ -23,11 +23,12 @@ import DAO.PlayList.PlayListBuilder;
 import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import DAO.User.UserEntityBuilder;
-import Interfaces.PlayListJpaTest.PlayListJpaCreate;
+import Interfaces.PlayListJpaTest.PlayListJpaCreateTest;
 import Repositories.UserRepository;
 import Services.PlayList.PlayListService;
 import Services.PlayList.Interfaces.PlayListCreate;
 import Services.PlayList.Interfaces.PlayListDetails;
+import Services.PlayList.Interfaces.PlayListErrors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -40,7 +41,7 @@ class PlayListJpaTesting{
 	@ComponentScan(basePackages = "Services")
 	@EntityScan(basePackages = "DAO")
 	@Nested
-	class  SavedTestsGroup implements PlayListJpaCreate{
+	class  SavedTestsGroup implements PlayListJpaCreateTest{
 		@Autowired 
 		private PlayListDetails service;
 		@Autowired 
@@ -71,7 +72,8 @@ class PlayListJpaTesting{
 		public void saveEntityWithNullArgExceptionTest() throws Exception {
 			playlist=null;
 			var e = assertThrows(Exception.class, ()->service.save(playlist));
-			assertEquals(e.getMessage(),PlayListCreate.PLAYLIST_NOT_SAVED);
+			assertEquals(e.getMessage(),PlayListErrors.PLAYLIST_NOT_SAVED);
+			//PlayListErrors.PLAYLIST_NOT_SAVED
 		}
 		@Test 
 		@Override
@@ -91,22 +93,22 @@ class PlayListJpaTesting{
 		@Test
 		@Override
 		public void saveIterableWithNullArgExceptionTest() throws Exception {
-			// TODO Auto-generated method stub
-		
+			var e = assertThrows(Exception.class, ()->service.saveAll(null));
+			assertEquals(e.getMessage(), PlayListErrors.PLAYLIST_NOT_SAVED);
 		}
 
 		@Test
 		@Override
 		public void saveSupplierWithNotSavedExceptionTest() throws Exception {
 			// TODO Auto-generated method stub
-		
 		}
 
 		@Test
 		@Override
 		public void saveSupplierWithNullArgExceptionTest() throws Exception {
-			// TODO Auto-generated method stub
-		
+		playlist=null;
+			var e = assertThrows(Exception.class, ()->service.save( ()-> playlist ));
+			assertEquals(e.getMessage(), PlayListErrors.PLAYLIST_NOT_SAVED);
 		}
 
 		@Test

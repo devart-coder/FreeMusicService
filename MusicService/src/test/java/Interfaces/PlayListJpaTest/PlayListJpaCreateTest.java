@@ -1,6 +1,6 @@
 package Interfaces.PlayListJpaTest;
 
-public interface PlayListJpaCreate {
+public interface PlayListJpaCreateTest {
 	//Supplier
 	public void saveSupplierTest() throws Exception ;
 	public void saveSupplierWithNotSavedExceptionTest() throws Exception ;
