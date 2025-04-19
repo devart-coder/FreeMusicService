@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class PlayListService implements PlayListDetails {
+	//TODO::implementsComparableInterface
 	@Autowired
 	private PlayListsRepository playListRepos;
 	
@@ -57,7 +58,9 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public PlayListEntity findOnceById(Long id) throws Exception {
 			if(id == null)
-				throw new IllegalArgumentException(PlayListErrors.ID_IS_EMPTY);
+				throw new Exception(PlayListErrors.ID_IS_EMPTY);
+			if(id < 0)
+				throw new Exception(PlayListErrors.ID_LESS_ZERRO);
 			return 
 				playListRepos
 				.findById(id)
@@ -67,12 +70,15 @@ public class PlayListService implements PlayListDetails {
 	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
 		if(userId == null)
 			throw new Exception(PlayListErrors.USERID_IS_EMPTY);
+		if(userId < 0)
+			throw new Exception(PlayListErrors.USERID_LESS_ZERRO);
 		if(name.equals(null))
 			throw new Exception(PlayListErrors.NAME_IS_EMPTY);
+		//TODO:WhenUserServiceWillBeImplementsNeedAddExistsByUserIdMethod
 		return 
 			playListRepos
 			.findOnceByUserIdAndName(userId,name)
-			.orElseThrow( () -> new Exception(String.format("Playlist with name '%s' was not found.", name)) );
+			.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNT_WITH_NAME.formatted(name)) );
 	}
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {

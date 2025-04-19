@@ -11,5 +11,7 @@ public interface PlayListErrors {
 	String LOCALDATE_IS_EMPTY ="'CreatedBy' field is empty.";
 	
 	String NULL_ARGUMENT = "Argument is 'null'.";
-	String NOT_FOUNT_WITH_ID = "Playlist with id '%s' was not found.";
+	String NOT_FOUNT_WITH_ID = "Playlist with id '%d' was not found.";
+	String NOT_FOUNT_WITH_NAME = "Playlist with name '%s' was not found.";
+	String USERID_LESS_ZERRO = "'UserId' less zerro.";
 }
