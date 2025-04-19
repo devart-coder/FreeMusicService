@@ -72,8 +72,7 @@ class PlayListJpaTesting{
 		public void saveEntityWithNullArgExceptionTest() throws Exception {
 			playlist=null;
 			var e = assertThrows(Exception.class, ()->service.save(playlist));
-			assertEquals(e.getMessage(),PlayListErrors.PLAYLIST_NOT_SAVED);
-			//PlayListErrors.PLAYLIST_NOT_SAVED
+			assertEquals(e.getMessage(),PlayListErrors.NULL_ARGUMENT);
 		}
 		@Test 
 		@Override
@@ -94,13 +93,7 @@ class PlayListJpaTesting{
 		@Override
 		public void saveIterableWithNullArgExceptionTest() throws Exception {
 			var e = assertThrows(Exception.class, ()->service.saveAll(null));
-			assertEquals(e.getMessage(), PlayListErrors.PLAYLIST_NOT_SAVED);
-		}
-
-		@Test
-		@Override
-		public void saveSupplierWithNotSavedExceptionTest() throws Exception {
-			// TODO Auto-generated method stub
+			assertEquals(e.getMessage(), PlayListErrors.NULL_ARGUMENT);
 		}
 
 		@Test
@@ -108,36 +101,7 @@ class PlayListJpaTesting{
 		public void saveSupplierWithNullArgExceptionTest() throws Exception {
 		playlist=null;
 			var e = assertThrows(Exception.class, ()->service.save( ()-> playlist ));
-			assertEquals(e.getMessage(), PlayListErrors.PLAYLIST_NOT_SAVED);
-		}
-
-		@Test
-		@Override
-		public void saveIterableWithNotSavedExceptionTest() throws Exception {
-			// TODO Auto-generated method stub
-		
-		}
-
-		@Test
-		@Override
-		public void saveEntityWithNotSavedExceptionTest() throws Exception {
-			// TODO Auto-generated method stub
-		
-		}
-		@Override
-		public void saveSupplierWithDuplicationTest() throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void saveIterableWithDuplicationTest() throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
-		@Override
-		public void saveEntityWithDuplicationTest() throws Exception {
-			// TODO Auto-generated method stub
-			
+			assertEquals(e.getMessage(), PlayListErrors.NULL_ARGUMENT);
 		}
 	}
 	

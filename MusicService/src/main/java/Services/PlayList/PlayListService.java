@@ -40,27 +40,19 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
 		if(newPlayList == null)
-			throw new Exception(PlayListErrors.PLAYLIST_NOT_SAVED);
+			throw new Exception(PlayListErrors.NULL_ARGUMENT);
 		return  playListRepos.save(newPlayList);
 	}
 	@Override
 	public List<PlayListEntity> saveAll(Iterable<PlayListEntity> newPlayList) throws Exception {
 		if(newPlayList == null)
-			throw new Exception(PlayListErrors.PLAYLIST_NOT_SAVED);
+			throw new Exception(PlayListErrors.NULL_ARGUMENT);
 		return playListRepos.saveAll(newPlayList);
 	}
 	@Override
 	public PlayListEntity save(Supplier<? extends PlayListEntity> newPlayList) throws Exception {
 		return save(newPlayList.get());
 	}
-
-	
-	
-	
-	
-	
-	
-	
 	
 	@Override
 	public PlayListEntity findOnceById(Long id) throws Exception {
@@ -69,14 +61,14 @@ public class PlayListService implements PlayListDetails {
 			return 
 				playListRepos
 				.findById(id)
-				.orElseThrow( () -> new Exception(String.format("Playlist with id '%s' was not found.", id.toString())) );
+				.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNT_WITH_ID.formatted( id.toString() )) );
 	}
 	@Override
 	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
 		if(userId == null)
-			throw new IllegalArgumentException(PlayListErrors.USERID_IS_EMPTY);
+			throw new Exception(PlayListErrors.USERID_IS_EMPTY);
 		if(name.equals(null))
-			throw new IllegalArgumentException(PlayListErrors.NAME_IS_EMPTY);
+			throw new Exception(PlayListErrors.NAME_IS_EMPTY);
 		return 
 			playListRepos
 			.findOnceByUserIdAndName(userId,name)
@@ -85,7 +77,7 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
 		if(user == null)
-			throw new IllegalArgumentException(PlayListErrors.USER_IS_EMPTY);
+			throw new Exception(PlayListErrors.NULL_ARGUMENT);
 		return 
 			playListRepos
 			.findAllByUser(user)
