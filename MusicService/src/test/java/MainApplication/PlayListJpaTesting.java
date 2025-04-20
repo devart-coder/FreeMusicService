@@ -232,12 +232,6 @@ class PlayListJpaTesting{
 		}
 		@Test
 		@Override
-		public void findOnceTests() throws Exception {
-			// TODO Auto-generated method stub
-			
-		}
-		@Test
-		@Override
 		public void findAllByUserIdTest() throws Exception {
 			var expected = user.getPlaylists();
 			var playlists = service.findAllByUserId(user.getId());
@@ -252,7 +246,7 @@ class PlayListJpaTesting{
 		}
 		@Test
 		@Override
-		public void findAll() throws Exception {
+		public void findAllTests() throws Exception {
 			//create a new user
 			var secondUser = userRep.save(UserEntityBuilder.defaulUserWith("test_second_username", "test_second_password"));
 			
@@ -270,14 +264,17 @@ class PlayListJpaTesting{
 		}
 		@Test
 		@Override
-		public void findByNullArgsWithThrowTest() throws Exception {
+		public void findOnceByIdWithThrowsTest() throws Exception {
 			Exception e;
-			//ById
 			e = assertThrows(Exception.class,() -> service.findOnceById(null));
 				assertEquals(e.getMessage(), PlayListErrors.ID_IS_NULL);
 			e = assertThrows(Exception.class,() -> service.findOnceById(-1l));
 				assertEquals(e.getMessage(), PlayListErrors.ID_LESS_ZERRO);
-			//ByUserIdAndName	
+		}
+		@Test
+		@Override
+		public void findOnceByUserIdAndNameWithThrowsTest() throws Exception {
+			Exception e;
 			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(null,playlist.getName()));
 				assertEquals(e.getMessage(), PlayListErrors.USERID_IS_NULL);
 			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),null));
@@ -294,10 +291,55 @@ class PlayListJpaTesting{
 				assertEquals(e.getMessage(), PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(123456l));
 			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),unMainPlaylist.getName()));
 				assertEquals(e.getMessage(), PlayListErrors.DUPLICATED);
-			//All
-			e = assertThrows(Exception.class,() -> service.findAllByUsername(null));
-				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_EMPTY);
-				
+			
+		}
+		@Test
+		@Override
+		public void findOnceByUserIdAndMainWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findOnceByUserNameAndMainWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findOnceByAuthAndMainWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findAllByUserIdWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findAllByUsernameWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findAllByUserWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findAllByAuthWithThrowsTest() throws Exception {
+			// TODO Auto-generated method stub
+			
+		}
+		@Test
+		@Override
+		public void findAllWithThrowsTests() throws Exception {
+			// TODO Auto-generated method stub
+			
 		}
 	}
 
