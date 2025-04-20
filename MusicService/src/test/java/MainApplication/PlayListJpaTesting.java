@@ -145,6 +145,8 @@ class PlayListJpaTesting{
 	
 		private PlayListEntity playlist;
 		private PlayListEntity unMainPlaylist;
+		private PlayListEntity duplicate;
+		
 		private UserEntity user;
 		
 		@Configuration
@@ -157,16 +159,20 @@ class PlayListJpaTesting{
 				.setName("test_playlist_name")
 				.setMain(true)
 				.build();
-			
+
 			unMainPlaylist = PlayListBuilder.builder()
 				.setName("test_new_playlist_name")
+				.build();
+			duplicate = PlayListBuilder.builder()
+				.setName("test_new_playlist_name")
+				.setMain(false)
 				.build();
 			
 			user = UserEntityBuilder.builder() 
 				.setUsername("test_username")
 				.setPassword("test_user_password")
 				.setRole("ROLE_USER")
-				.setPlaylists(List.of(playlist,unMainPlaylist))
+				.setPlaylists(List.of(playlist,unMainPlaylist,duplicate))
 				.build();
 			
 			unMainPlaylist.setUser(user);
@@ -175,6 +181,7 @@ class PlayListJpaTesting{
 			userRep.save(user);
 			playlist=service.save(playlist);
 			unMainPlaylist=service.save(unMainPlaylist);
+			duplicate=service.save(duplicate);
 		}
 		@Test
 		@Override
@@ -209,10 +216,6 @@ class PlayListJpaTesting{
 			var p = service.findOnceByUserIdAndMain(user.getId(), true);
 			assertEquals(playlist, p);
 			assertNotEquals(unMainPlaylist, p);
-			
-			p = service.findOnceByUserIdAndMain(user.getId(), false);
-			assertEquals(unMainPlaylist, p);
-			assertNotEquals(playlist, p);
 		}
 		@Test
 		@Override
@@ -220,10 +223,6 @@ class PlayListJpaTesting{
 			var p = service.findOnceByUsernameAndMain(user.getUsername(), true);
 			assertEquals(playlist, p);
 			assertNotEquals(unMainPlaylist, p);
-			
-			p = service.findOnceByUsernameAndMain(user.getUsername(), false);
-			assertEquals(unMainPlaylist, p);
-			assertNotEquals(playlist, p);
 		}
 		@Test
 		@Override
@@ -261,7 +260,12 @@ class PlayListJpaTesting{
 			var allPlaylists = service.findAll();
 			assertArrayEquals(
 				allPlaylists.toArray()
-				,List.of(playlist,unMainPlaylist,playlistsFromSecondUser).toArray()
+				,List.of(
+					playlist
+					,unMainPlaylist
+					,duplicate
+					,playlistsFromSecondUser
+				).toArray()
 			);
 		}
 		@Test
@@ -285,9 +289,11 @@ class PlayListJpaTesting{
 			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(-1l,playlist.getName()));
 				assertEquals(e.getMessage(), PlayListErrors.USERID_LESS_ZERRO);
 			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),"SomeUnExistsName"));
-				assertEquals(e.getMessage(), PlayListErrors.NOT_FOUNTED_WITH_NAME.formatted("SomeUnExistsName"));
+				assertEquals(e.getMessage(), PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_NAME.formatted("SomeUnExistsName"));
 			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(123456l,playlist.getName()));
-				assertEquals(e.getMessage(), PlayListErrors.NOT_FOUNTED_WITH_USER_ID.formatted(123456l));
+				assertEquals(e.getMessage(), PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(123456l));
+			e = assertThrows(Exception.class,() -> service.findOnceByUserIdAndName(user.getId(),unMainPlaylist.getName()));
+				assertEquals(e.getMessage(), PlayListErrors.DUPLICATED);
 			//All
 			e = assertThrows(Exception.class,() -> service.findAllByUsername(null));
 				assertEquals(e.getMessage(), PlayListErrors.NAME_IS_EMPTY);

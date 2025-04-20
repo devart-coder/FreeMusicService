@@ -1,5 +1,6 @@
 package Services.PlayList;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -79,33 +80,28 @@ public class PlayListService implements PlayListDetails {
 			return 
 				playListRepos
 				.findById(id)
-				.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNTED_WITH_ID.formatted( id.toString() )) );
+				.orElseThrow( () -> new Exception(PlayListErrors.PLAYLIST_NOT_FOUND_WITH_ID.formatted( id.toString() )) );
 	}
 	@Override
 	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
 		isValid(userId);
 		isValid(name);
 		
-		List<PlayListEntity> list = findAllByUserId(userId);
+		var list = findAllByUserId(userId);
 		if(list.isEmpty())
-			throw new Exception(PlayListErrors.NOT_FOUNTED_WITH_USER_ID.formatted(userId));
-		list = list
+			throw new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(userId));
+		
+		if(	list
 			.stream()
 			.filter(p->p.getName().equals(name))
-			.toList();
-		if(list.isEmpty())
-			throw new Exception(PlayListErrors.NOT_FOUNTED_WITH_NAME.formatted(name));
-		if(list.size()>1)
-			//TODO:NeedAddNewExceptionMessage
-			throw new Exception("Duplicates playlists");
-		return list.get(0);
-		
-		//TODO::AddCheckWithUserIdExists
-		//TODO::AddCheckWithNameExists
-//		return 
-//			playListRepos
-//			.findOnceByUserIdAndName(userId,name)
-//			.orElseThrow( () -> new Exception(PlayListErrors.NOT_FOUNTED_WITH_NAME.formatted(name)) );
+			.count()>1 ) 
+				throw new Exception(PlayListErrors.DUPLICATED);
+		return 
+			list
+			.stream()
+			.filter(p->p.getName().equals(name))
+			.findAny()
+			.orElseThrow(()->new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_NAME.formatted(name)));
 	}
 	@Override
 	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
