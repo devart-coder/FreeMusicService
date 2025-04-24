@@ -6,7 +6,7 @@ public interface PlayListUpdate {
 	//Update
 		//ByEntity
 			void updateNameByEntity(String newName,PlayListEntity playlist);
-			void updateMainByEntity(Boolean newMain,PlayListEntity playlist);
+			void updateMainByEntity(Boolean newMain,PlayListEntity playlist) throws Exception;
 			void updateSizeByEntity(Long newSize,PlayListEntity playlist);
 		//ById 
 			void updateNameById(String newName,Long playlist);

@@ -19,32 +19,32 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	Optional<List<PlayListEntity>> findAllByUserId(Long id);
 	
 	Optional<PlayListEntity> findOnceByUserIdAndName(Long userId,String name);
-	Optional<PlayListEntity> findOnceByUserIdAndMain(Long userId,Boolean main);
-	Optional<PlayListEntity> findOnceByUserUsernameAndMain(String username, Boolean main);
+//	Optional<PlayListEntity> findOnceByUserIdAndMain(Long userId,Boolean main);
+//	Optional<PlayListEntity> findOnceByUserUsernameAndMain(String username, Boolean main);
 	
 	@Modifying
 	@Transactional
 	@Query("update playlists p set p.name = ?1 where p.id = ?2 ")
-	Optional<String> updateNameById(String newName, Long id);
+	void updateNameById(String newName, Long id);
+	
+//	@Modifying
+//	@Transactional
+//	@Query("update playlists p set p.main = ?1 where p.id = ?2 ")
+//	void updateMainById(Boolean newMain, Long id);
 	
 	@Modifying
 	@Transactional
-	@Query("update playlists p set p.name = ?1 where p.id = ?2 ")
-	Optional<Boolean> updateMainById(Boolean newMain, Long id);
-	
-	@Modifying
-	@Transactional
-	@Query("update playlists p set p.name = ?1 where p.id = ?2 ")
-	Optional<Long> updateSizeById(Long size, Long id);
+	@Query("update playlists p set p.size = ?1 where p.id = ?2 ")
+	void updateSizeById(Long size, Long id);
 
 	@Modifying
 	@Transactional
-	@Query("update playlists p set p.name = ?1 where p.name = ?2 ")
-	Optional<Boolean> updateMainByName(Boolean newMain, String name);
+	@Query("update playlists p set p.main = ?1 where p.name = ?2 ")
+	void updateMainByName(Boolean newMain, String name);
 	
 	@Modifying
 	@Transactional
-	@Query("update playlists p set p.name = ?1 where p.name = ?2 ")
+	@Query("update playlists p set p.size = ?1 where p.name = ?2 ")
 	Optional<Long> updateSizeByName(Long size, String name);
 	
 	void deleteById(Long id);

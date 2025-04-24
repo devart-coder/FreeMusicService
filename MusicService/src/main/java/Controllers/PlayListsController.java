@@ -22,6 +22,7 @@ import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
 import Services.PlayList.PlayListService;
+import Services.PlayList.Interfaces.PlayListDetails;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -29,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PlayListsController {
 	@Autowired
-	private PlayListService playListsService = new PlayListService();
+	private PlayListDetails playListsService;
 	@Autowired
 	private UserRepository userRepository;
 	
@@ -66,7 +67,7 @@ public class PlayListsController {
 				log.error(e.getMessage());
 			}
 		}
-		else if( deleteButton != null ) {
+		if( deleteButton != null ) {
 			try {
 				playListsService.deleteByIdWithNotMainNotDefaultName(deleteButton, "Default");
 			} catch (Exception e) {
@@ -74,24 +75,14 @@ public class PlayListsController {
 				log.error(e.getMessage());
 			}
 		}
-		else if( mainButton != null) {
-			for(var p : user.getPlaylists()) {
-				if(p.getMain()) {
-					try {
-						p.setMain(false);
-//						playListsService.updateMainById(false, p.getId());
-					}catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
-				if(p.getName().equals(mainButton)) {
-					try {
-						p.setMain(true);
-//						playListService.setMainById(true, p.getId());
-					}catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
+		if( mainButton != null) {
+			try {
+				PlayListEntity P = playListsService.findOnceMainPlaylist(user.getPlaylists());
+				P.setMain(false);
+				playListsService.save(P);
+				//TODO:Нужно разобраться почему с 'updateMainById' не срабатывает
+			}catch(Exception e) {
+				log.error(e.getMessage());
 			}
 		} 
 		page.addAttribute("mainPlayList",getMainPlayList(auth));
@@ -108,11 +99,26 @@ public class PlayListsController {
 	}
 
 	@ModelAttribute("mainPlayList")
-	public String getMainPlayList( Authentication auth ) {
-		var playlist = playListsService.findOnceByAuthAndMain(auth, true);
-		if(playlist != null)
-			return playlist.getName();
-		return "[Null]";
+	public String getMainPlayList( Authentication auth ) throws Exception {
+		var user = userRepository.findByUsername(auth.getName());
+		try {
+			return 
+				playListsService
+				.findOnceMainPlaylist(user.getPlaylists())
+				.getName();
+		}catch(Exception e) {
+			log.error(e.getMessage());
+			
+			try {
+				playListsService.updateMainByName(true, "Default");
+				return playListsService
+				.findOnceMainPlaylist(user.getPlaylists())
+				.getName();
+			}catch(Exception ex) {
+				log.error(ex.getMessage());
+				return "Null";
+			}
+		}
 	}
 	
 	@ModelAttribute("user")

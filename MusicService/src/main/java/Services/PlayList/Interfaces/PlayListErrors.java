@@ -15,5 +15,6 @@ public interface PlayListErrors {
 	String PLAYLIST_NOT_FOUND_WITH_ID = "Playlist with id '%d' was not found.";
 	String PLAYLISTS_NOT_FOUND_WITH_NAME = "Playlists with name '%s' were not found.";
 	String PLAYLISTS_NOT_FOUND_WITH_USER_ID = "Playlists with user_id '%d' were not found.";
+	String PLAYLISTS_NOT_FOUND_WITH_USER_NAME = "Playlists with username '%s' were not found.";
 	String DUPLICATED = "Duplicate playlists were found.";
 }
