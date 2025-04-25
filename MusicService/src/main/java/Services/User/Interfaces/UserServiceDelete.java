@@ -1,5 +1,7 @@
 package Services.User.Interfaces;
 
-public interface UserServiceDelete {
+import DAO.User.UserEntity;
 
+public interface UserServiceDelete {
+	void deleteByEntity(UserEntity user) throws Exception;
 }

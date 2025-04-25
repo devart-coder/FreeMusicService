@@ -27,10 +27,10 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	@Query("update playlists p set p.name = ?1 where p.id = ?2 ")
 	void updateNameById(String newName, Long id);
 	
-//	@Modifying
-//	@Transactional
-//	@Query("update playlists p set p.main = ?1 where p.id = ?2 ")
-//	void updateMainById(Boolean newMain, Long id);
+	@Modifying
+	@Transactional
+	@Query("update playlists p set p.main = ?1 where p.id = ?2 ")
+	void updateMainById(Boolean newMain, Long id);
 	
 	@Modifying
 	@Transactional

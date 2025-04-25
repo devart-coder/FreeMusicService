@@ -1,5 +1,9 @@
 package Services.User.Interfaces;
 
-public interface UserServiceSearch {
+import DAO.User.UserEntity;
 
+public interface UserServiceSearch {
+	Iterable<UserEntity> findAll() throws Exception;
+	UserEntity findOnceById(Long id) throws Exception;
+	UserEntity findOnceByName(String username) throws Exception;
 }

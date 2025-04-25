@@ -1,5 +1,6 @@
 package Controllers;
 
+import java.security.Principal;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +24,7 @@ import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import Security.SecureUser;
 import Services.PlayList.PlayListService;
 import Services.PlayList.Interfaces.PlayListDetails;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +37,6 @@ public class PlayListsController {
 	private PlayListDetails playListsService;
 	@Autowired
 	private UserRepository userRepository;
-	
 	
 	@GetMapping
 	public String view( Model page) { return "playlists"; }
@@ -51,6 +54,7 @@ public class PlayListsController {
 	) throws Exception 
 	{
 		var user = userRepository.findByUsername(auth.getName());
+		
 		if(createButton != null) {
 			if(createButton.isEmpty()) {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
@@ -77,52 +81,46 @@ public class PlayListsController {
 		}
 		if( mainButton != null) {
 			try {
-				PlayListEntity P = playListsService.findOnceMainPlaylist(user.getPlaylists());
-				P.setMain(false);
-				playListsService.save(P);
-				//TODO:Нужно разобраться почему с 'updateMainById' не срабатывает
+				var p = playListsService.findOnceMainPlaylist(user);
+				playListsService.updateMainByEntity(false, p);
+					
+				var playlistOption = ((List<PlayListEntity>)user.getPlaylists())
+					.stream()
+					.filter(pl->pl.getName().equals(mainButton))
+					.findFirst();
+				playlistOption.ifPresent(t->{
+					try {
+						playListsService.updateMainByEntity(true, t);
+					} catch (Exception e) {
+						e.getMessage();
+					}
+				});
+				
 			}catch(Exception e) {
 				log.error(e.getMessage());
 			}
 		} 
 		page.addAttribute("mainPlayList",getMainPlayList(auth));
-		page.addAttribute("playLists",getAllUsersPlayLists(auth));		
+		page.addAttribute("playLists",getAllUserPlayLists(auth));		
 		return "playlists";
 	}
 	@ModelAttribute("playLists")
-	public Iterable<PlayListEntity> getAllUsersPlayLists( Authentication auth ) throws Exception {
-		return 
-			playListsService.findAllByAuth(auth)
-			.stream()
-			.sorted((x,y) -> Boolean.compare(y.getMain(), x.getMain()))
-			.toList();	
+	public Iterable<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
+		var p = (List<PlayListEntity>)userRepository
+			.findByUsername(auth.getName())
+			.getPlaylists();
+		p.sort((o1, o2) -> Boolean.compare(o2.getMain(), o1.getMain() ) );
+		return p;
 	}
 
 	@ModelAttribute("mainPlayList")
-	public String getMainPlayList( Authentication auth ) throws Exception {
+	public String getMainPlayList( Authentication  auth ) throws Exception {
 		var user = userRepository.findByUsername(auth.getName());
-		try {
-			return 
-				playListsService
-				.findOnceMainPlaylist(user.getPlaylists())
-				.getName();
-		}catch(Exception e) {
-			log.error(e.getMessage());
-			
-			try {
-				playListsService.updateMainByName(true, "Default");
-				return playListsService
-				.findOnceMainPlaylist(user.getPlaylists())
-				.getName();
-			}catch(Exception ex) {
-				log.error(ex.getMessage());
-				return "Null";
-			}
-		}
+		return playListsService.findOnceMainPlaylist(user).getName();
 	}
 	
 	@ModelAttribute("user")
-	public String getUsername( Authentication user ) {
+	public String getUsername( Authentication  user ) {
 		return user.getName();
 	}
 }

@@ -11,18 +11,11 @@ public interface PlayListSearch {
 //Search/Read
 	//All
 		List<PlayListEntity> findAll();
-//		List<PlayListEntity> findAllByUserId(Long id) throws Exception;
-//		List<PlayListEntity> findAllByUsername(String name) throws Exception;
-		List<PlayListEntity> findAllByUser(UserEntity user) throws Exception;
-		List<PlayListEntity> findAllByAuth(Authentication auth) throws Exception;
+		List<PlayListEntity> findAllByUserId(UserEntity user) throws Exception;
 	//Once
 		PlayListEntity findOnceById(Long Id) throws Exception;
-		PlayListEntity findOnceByName(Long Id) throws Exception;
-		PlayListEntity findOnceMainPlaylist(Iterable<PlayListEntity> playlists) throws Exception;
-
-//		PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception;
-//		PlayListEntity findOnceByUserAndName(UserEntity user,String name) throws Exception;
-//		PlayListEntity findOnceMainPlaylistByUsername(String username)throws Exception;
-//		PlayListEntity findOnceMainPlayListByUserId(Long userid) throws Exception;
+		PlayListEntity findOnceMainPlaylist(UserEntity user) throws Exception;
+		PlayListEntity findOncePlaylist(UserEntity user) throws Exception;
+		PlayListEntity findAndSetMain(UserEntity user) throws Exception;
 
 }

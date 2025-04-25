@@ -81,7 +81,6 @@ public class PlayListService implements PlayListDetails {
 	public PlayListEntity save(Supplier<? extends PlayListEntity> newPlayList) throws Exception {
 		return save(newPlayList.get());
 	}
-	
 	@Override
 	public PlayListEntity findOnceById(Long id) throws Exception {
 		idIsValid(id);	
@@ -91,112 +90,23 @@ public class PlayListService implements PlayListDetails {
 			.orElseThrow( () -> new Exception(PlayListErrors.PLAYLIST_NOT_FOUND_WITH_ID.formatted( id.toString() )) );
 	}
 //	@Override
-//	public PlayListEntity findOnceByUserIdAndName(Long userId,String name) throws Exception {
-//		userIdIsValid(userId);
-//		nameIsValid(name);
-//		
-//		var list = findAllByUserId(userId);
-//		if(list.isEmpty())
-//			throw new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(userId));
-//		
-//		if(	list
-//			.stream()
-//			.filter(p->p.getName().equals(name))
-//			.count()>1 ) 
-//				throw new Exception(PlayListErrors.DUPLICATED);
-//		return 
-//			list
-//			.stream()
-//			.filter(p->p.getName().equals(name))
-//			.findAny()
-//			.orElseThrow(()->new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_NAME.formatted(name)));
-//	}
-//	@Override
-//	public PlayListEntity findOnceByUserAndName(UserEntity user,String name) throws Exception {
+//	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
 //		notNull(user);
-//		nameIsValid(name);
-//		
-//		var list = findAllByUser(user);
-//		if(list.isEmpty())
-//			throw new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(user.getId()));
-//		
-//		if(	list
-//			.stream()
-//			.filter(p->p.getName().equals(name))
-//			.count()>1 ) 
-//				throw new Exception(PlayListErrors.DUPLICATED);
 //		return 
-//			list
-//			.stream()
-//			.filter(p->p.getName().equals(name))
-//			.findAny()
-//			.orElseThrow(()->new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_NAME.formatted(name)));
+////			playListRepos
+////			.findAllByUser(user)
+//
+//			.orElseThrow( ()-> new Exception( PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(user.getId()) ) );
 //	}
-	@Override
-	public List<PlayListEntity> findAllByUser(UserEntity user) throws Exception {
-		notNull(user);
-		return 
-			playListRepos
-			.findAllByUser(user)
-			.orElseThrow( ()-> new Exception( PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(user.getId()) ) );
-	}
-	@Override
-	public List<PlayListEntity> findAllByAuth(Authentication auth) throws Exception {
-		notNull(auth);
-		return 
-			playListRepos
-			.findAllByUserUsername(auth.getName())
-			//TODO:ReplaseUserNameToUserId;
-			.orElseThrow(()->
-				new Exception(String.format("Any playlist with username '%s' does not exists", auth.getName()==null?"null":auth.getName())));
-	}
 //	@Override
-//	public List<PlayListEntity> findAllByUsername(String username) throws Exception {
-//		usernameIsValid(username);
+//	public List<PlayListEntity> findAllByAuth(Authentication auth) throws Exception {
+//		notNull(auth);
 //		return 
 //			playListRepos
-//			.findAllByUserUsername(username)
-//			.orElseThrow( ()-> new Exception( PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_NAME.formatted(username) ) );
-//	}
-//	@Override
-//	public List<PlayListEntity> findAllByUserId(Long userId) throws Exception {
-//		userIdIsValid(userId);
-//		return 
-//			playListRepos
-//			.findAllByUserId(userId)
-//			.orElseThrow( ()-> new Exception( PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_USER_ID.formatted(userId) ) );
-//	}
-//	@Override
-//	public PlayListEntity findOnceMainPlayListByUserId(Long userid) throws Exception {
-//		userIdIsValid(userid);
-//		var lists = playListRepos.findAllByUserId(userid)
-//			.orElseThrow(()->new Exception("NoOnePlaylistsWereFound."));
-//			//ThrowNoOnePlaylistFoundWithUserId
-//		var mainPlayList = lists
-//			.stream()
-//			.filter(x->x.getMain()==true)
-//			.toList();
-//		System.out.println(mainPlayList);
-//		System.out.println(mainPlayList.size());
-//		if(mainPlayList.size() > 1);
-//			//ThrowsManyMainPlaylists
-//		if(mainPlayList.isEmpty())
-//			throw new Exception("MainPlayListNotFound.");
-//		return mainPlayList.get(0);
-//	}
-//	@Override
-//	public PlayListEntity findOnceMainPlaylistByUsername(String username) throws Exception {
-//		usernameIsValid(username);
-//		var lists = playListRepos.findAllByUserUsername(username)
-//			.orElseThrow();
-//			//ThrowNoOnePlaylistFoundWithUserId
-//		var mainPlayList = lists
-//			.stream()
-//			.filter(x->x.getMain()==true)
-//			.toList();
-//		if(mainPlayList.size() > 1);
-//			//ThrowsManyMainPlaylists
-//		return mainPlayList.get(0);
+//			.findAllByUserUsername(auth.getName())
+//			//TODO:ReplaseUserNameToUserId;
+//			.orElseThrow(()->
+//				new Exception(String.format("Any playlist with username '%s' does not exists", auth.getName()==null?"null":auth.getName())));
 //	}
 	@Override
 	public List<PlayListEntity> findAll() {
@@ -210,8 +120,7 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public void updateMainByEntity(Boolean newMain, PlayListEntity playlist) throws Exception {
 		playlist.setMain(newMain);
-		save(playlist);
-//		updateMainById(newMain,playlist.getId());
+		updateMainById(newMain,playlist.getId());
 	}
 	@Override
 	public void updateSizeByEntity(Long newSize, PlayListEntity playlist) {
@@ -228,7 +137,7 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public void updateMainById(Boolean newMain, Long playlistId) {
 		try {
-//			playListRepos.updateMainById(newMain, playlistId);
+			playListRepos.updateMainById(newMain, playlistId);
 		}catch(Exception e) {
 			log.error(e.getMessage());
 		}	
@@ -296,6 +205,47 @@ public class PlayListService implements PlayListDetails {
 					throw new Exception("'name' is empty.");
 				playListRepos.deleteByIdAndMainFalse(id)
 				.orElseThrow( ()-> new Exception(String.format("Can't delete playlist with id:%s",id)));
+	}
+	@Override
+	public PlayListEntity findOnceMainPlaylist(UserEntity user) throws Exception {
+		notNull(user);
+		var playlists = user.getPlaylists();
+		if( ((List<PlayListEntity>)user.getPlaylists())
+				.stream()
+				.filter(p->p.getMain()==true)
+				.count()>1 ) 
+			throw new Exception(PlayListErrors.DUPLICATED);
+		return 
+			((List<PlayListEntity>)user.getPlaylists())
+			.stream()
+			.filter(p->p.getMain()==true)
+			.findFirst()
+			.orElseThrow(()->new Exception(PlayListErrors.MAIN_PLAYLIST_NOT_FOUND));//TODO::AddExceptionA
+	}
+//	@Override
+//	public PlayListEntity findMainPlayListAndSetDown(UserEntity user) throws Exception {
+//
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	@Override
+	public List<PlayListEntity> findAllByUserId(UserEntity user) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public PlayListEntity findAndSetMain(UserEntity user) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public PlayListEntity findOncePlaylist(UserEntity user) throws Exception {
+		notNull(user);
+		var playlistOption = ((List<PlayListEntity>)user.getPlaylists())
+			.stream()
+			.filter(p->p.getMain()==true)
+			.findFirst();
+		return null;
 	}
 	
 	
