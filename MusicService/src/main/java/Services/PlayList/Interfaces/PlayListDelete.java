@@ -7,4 +7,5 @@ import DAO.PlayList.PlayListEntity;
 public interface PlayListDelete {
 //Delete
 	void delete(PlayListEntity playlist);
+	void deleteById(Long deleteButton);
 }

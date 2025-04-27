@@ -1,33 +1,21 @@
 package Services.PlayList;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import javax.naming.NameNotFoundException;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.source.MutuallyExclusiveConfigurationPropertiesException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import DAO.PlayList.PlayListBuilder;
 import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
+import Services.PlayList.Exceptions.DuplicatePlaylistsException;
+import Services.PlayList.Exceptions.PlayListNotFoundException;
 import Services.PlayList.Interfaces.PlayListDetails;
 import Services.PlayList.Interfaces.PlayListErrors;
-import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,14 +25,7 @@ public class PlayListService implements PlayListDetails {
 	@Autowired
 	private PlayListsRepository playListRepos;
 	private UserEntity user;
-	
-	
-	private void idIsValid(Long id) throws Exception {
-		if(Objects.isNull(id))
-			throw new Exception(PlayListErrors.USERID_IS_NULL);
-		if(id < 0)
-			throw new Exception(PlayListErrors.USERID_LESS_ZERRO);
-	}
+	//PrivateCheckers
 	private void stringIsValid(String name) throws Exception {
 		if(Objects.isNull(name) )
 			throw new Exception(PlayListErrors.NAME_IS_NULL);
@@ -55,9 +36,17 @@ public class PlayListService implements PlayListDetails {
 		if(Objects.isNull(obj))
 			throw new Exception(PlayListErrors.NULL_ARGUMENT);
 	}
+	private Stream<PlayListEntity> mainPlaylistStream (UserEntity user) {
+		return 
+			user
+			.getPlaylists()
+			.stream()
+			.filter(p->p.getMain()==true);
+	}
 	//Create
+	//TODO::NeedDeleteExceptionsFrom'Save'Methods?
 	@Override
-	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
+ 	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
 		notNull(newPlayList);
 		return  playListRepos.save(newPlayList);
 	}
@@ -68,26 +57,33 @@ public class PlayListService implements PlayListDetails {
 	@Override
 	public List<PlayListEntity> saveAll(Iterable<PlayListEntity> newPlayList) throws Exception {
 		notNull(newPlayList);
+		//TODO::AddContainCheckByNull
 		return playListRepos.saveAll(newPlayList);
 	}
 	//Search
 	@Override
 	public PlayListEntity findOnceUserPlaylist(String playlistName) throws Exception {
 		notNull(user);
+
 		return null;
+	}
+	@Override
+	public PlayListEntity findOnceUserMainPlaylist(UserEntity user) 
+			throws Exception,DuplicatePlaylistsException,PlayListNotFoundException {
+		notNull(user);
+		if(mainPlaylistStream(user).count() > 1 )
+			throw new DuplicatePlaylistsException(PlayListErrors.DUPLICATED);
+		return 
+			mainPlaylistStream(user)
+			.findFirst()
+			.orElseThrow(()->new PlayListNotFoundException(PlayListErrors.MAIN_PLAYLIST_NOT_FOUND));//TODO::ADDExceptionMessage
 	}
 	public List<PlayListEntity> findAll() {
 		return  playListRepos.findAll();
 	}
 	@Override
 	public List<PlayListEntity> findAllUserPlaylists() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public PlayListEntity findOnceUserMainPlaylist(UserEntity user) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		return user.getPlaylists();
 	}
 	//Update
 	@Override
@@ -174,5 +170,31 @@ public class PlayListService implements PlayListDetails {
 		notNull(user);
 		this.user=user;
 		return user;
+	}
+	@Override
+	public void deleteById(Long deleteButton) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void  setOnlyDefaultPlayListAsMain(UserEntity user) throws Exception,PlayListNotFoundException {
+		//TODO:MakeCheckArgByNull
+		notNull(user);
+		var def = user.getPlaylists()
+			.stream()
+			.filter(p->p.getName().equals(PlayListDetails.DEFAULT_NAME))
+			.findFirst()
+			.orElseThrow(()->new PlayListNotFoundException("'%s' not found".formatted(PlayListDetails.DEFAULT_NAME)));
+			updateMainByEntity(true, def);
+
+		user.getPlaylists().stream().forEach(p->{
+			//TODO:RemakeThis
+			if(!p.getName().equals(PlayListDetails.DEFAULT_NAME))
+				try {
+					updateMainByEntity(false, p);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		});
 	}
 }

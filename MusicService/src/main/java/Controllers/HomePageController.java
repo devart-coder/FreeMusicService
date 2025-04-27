@@ -1,14 +1,9 @@
 package Controllers;
 
-import java.util.List;
 import java.util.Objects;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import DAO.PlayList.PlayListBuilder;
 import DAO.User.UserEntity;
-import Repositories.PlayListsRepository;
-import Repositories.UserRepository;
+import Services.PlayList.Exceptions.DuplicatePlaylistsException;
+import Services.PlayList.Exceptions.PlayListNotFoundException;
 import Services.PlayList.Interfaces.PlayListDetails;
-import Services.User.UserService;
 import Services.User.Interfaces.UserServiceDetails;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,6 +27,7 @@ public class HomePageController {
 	private UserServiceDetails userService;
 	@Autowired
 	private PlayListDetails playListDetails;
+	private UserEntity u;
 	
 	@GetMapping
 	public String home (
@@ -44,13 +40,31 @@ public class HomePageController {
 		return "home";
 	}
 	@ModelAttribute("mainPlayList")
-	public String getMainPlayList( Authentication user ) {
+	public String getMainPlayList( Authentication user ){
 		try {
-			var u = userService.findOnceByName(user.getName());
-			return playListDetails.findOnceMainPlaylist(u).toString();
-		} catch (Exception e) {
+			u = userService.findOnceByName(user.getName());
+			return playListDetails.findOnceUserMainPlaylist(u).toString();
+		}catch (DuplicatePlaylistsException e) {
 			log.error(e.getMessage());
+			try {
+				playListDetails.setOnlyDefaultPlayListAsMain(u);
+			}catch (PlayListNotFoundException ex) {
+				log.error(ex.getMessage());
+				try {
+					playListDetails.save(() -> 
+						PlayListBuilder.builder()
+							.setUserEntity(u)
+							.build());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}catch(Exception ex) {
+				log.warn(ex.getMessage());
+			}
+		}catch(Exception e) {
+			log.warn(e.getMessage());
 		}
+		
 		return "[Null]";
 	}	
 	
