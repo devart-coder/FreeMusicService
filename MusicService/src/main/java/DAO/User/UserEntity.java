@@ -73,7 +73,7 @@ public class UserEntity implements Serializable {
 	@Getter
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
-	private Iterable<PlayListEntity> playlists;
+	private List<PlayListEntity> playlists;
 	
 	@Setter
 	@Getter

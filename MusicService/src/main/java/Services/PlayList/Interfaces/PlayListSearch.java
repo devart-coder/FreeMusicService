@@ -11,11 +11,9 @@ public interface PlayListSearch {
 //Search/Read
 	//All
 		List<PlayListEntity> findAll();
-		List<PlayListEntity> findAllByUserId(UserEntity user) throws Exception;
+		List<PlayListEntity> findAllUserPlaylists() throws Exception;
 	//Once
-		PlayListEntity findOnceById(Long Id) throws Exception;
-		PlayListEntity findOnceMainPlaylist(UserEntity user) throws Exception;
-		PlayListEntity findOncePlaylist(UserEntity user) throws Exception;
-		PlayListEntity findAndSetMain(UserEntity user) throws Exception;
+		PlayListEntity findOnceUserMainPlaylist(UserEntity user) throws Exception;
+		PlayListEntity findOnceUserPlaylist(String playlistName) throws Exception;
 
 }

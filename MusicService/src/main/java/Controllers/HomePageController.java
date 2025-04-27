@@ -1,12 +1,14 @@
 package Controllers;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +16,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import DAO.User.UserEntity;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import Services.PlayList.Interfaces.PlayListDetails;
+import Services.User.UserService;
+import Services.User.Interfaces.UserServiceDetails;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,9 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/home")
 public class HomePageController {
 	@Autowired
-	private UserRepository userRepository;
+	private UserServiceDetails userService;
 	@Autowired
-	private PlayListsRepository playListRepository;
+	private PlayListDetails playListDetails;
 	
 	@GetMapping
 	public String home (
@@ -33,18 +39,17 @@ public class HomePageController {
 		String logout,
 		Model page
 	) {
-		if(logout != null) 
+		if(!Objects.isNull(logout)) 
 			return "redirect:/login";
 		return "home";
 	}
 	@ModelAttribute("mainPlayList")
 	public String getMainPlayList( Authentication user ) {
-		var u = userRepository.findByUsername(user.getName());
-		var p = u.getPlaylists();
-		//TODO::PLayLists:AddCheckByNull
-		for(var playlist : p) {
-			if(playlist.getMain())
-				return playlist.getName();
+		try {
+			var u = userService.findOnceByName(user.getName());
+			return playListDetails.findOnceMainPlaylist(u).toString();
+		} catch (Exception e) {
+			log.error(e.getMessage());
 		}
 		return "[Null]";
 	}	

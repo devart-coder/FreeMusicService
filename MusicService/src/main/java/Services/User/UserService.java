@@ -3,12 +3,14 @@ package Services.User;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import DAO.User.UserEntity;
 import Repositories.UserRepository;
 import Services.User.Interfaces.UserServiceDetails;
 import lombok.NoArgsConstructor;
 @NoArgsConstructor
+@Service
 public class UserService implements UserServiceDetails{
 	@Autowired
 	private UserRepository repos; 
@@ -17,16 +19,14 @@ public class UserService implements UserServiceDetails{
 		notNull(user);
 		return repos.save(user);
 	}
-
 	private void notNull(Object user) throws Exception {
 		if(Objects.isNull(user))
-			throw new Exception("");//TODO::AddExceptionMessage
+			throw new Exception("Argument is null");//TODO::AddExceptionMessage
 	}
 
 	@Override
 	public Iterable<UserEntity> findAll() throws Exception{
-		// TODO Auto-generated method stub
-		return null;
+		return repos.findAll();
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class UserService implements UserServiceDetails{
 		notNull(id);
 		return 
 			repos.findById(id)
-			.orElseThrow( () -> new Exception("") );//TODO::AddExceptionMessage
+			.orElseThrow( () -> new Exception("Can't found user with id '%d'".formatted(id)) );//TODO::AddExceptionMessage
 	}
 
 	@Override
@@ -50,10 +50,11 @@ public class UserService implements UserServiceDetails{
 	}
 
 	private void nameIsValid(String username) throws Exception {
-		if(Objects.isNull(username))
-			throw new Exception("");
-		if(username.isEmpty() || username.isBlank())
-			throw new Exception("");
+		notNull(username);
+		if(username.isEmpty() )
+			throw new Exception("Username is empty");
+		if(username.isBlank() )
+			throw new Exception("Username is blank");
 	}
 
 }

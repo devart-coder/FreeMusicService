@@ -54,7 +54,7 @@ public class PlayListsController {
 	) throws Exception 
 	{
 		var user = userRepository.findByUsername(auth.getName());
-		
+		playListsService.setUser(user);
 		if(createButton != null) {
 			if(createButton.isEmpty()) {
 				page.addAttribute("createPlayListNameError","\"Name\" is empty.");
@@ -75,28 +75,15 @@ public class PlayListsController {
 			try {
 				playListsService.deleteByIdWithNotMainNotDefaultName(deleteButton, "Default");
 			} catch (Exception e) {
-				//TODO:AddErrorMessageToTheModel
+				//TODO:SendErrorToTheModel
 				log.error(e.getMessage());
 			}
 		}
 		if( mainButton != null) {
 			try {
-				var p = playListsService.findOnceMainPlaylist(user);
-				playListsService.updateMainByEntity(false, p);
-					
-				var playlistOption = ((List<PlayListEntity>)user.getPlaylists())
-					.stream()
-					.filter(pl->pl.getName().equals(mainButton))
-					.findFirst();
-				playlistOption.ifPresent(t->{
-					try {
-						playListsService.updateMainByEntity(true, t);
-					} catch (Exception e) {
-						e.getMessage();
-					}
-				});
-				
+				playListsService.setNewMain(user,mainButton);
 			}catch(Exception e) {
+				//TODO:SendErrorToTheModel
 				log.error(e.getMessage());
 			}
 		} 
@@ -106,7 +93,8 @@ public class PlayListsController {
 	}
 	@ModelAttribute("playLists")
 	public Iterable<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
-		var p = (List<PlayListEntity>)userRepository
+		playListsService.findAllByUserId()
+		var p = userRepository
 			.findByUsername(auth.getName())
 			.getPlaylists();
 		p.sort((o1, o2) -> Boolean.compare(o2.getMain(), o1.getMain() ) );
