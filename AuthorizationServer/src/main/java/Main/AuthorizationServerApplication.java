@@ -34,6 +34,8 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 import Security.Providers.UserAuthProvider;
 import Security.Services.InDataBaseUserDetailService;
+import Services.User.UserService;
+import Services.User.Interfaces.UserServiceDetails;
 
 
 @SpringBootApplication
@@ -76,6 +78,10 @@ public class AuthorizationServerApplication {
 		var encoder =  new DelegatingPasswordEncoder("bcrypt", encoders);
 		encoder.setDefaultPasswordEncoderForMatches(new BCryptPasswordEncoder());
 		return encoder;
+	}
+	@Bean
+	UserServiceDetails  userDetailService() {
+		return new UserService();
 	}
 	@Bean
 	UserDetailsService users() {

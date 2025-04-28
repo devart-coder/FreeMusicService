@@ -3,6 +3,7 @@ package Controllers;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,19 +17,21 @@ import DAO.User.UserEntity;
 import Services.PlayList.Exceptions.DuplicatePlaylistsException;
 import Services.PlayList.Exceptions.PlayListNotFoundException;
 import Services.PlayList.Interfaces.PlayListDetails;
+import Services.User.Exceptions.UserNotFoundException;
 import Services.User.Interfaces.UserServiceDetails;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
 @RequestMapping("/home")
+@NoArgsConstructor
 public class HomePageController {
 	@Autowired
 	private UserServiceDetails userService;
 	@Autowired
 	private PlayListDetails playListDetails;
 	private UserEntity u;
-	
 	@GetMapping
 	public String home (
 		@RequestParam (required = false) 
@@ -43,29 +46,10 @@ public class HomePageController {
 	public String getMainPlayList( Authentication user ){
 		try {
 			u = userService.findOnceByName(user.getName());
-			return playListDetails.findOnceUserMainPlaylist(u).toString();
-		}catch (DuplicatePlaylistsException e) {
+		} catch (Exception e) {
 			log.error(e.getMessage());
-			try {
-				playListDetails.setOnlyDefaultPlayListAsMain(u);
-			}catch (PlayListNotFoundException ex) {
-				log.error(ex.getMessage());
-				try {
-					playListDetails.save(() -> 
-						PlayListBuilder.builder()
-							.setUserEntity(u)
-							.build());
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}catch(Exception ex) {
-				log.warn(ex.getMessage());
-			}
-		}catch(Exception e) {
-			log.warn(e.getMessage());
 		}
-		
-		return "[Null]";
+		return playListDetails.findOnceUserMainPlaylist(u).getName();
 	}	
 	
 	@ModelAttribute("user")

@@ -24,15 +24,16 @@ import DAO.User.UserEntityBuilder;
 import DAO.User.Settings.UserSettingsBuilder;
 import Repositories.PlayListsRepository;
 import Repositories.UserRepository;
+import Services.User.UserService;
+import Services.User.Exceptions.UserNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
-	private UserRepository userRepo;
-	@Autowired
-	private PasswordEncoder encoder;
+	private UserService userService;
 	
 	@GetMapping
 	public String registerForm() {
@@ -45,19 +46,19 @@ public class RegistrationController {
 		@RequestParam(required = false)
 		String password
 	){
-		var user = userRepo.findByUsername(username);
-		if(user == null) {
-			try {
-				var newUser = UserEntityBuilder.defaulUserWith(username, encoder.encode(password));
-				userRepo.save(newUser);
-			}catch(Exception e) {
-				logger.error(e.getMessage());
-			}
-			return "redirect:/login";
-		}
-		else {
-			logger.error("User '"+user.getUsername()+"' exists.");
+		try {
+			var user = userService.findOnceByName(username);
+			log.error("User with name '"+user.getUsername()+"' exists.");
 			return "register";
+		}catch(UserNotFoundException e) {
+			try {
+				userService.save(UserEntityBuilder.defaulUserWith(username, password));
+			} catch (Exception ex) {
+				log.error(ex.getMessage());
+			}
+		}catch(Exception e) {
+			log.error(e.getMessage());
 		}
+		return "redirect:/login";
 	}
 }

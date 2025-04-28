@@ -1,4 +1,4 @@
-package Services.PlayList.Interfaces;
+package Services.PlayList.Exceptions;
 
 public interface PlayListErrors {
 	//Fields

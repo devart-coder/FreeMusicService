@@ -31,9 +31,9 @@ import Interfaces.PlayListJpaTest.PlayListJpaCreateTest;
 import Interfaces.PlayListJpaTest.PlayListJpaSearchTest;
 import Repositories.UserRepository;
 import Services.PlayList.PlayListService;
+import Services.PlayList.Exceptions.PlayListErrors;
 import Services.PlayList.Interfaces.PlayListCreate;
 import Services.PlayList.Interfaces.PlayListDetails;
-import Services.PlayList.Interfaces.PlayListErrors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

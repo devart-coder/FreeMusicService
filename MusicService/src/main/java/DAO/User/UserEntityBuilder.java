@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import DAO.PlayList.PlayListBuilder;
 import DAO.PlayList.PlayListEntity;
 import DAO.User.Settings.UserSettings;
@@ -14,8 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserEntityBuilder {
-	private UserEntity user = new UserEntity();
+	@Autowired
+	private PasswordEncoder encoder;
+	private UserEntity user;
 	
+	private void  notNull() {
+		
+	}
 	public static UserEntityBuilder builder() {
 		return new UserEntityBuilder();
 	}
@@ -31,7 +39,7 @@ public class UserEntityBuilder {
 		return this;
 	}
 	public UserEntityBuilder setPassword(String password) {
-		this.user.setPassword(password);
+		this.user.setPassword(encoder.encode(password));
 		return this;
 	}
 	public UserEntityBuilder setRole(String role) {

@@ -8,12 +8,11 @@ import DAO.PlayList.PlayListEntity;
 import DAO.User.UserEntity;
 
 public interface PlayListSearch {
-//Search/Read
+//Search
 	//All
 		List<PlayListEntity> findAll();
-		List<PlayListEntity> findAllUserPlaylists() throws Exception;
+		List<PlayListEntity> findAllUserPlaylists();
 	//Once
-		PlayListEntity findOnceUserMainPlaylist(UserEntity user) throws Exception;
-		PlayListEntity findOnceUserPlaylist(String playlistName) throws Exception;
-
+		PlayListEntity findOnceUserMainPlaylist(UserEntity user);
+		PlayListEntity findOnceUserPlaylist(String playlistName);
 }

@@ -18,9 +18,9 @@ import org.springframework.stereotype.Component;
 
 import Security.SecureUser;
 import Security.Services.InDataBaseUserDetailService;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 public class UserAuthProvider implements AuthenticationProvider {
-	private Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
 	private UserDetailsService userDetailsService;
 	
@@ -39,7 +39,7 @@ public class UserAuthProvider implements AuthenticationProvider {
 			else 
 				throw new BadCredentialsException("User '"+username+"': Wrong password ["+password+"]");
 		}catch(BadCredentialsException | UsernameNotFoundException e) { 
-			logger.error(e.getMessage());
+			log.error(e.getMessage());
 		}
 		return null;
 	}
