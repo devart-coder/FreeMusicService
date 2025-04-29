@@ -3,7 +3,6 @@ package Controllers;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,13 +11,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import DAO.PlayList.PlayListBuilder;
-import DAO.User.UserEntity;
-import Services.PlayList.Exceptions.DuplicatePlaylistsException;
-import Services.PlayList.Exceptions.PlayListNotFoundException;
-import Services.PlayList.Interfaces.PlayListDetails;
-import Services.User.Exceptions.UserNotFoundException;
-import Services.User.Interfaces.UserServiceDetails;
+import Playlist.Service.Interfaces.PlayListDetails;
+import User.DAO.UserEntity;
+import User.Service.Interfaces.UserServiceDetails;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

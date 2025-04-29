@@ -1,17 +1,11 @@
 package Security.Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
 
-import DAO.User.UserEntity;
-import Repositories.UserRepository;
 import Security.SecureUser;
-import Services.User.UserService;
-import Services.User.Exceptions.UserNotFoundException;
-import Services.User.Interfaces.UserServiceDetails;
+import User.Exceptions.UserNotFoundException;
+import User.Service.Interfaces.UserServiceDetails;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InDataBaseUserDetailService implements UserDetailsService {

@@ -1,31 +1,17 @@
 package Controllers.LoginAndRegistration;
 
-import static DAO.User.UserEntityBuilder.builder;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User.UserBuilder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import DAO.PlayList.PlayListBuilder;
-import DAO.PlayList.PlayListEntity;
-import DAO.User.UserEntity;
-import DAO.User.UserEntityBuilder;
-import DAO.User.Settings.UserSettingsBuilder;
-import Repositories.PlayListsRepository;
-import Repositories.UserRepository;
-import Services.User.UserService;
-import Services.User.Exceptions.UserNotFoundException;
+import User.DAO.UserEntityBuilder;
+import User.Exceptions.UserNotFoundException;
+import User.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -1,17 +1,8 @@
 package Controllers;
 
-import java.security.Principal;
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,17 +11,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import DAO.PlayList.PlayListBuilder;
-import DAO.PlayList.PlayListEntity;
-import DAO.User.UserEntity;
-import Repositories.PlayListsRepository;
-import Repositories.UserRepository;
-import Security.SecureUser;
-import Services.PlayList.PlayListService;
-import Services.PlayList.Exceptions.DuplicatePlaylistsException;
-import Services.PlayList.Exceptions.PlayListNotFoundException;
-import Services.PlayList.Interfaces.PlayListDetails;
-import Services.User.UserService;
+import Playlist.DAO.PlayListBuilder;
+import Playlist.DAO.PlayListEntity;
+import Playlist.Exceptions.DuplicatePlaylistsException;
+import Playlist.Exceptions.PlayListNotFoundException;
+import Playlist.Service.Interfaces.PlayListDetails;
+import User.DAO.UserEntity;
+import User.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
@@ -66,7 +53,7 @@ public class PlayListsController {
 				return "playlists";
 			}
 			try {
-				playListsService.save( ()->
+				playListsService.save( 
 					PlayListBuilder.builder()
 					.setName(createButton)
 					.setUserEntity(user)

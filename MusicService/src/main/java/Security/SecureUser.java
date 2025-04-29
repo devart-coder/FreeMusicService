@@ -7,11 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import DAO.User.UserEntity;
-import lombok.Data;
+import User.DAO.UserEntity;
 import lombok.RequiredArgsConstructor;
+
 @RequiredArgsConstructor
 public class SecureUser implements UserDetails {
+	private static final long serialVersionUID = -8826382408543735707L;
 	private final UserEntity user;
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
