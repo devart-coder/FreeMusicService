@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SharedCheck {
-	private final static String ID_LESS_ZERRO = "'Id' less zerro.";
-	private final static String ARG_IS_NULL = "Argument is null.";
+	protected static final String ARG_IS_NULL = "Argument is null.";
+	protected static final String ID_IS_NULL ="'Id' field is null.";
+	protected static final String ID_LESS_ZERRO ="'Id' field less zerro.";
+
 	private static boolean idGreaterOrEqualZerro(Long id) {
 		try {
 			if( id < 0 )
@@ -31,10 +33,7 @@ public class SharedCheck {
 		return false;
 	}
 	public static boolean idIsValid(Long id){
-		if( idNotNull(id) && idGreaterOrEqualZerro(id) )
-			return true;
-		else
-			return false;
+		return ( idNotNull(id) && idGreaterOrEqualZerro(id) ) ? true : false;
 	}
 	public static boolean notNull(Object obj) {
 		try {
@@ -44,7 +43,10 @@ public class SharedCheck {
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
+			return false;
 		}
-		return false;
 	} 
+	public static boolean isNull(Object obj) {
+		return !notNull(obj);
+	}
 }

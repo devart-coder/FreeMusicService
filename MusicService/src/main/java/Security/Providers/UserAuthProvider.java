@@ -33,7 +33,8 @@ public class UserAuthProvider implements AuthenticationProvider {
 			String username = authentication.getName();
 			String password = authentication.getCredentials().toString();
 			var user = (SecureUser)userDetailsService.loadUserByUsername(username);
-
+			if(user == null)
+				return null;
 			if(passwordEncoder.matches(password, user.getPassword())) 
 				return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());
 			else 

@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service;
 import Playlist.Check.PlaylistCheck;
 import Playlist.DAO.PlayListBuilder;
 import Playlist.DAO.PlayListEntity;
-import Playlist.Errors.PlayListErrors;
+import Playlist.ErrorMessanges.PlaylistErrorMessanges;
 import Playlist.Exceptions.DuplicatePlaylistsException;
 import Playlist.Exceptions.PlayListNotFoundException;
 import Playlist.Repository.PlayListsRepository;
 import Playlist.Service.Interfaces.PlayListDetails;
 import SharedCheks.SharedCheck;
+import User.Check.UserCheck;
 import User.DAO.UserEntity;
 import User.Service.Interfaces.UserServiceDetails;
 import lombok.extern.slf4j.Slf4j;
@@ -55,7 +56,7 @@ public class PlayListService implements PlayListDetails {
 	//TODO::NeedDeleteExceptionsFrom'Save'Methods?
 	@Override
  	public PlayListEntity save(PlayListEntity newPlayList) throws Exception {
-		SharedCheck.notNull(newPlayList);
+		PlaylistCheck.notNull(newPlayList);
 		return  playListRepos.save(newPlayList);
 	}
 	@Override
@@ -64,28 +65,28 @@ public class PlayListService implements PlayListDetails {
 	}
 	@Override
 	public List<PlayListEntity> saveAll(Iterable<PlayListEntity> newPlayList) throws Exception {
-		SharedCheck.notNull(newPlayList);
+		PlaylistCheck.notNull(newPlayList);
 		//TODO::AddContainCheckByNull
 		return playListRepos.saveAll(newPlayList);
 	}
 	//Search
 	@Override
 	public PlayListEntity findOnceUserPlaylist(String playlistName){
-		SharedCheck.notNull(user);
+		PlaylistCheck.notNull(user);
 
 		return null;
 	}
 	@Override
 	public PlayListEntity findOnceUserMainPlaylist(UserEntity user) { 
-		SharedCheck.notNull(user);
+		PlaylistCheck.notNull(user);
 		try {
 			if(mainPlaylistStream(user).count() > 1 )
-				throw new DuplicatePlaylistsException(PlayListErrors.DUPLICATED);
+				throw new DuplicatePlaylistsException(PlaylistErrorMessanges.DUPLICATED);
+
 			return 
 				mainPlaylistStream(user)
 				.findFirst()
-				.orElseThrow(() -> new PlayListNotFoundException(PlayListErrors.MAIN_PLAYLIST_NOT_FOUND));
-			
+				.orElseThrow(() -> new PlayListNotFoundException(PlaylistErrorMessanges.MAIN_PLAYLIST_NOT_FOUND));
 		}catch (DuplicatePlaylistsException e) {
 			log.error(e.getMessage());
 			setOnlyDefaultPlayListAsMain(user);
@@ -165,7 +166,7 @@ public class PlayListService implements PlayListDetails {
 	public void delete(PlayListEntity playlist) {
 		try{
 			if(playlist == null)
-				throw new Exception(String.format("'PlayListEntity' is '%s'.",playlist ==null ? "null":playlist.getName()));
+				throw new Exception(String.format("'PlaylistEntity' is '%s'.",playlist ==null ? "null":playlist.getName()));
 			playListRepos.delete(playlist);
 		}catch(Exception e) {
 			log.error(e.getMessage());
@@ -173,36 +174,41 @@ public class PlayListService implements PlayListDetails {
 	}
 	//Other
 	@Override
-	public void setNewMain(String mainButton) throws Exception {
-		SharedCheck.notNull(user);
-		PlaylistCheck.nameIsValid(mainButton);
+	public void setNewMain(String newMainPLaylist) throws Exception {
+		if(PlaylistCheck.isNull(user))
+			return ;
+		PlaylistCheck.nameIsValid(newMainPLaylist);
 		var p = findOnceUserMainPlaylist(user);
 		updateMainByEntity(false, p);
 			p = user
 				.getPlaylists()
 				.stream()
-				.filter(pl->pl.getName().equals(mainButton))
+				.filter(pl->pl.getName().equals(newMainPLaylist))
 				.findFirst()
-				.orElseThrow(()->new Exception(PlayListErrors.PLAYLISTS_NOT_FOUND_WITH_NAME.formatted(mainButton)));
+				.orElseThrow(
+					() -> new Exception(
+							PlaylistErrorMessanges
+							.PLAYLISTS_NOT_FOUND_WITH_NAME
+							.formatted(newMainPLaylist)));
 		updateMainByEntity(true, p);
 	}
 	@Override
 	public UserEntity setUser(UserEntity user) throws Exception {
-		SharedCheck.notNull(user);
-		this.user=user;
+		if(PlaylistCheck.notNull(user)){
+			this.user=user;
+		}
 		return user;
 	}
 	@Override
-	public void deleteById(Long deleteButton) {
-		// TODO Auto-generated method stub
-		
+	public void deleteById(Long id) {
+		if(PlaylistCheck.idIsValid(id))
+			playListRepos.deleteById(id);
 	}
 	@Override
 	public void  setOnlyDefaultPlayListAsMain(UserEntity user) {
-		SharedCheck.notNull(user);
-		var defaultPlaylist = defaultPlaylistStream(user);
-		
-		updateMainByEntity(true, defaultPlaylist);
+		if(PlaylistCheck.isNull(user))
+			return;
+		updateMainByEntity(true, defaultPlaylistStream(user));
 		
 		user.getPlaylists()
 			.stream()

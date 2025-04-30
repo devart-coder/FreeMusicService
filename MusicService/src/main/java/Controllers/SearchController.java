@@ -27,7 +27,7 @@ import DAO.ZaicevNetAPI.ZaicevNetURL;
 
 @Controller
 @RequestMapping("/search")
-public class SearchController {
+public class SearchController extends BasePage{
 	private	final String searchURL="https://zaycev.net/api/external/pages/search";
 	
 	@GetMapping
@@ -103,13 +103,13 @@ public class SearchController {
 		return idsString.substring(1,idsString.length()-1).split(",");
 	}
 	
-	@ModelAttribute("user")
-	private String getUsername( Authentication auth ) {
-		return auth.getName();
-	}
-	@ModelAttribute("mainPlaylist")
-	private String getPlaylistName( Authentication auth) {
-		return "nobody";
-//		return mainPlaylistRepository.findByUsername(auth.getName()).getPlaylistname();
-	}
+//	@ModelAttribute("user")
+//	private String getUsername( Authentication auth ) {
+//		return auth.getName();
+//	}
+//	@ModelAttribute("mainPlaylist")
+//	private String getPlaylistName( Authentication auth) {
+//		return "nobody";
+////		return mainPlaylistRepository.findByUsername(auth.getName()).getPlaylistname();
+//	}
 }

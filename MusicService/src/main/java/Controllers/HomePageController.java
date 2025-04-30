@@ -21,34 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/home")
 @NoArgsConstructor
-public class HomePageController {
-	@Autowired
-	private UserServiceDetails userService;
-	@Autowired
-	private PlayListDetails playListDetails;
-	private UserEntity u;
+public class HomePageController extends BasePage{
 	@GetMapping
 	public String home (
 		@RequestParam (required = false) 
-		String logout,
-		Model page
+		String logout
 	) {
-		if(!Objects.isNull(logout)) 
-			return "redirect:/login";
-		return "home";
-	}
-	@ModelAttribute("mainPlayList")
-	public String getMainPlayList( Authentication user ){
-		try {
-			u = userService.findOnceByName(user.getName());
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		return playListDetails.findOnceUserMainPlaylist(u).getName();
-	}	
-	
-	@ModelAttribute("user")
-	public String getUser(Authentication user) {
-		return user.getName();
+		return Objects.nonNull(logout) ? "redirect:/login" : "home";
 	}
 }

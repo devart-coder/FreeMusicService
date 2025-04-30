@@ -12,18 +12,15 @@ import User.Repository.UserRepository;
 import User.Service.Interfaces.UserServiceDetails;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-@NoArgsConstructor
 @Slf4j
 @Service
+@NoArgsConstructor
 public class UserService implements UserServiceDetails{
 	@Autowired
 	private UserRepository repos; 
-	@Autowired
-	private PasswordEncoder encoder; 
-	
 	@Override
 	public UserEntity save(UserEntity user) throws Exception {
-		SharedCheck.notNull(user);
+		UserCheck.notNull(user);
 		return repos.save(user);
 	}
 	@Override
@@ -31,20 +28,26 @@ public class UserService implements UserServiceDetails{
 		return repos.findAll();
 	}
 	@Override
-	public UserEntity findOnceById(Long id) throws UserNotFoundException{
+	public UserEntity findOnceById(Long id) 
+		throws UserNotFoundException{
+		
 		UserCheck.idIsValid(id);
 		return 
 			repos
 			.findById(id)
-			.orElseThrow( () -> new UserNotFoundException("Can't found user with id '%d'".formatted(id)) );
+			.orElseThrow( 
+				() -> new UserNotFoundException("Can't found user with id '%d'".formatted(id)) );
 	}
 	@Override
-	public UserEntity findOnceByName(String username) throws Exception,UserNotFoundException{
+	public UserEntity findOnceByName(String username) 
+		throws Exception, UserNotFoundException{
+
 		UserCheck.usernameIsValid(username);
 		return 
 			repos
 			.findByUsername(username)
-			.orElseThrow( () -> new UserNotFoundException("Can't found user with name '%s'".formatted(username)) );
+			.orElseThrow( 
+				() -> new UserNotFoundException("Can't found user with name '%s'".formatted(username)) );
 	}
 	@Override
 	public void deleteByEntity(UserEntity user) {
