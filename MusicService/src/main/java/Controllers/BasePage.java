@@ -1,12 +1,16 @@
 package Controllers;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import Playlist.Service.PlayListService;
 import Playlist.Service.Interfaces.PlayListDetails;
 import User.DAO.UserEntity;
 import User.Service.UserService;
+import User.Service.Interfaces.UserServiceDetails;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,24 +18,31 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 public class BasePage {
 	@Autowired
-	protected PlayListDetails playListDetails;
+	protected PlayListService playListDetails;
 	@Autowired
-	protected UserService userService;
-	
+	protected UserServiceDetails userService;
+	protected UserEntity user;
 	@ModelAttribute("mainPlayList")
-	protected String getMainPlayList( Authentication user ){
+	protected String getMainPlayList( Authentication auth ){
 		try {
-			var u = userService.findOnceByName(user.getName());
-			return playListDetails.findOnceUserMainPlaylist(u).getName();
+			if(Objects.isNull(user))
+				user = userService.findOnceByName(auth.getName());
+			return playListDetails
+					.withUser(user)
+					.findOnceMainPlaylist()
+					.getName();
 		} catch (Exception e) {
 			log.error(e.getMessage());
+			e.printStackTrace();
 		}
 		return "Null";
 	}	
 	@ModelAttribute("user")
-	protected String getUser(Authentication user) {
+	protected String getUserName(Authentication auth) {
 		try {
-			return userService.findOnceByName(user.getName()).getUsername();
+			if(Objects.isNull(user))
+				user = userService.findOnceByName(auth.getName());
+			return user.getUsername();
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			e.printStackTrace();

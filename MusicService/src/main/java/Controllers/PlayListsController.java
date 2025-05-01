@@ -29,7 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/playlists")
 public class PlayListsController extends BasePage{
 	@GetMapping
-	public String view() { return "playlists"; }
+	public String view() { 
+		return "playlists"; 
+	}
 	
 	@PostMapping
 	public String playListActions(
@@ -43,7 +45,6 @@ public class PlayListsController extends BasePage{
 		Model page
 	) throws Exception 
 	{
-		var user = userService.findOnceByName(auth.getName());
 		try {
 			if(Objects.nonNull(createButton)) {
 				try {
@@ -56,7 +57,8 @@ public class PlayListsController extends BasePage{
 			if( Objects.nonNull(deleteButton) ) 
 				playListDetails.deleteById(deleteButton);
 			if( Objects.nonNull(mainButton) ) 
-				playListDetails.setNewMain(mainButton);
+//				playListDetails.setNewMain(mainButton);
+				playListDetails.withUser(user).setNewMain(mainButton);
 		}catch(Exception e) {
 			//TODO:SendErrorToTheModel
 			log.error(e.getMessage());
@@ -68,9 +70,10 @@ public class PlayListsController extends BasePage{
 	@ModelAttribute("playLists")
 	public Iterable<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
 		var user = userService.findOnceByName(auth.getName());
-		playListDetails.setUser(user);
+		var p = user.getPlaylists();
+//		playListDetails.setUser(user);
 		
-		var p = playListDetails.findAllUserPlaylists();
+//		var p = playListDetails.findAllUserPlaylists();
 		p.sort((o1, o2) -> Boolean.compare(o2.getMain(), o1.getMain() ) );
 		
 		return p;

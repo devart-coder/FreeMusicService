@@ -1,6 +1,8 @@
 package Security.Providers;
 
 
+import java.util.Objects;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,8 @@ public class UserAuthProvider implements AuthenticationProvider {
 		try {
 			String username = authentication.getName();
 			String password = authentication.getCredentials().toString();
-			var user = (SecureUser)userDetailsService.loadUserByUsername(username);
-			if(user == null)
+			var user = userDetailsService.loadUserByUsername(username);
+			if(Objects.isNull(user))
 				return null;
 			if(passwordEncoder.matches(password, user.getPassword())) 
 				return new UsernamePasswordAuthenticationToken(username, password, user.getAuthorities());

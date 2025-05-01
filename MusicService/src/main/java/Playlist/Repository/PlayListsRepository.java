@@ -17,8 +17,6 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	Optional<List<PlayListEntity>> findAllByUserUsername(String username);
 	Optional<List<PlayListEntity>> findAllByUserId(Long id);
 	
-	Optional<PlayListEntity> findOnceByUserIdAndName(Long userId,String name);
-	
 	@Modifying
 	@Transactional
 	@Query("update playlists p set p.name = ?1 where p.id = ?2 ")

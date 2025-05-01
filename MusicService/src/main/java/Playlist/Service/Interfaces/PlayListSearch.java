@@ -10,10 +10,5 @@ import User.DAO.UserEntity;
 
 public interface PlayListSearch {
 //Search
-	//All
-		List<PlayListEntity> findAll();
-		List<PlayListEntity> findAllUserPlaylists();
-	//Once
-		PlayListEntity findOnceUserMainPlaylist(UserEntity user);
-		PlayListEntity findOnceUserPlaylist(String playlistName);
+	List<PlayListEntity> findAll();
 }

@@ -69,9 +69,15 @@
 			</table>
 		<section>
 	</main>
-	<footer style="border:2px solid"  >
-		<span>User: </span>
-		<a th:text="${user}"></a>
+	<footer>
+		<div class="footFields">
+			<span id="userLabel">User:</span>
+			<span id="userField" th:text="${user}"></a>
+		</div>
+		<div class="footFields">
+			<span id="userLabel">Playlist:</span>
+			<span id="userField" th:text="${mainPlayList}"></span>
+		</div>
 	</footer>
 </body>
 </html>
