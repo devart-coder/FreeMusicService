@@ -39,7 +39,7 @@
 				<thead>
 					<tr>
 						<th>
-							
+							Act	
 						</th>
 						<th>
 							Name
@@ -59,7 +59,7 @@
 							<input  type="hidden" name="_csrf" th:value="${_csrf.token}">
 							<button class="deleteButton" type="submit" name="deleteButton" th:value="${pl.id}">
 							Delete
-							</botton>
+							</button>
 						</form>
 						</td>
 						<td th:text="${pl.name}" ></td>
@@ -81,17 +81,17 @@
 			<span id="userField" th:text="${mainPlayList}"></span>
 		</div>
 		
-		<form method="post">	
+		<form method="post" >	
 			<input type="hidden" name="_csrf" th:value="${_csrf.token}">
 			<select th:name="mainButton">
 				<option 
 					th:each="pl:${playLists}"
 					th:text="${pl.name}"
-					th:value="${pl.name}"
+					th:value="${pl.id}"
 				></option>
 			</select>
-			<label for="mainButton"> set </label>
-			<button type="submit">[Main]</button>
+			<label for="mainButton"> set as </label>
+			<button type="submit">Main</button>
 		</form>
 	</footer>
 </body>

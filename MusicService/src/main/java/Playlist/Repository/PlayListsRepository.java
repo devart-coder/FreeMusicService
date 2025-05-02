@@ -13,10 +13,6 @@ import jakarta.transaction.Transactional;
 
 public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>{
 
-	Optional<List<PlayListEntity>> findAllByUser(UserEntity user);
-	Optional<List<PlayListEntity>> findAllByUserUsername(String username);
-	Optional<List<PlayListEntity>> findAllByUserId(Long id);
-	
 	@Modifying
 	@Transactional
 	@Query("update playlists p set p.name = ?1 where p.id = ?2 ")
@@ -41,9 +37,13 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	@Transactional
 	@Query("update playlists p set p.size = ?1 where p.name = ?2 ")
 	Optional<Long> updateSizeByName(Long size, String name);
+
+	public List<PlayListEntity> findAllByUser(UserEntity user);
 	
+	//TODO:?WhyThisNotDefault?
+	@Modifying
+	@Transactional
+	@Query("delete from playlists p where  p.id = ?1 ")
 	void deleteById(Long id);
-	void deleteByName(String name);
-	Optional<PlayListEntity> deleteByIdAndMainFalse(Long id);
 	
 }

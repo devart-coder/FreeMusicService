@@ -22,12 +22,13 @@ public class BasePage {
 	@Autowired
 	protected UserServiceDetails userService;
 	protected UserEntity user;
+
 	@ModelAttribute("mainPlayList")
 	protected String getMainPlayList( Authentication auth ){
 		try {
-			if(Objects.isNull(user))
-				user = userService.findOnceByName(auth.getName());
-			return playListDetails
+			user = userService.findOnceByName(auth.getName());
+			return 
+				playListDetails
 					.withUser(user)
 					.findOnceMainPlaylist()
 					.getName();
@@ -40,8 +41,7 @@ public class BasePage {
 	@ModelAttribute("user")
 	protected String getUserName(Authentication auth) {
 		try {
-			if(Objects.isNull(user))
-				user = userService.findOnceByName(auth.getName());
+			user = userService.findOnceByName(auth.getName());
 			return user.getUsername();
 		} catch (Exception e) {
 			log.error(e.getMessage());

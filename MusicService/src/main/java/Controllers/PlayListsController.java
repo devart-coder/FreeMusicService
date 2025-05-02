@@ -1,6 +1,8 @@
 package Controllers;
 
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +41,8 @@ public class PlayListsController extends BasePage{
 		String createButton,
 		@RequestParam(required = false) 
 		Long deleteButton,
-		@RequestParam(required = false) 
-		String mainButton,
+		@RequestParam(required = false)
+		Long mainButton,
 		Authentication auth,
 		Model page
 	) throws Exception 
@@ -48,42 +50,42 @@ public class PlayListsController extends BasePage{
 		try {
 			if(Objects.nonNull(createButton)) {
 				try {
-				createPlaylist(user,createButton);
+					createPlaylist(createButton);
 				}catch(Exception e) {
 					page.addAttribute("createPlayListNameError", e.getMessage());
 					return "playlists";
 				}
 			}
-			if( Objects.nonNull(deleteButton) ) 
+			if( Objects.nonNull(deleteButton) )  
 				playListDetails.deleteById(deleteButton);
 			if( Objects.nonNull(mainButton) ) 
-//				playListDetails.setNewMain(mainButton);
-				playListDetails.withUser(user).setNewMain(mainButton);
+				playListDetails
+					.withUser(user)
+					.setAsMain(mainButton);
 		}catch(Exception e) {
 			//TODO:SendErrorToTheModel
 			log.error(e.getMessage());
 		}
-		page.addAttribute("mainPlayList",getMainPlayList(auth));
-		page.addAttribute("playLists",getAllUserPlayLists(auth));		
+			page.addAttribute("playLists", getAllUserPlayLists(auth));
+			page.addAttribute("mainPlayList", getMainPlayList(auth));
 		return "playlists";
 	}
-	@ModelAttribute("playLists")
-	public Iterable<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
-		var user = userService.findOnceByName(auth.getName());
-		var p = user.getPlaylists();
-//		playListDetails.setUser(user);
-		
-//		var p = playListDetails.findAllUserPlaylists();
-		p.sort((o1, o2) -> Boolean.compare(o2.getMain(), o1.getMain() ) );
-		
-		return p;
-	}
-	private void createPlaylist(UserEntity user,String createButton) throws Exception {
+	private void createPlaylist(String createButton) throws Exception {
 			PlaylistCheck.nameIsValid(createButton);
 			playListDetails.save( 
-				PlayListBuilder.builder()
-				.setName(createButton)
-				.setUserEntity(user)
-				.build() );
+				PlayListBuilder
+					.builder()
+					.setName(createButton)
+					.setUserEntity(user)
+					.build() );
 	}
+	@ModelAttribute("playLists")
+	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
+		user = userService.findOnceByName(auth.getName());
+		return 
+			playListDetails
+				.withUser(user)
+				.findAll((o1, o2) ->  Boolean.compare(o2.getMain(), o1.getMain()) );
+	}
+	
 }
