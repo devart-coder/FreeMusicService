@@ -9,7 +9,10 @@ import java.util.Random;
 import org.apache.catalina.valves.rewrite.RandomizedTextRewriteMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.client.RestClient;
 
 import Playlist.Service.PlayListService;
 import Playlist.Service.Interfaces.PlayListDetails;
@@ -26,6 +29,12 @@ public class BasePage {
 	protected PlayListService playListDetails;
 	@Autowired
 	protected UserServiceDetails userService;
+	@Autowired
+	protected OAuth2AuthorizedClientManager manager;
+	
+	protected RestClient client = RestClient.builder()
+			.baseUrl("http://localhost:7070/api/")
+			.build();
 	protected UserEntity user;
 
 	@ModelAttribute("mainPlayList")
@@ -45,6 +54,25 @@ public class BasePage {
 	}	
 	@ModelAttribute("user")
 	protected String getUserName(Authentication auth) {
+		var request = OAuth2AuthorizeRequest
+		.withClientRegistrationId("FMS")
+		.principal(auth)
+		.build();
+		
+		var token = manager
+				.authorize(request)
+				.getAccessToken()
+				.getTokenValue();
+		
+		log.warn(token.toString());
+		var c = client
+				.get()
+				.uri("username")
+				.header("Authorize","Bearer "+token)
+				.retrieve();
+
+		var username = c.body(String.class);
+		log.info(username);
 		try {
 			user = userService.findOnceByName(auth.getName());
 			return user.getUsername();

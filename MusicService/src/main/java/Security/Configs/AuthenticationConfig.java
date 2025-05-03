@@ -27,10 +27,10 @@ public class AuthenticationConfig {
 		return encoder;
 	}
 	
-	@Bean
-	InDataBaseUserDetailService users() {
-		return new InDataBaseUserDetailService();
-	}
+//	@Bean
+//	InDataBaseUserDetailService users() {
+//		return new InDataBaseUserDetailService();
+//	}
 	
 	@Bean
 	AuthenticationProvider authProvider() {

@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class OAuthResuourseSrviceApplicationTests {
+class OAuthResourseServiceApplicationTests {
 	@Autowired
 	private MockMvc mock;
 	@Test

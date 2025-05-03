@@ -9,9 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class ResourceConfig {
-//	@Value("${keySetUri}")
-//	private String keySetUri; 
-	
 	@Bean
 	SecurityFilterChain sfc(HttpSecurity http) throws Exception {
 		return http
@@ -19,5 +16,4 @@ public class ResourceConfig {
 		.authorizeHttpRequests(c->c.anyRequest().permitAll())
 		.build();
 	}
-	
 }

@@ -1,4 +1,4 @@
-package MainApplication;
+package Main;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +25,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import Interfaces.PlayListJpaTest.PlayListJpaCreateTest;
 import Interfaces.PlayListJpaTest.PlayListJpaSearchTest;
-import Playlist.Service.PlayListService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

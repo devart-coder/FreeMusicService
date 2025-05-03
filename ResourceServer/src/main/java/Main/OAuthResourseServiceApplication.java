@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OAuthResuourseSrviceApplication {
+public class OAuthResourseServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OAuthResuourseSrviceApplication.class, args);
+		SpringApplication.run(OAuthResourseServiceApplication.class, args);
 	}
 
 }
