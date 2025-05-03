@@ -1,7 +1,12 @@
 package Controllers;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Random;
 
+import org.apache.catalina.valves.rewrite.RandomizedTextRewriteMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -48,5 +53,27 @@ public class BasePage {
 			e.printStackTrace();
 		}
 		return "Null";
+	}
+	//TODO::RealizeForAdminOnly
+	@ModelAttribute("background")
+	public String backgroundName() {
+		//RandomBackground
+		//TODO::NeedAddChooseBackgroundForAdmin
+		var path = Paths.get("src/main/resources/static/images/backgrounds/").toAbsolutePath();
+		try {
+			var list = Files.list(path)
+					.filter(Files::isRegularFile)
+					.toList();
+			var random = new Random();
+			var number = random.nextInt(0,list.size());
+			log.info(list.get(number).getFileName().toString());
+			return list.get(number).getFileName().toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return "bg_3.jpg";
 	}
 }

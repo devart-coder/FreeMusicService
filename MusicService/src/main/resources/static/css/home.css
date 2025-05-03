@@ -39,29 +39,20 @@ header .topmenu li{
 	float:left;
 }
 
-main #player{
-	width:100%;
-}
+header .footFields{
 
-footer{
-	color:gray;
-	background-color: rgba(0,0,0, 0.3);
-
-	border:1px gray solid;
-	
-	text-align:left;
-	font-size:25px;	
-
+	text-align:right;
+	font-size:15px;	
 	padding:5px;
-}
-footer .footFields{
 	color:#92A8D1;
-	border-left:5px #bb2649 solid;
+	border-right:5px #bb2649 solid;
 }
-footer .footFields #userField{
+header .footFields #userField{
+	background-color: rgba(0,0,0,1);
 	color:#6667ab;
 }
-footer .footFields #userLabel{
+header .footFields #userLabel{
+	background-color: rgba(0,0,0,1);
 	padding-left:5px;
 }
 
