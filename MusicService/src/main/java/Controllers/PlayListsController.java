@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import Playlist.Check.PlaylistCheck;
-import Playlist.DAO.PlayListBuilder;
-import Playlist.DAO.PlayListEntity;
-import Playlist.ErrorMessanges.PlaylistErrorMessanges;
-import Playlist.Exceptions.DuplicatePlaylistsException;
-import Playlist.Exceptions.PlayListNotFoundException;
-import Playlist.Service.Interfaces.PlayListDetails;
-import User.DAO.UserEntity;
-import User.Service.UserService;
+//import Playlist.Check.PlaylistCheck;
+//import Playlist.DAO.PlayListBuilder;
+//import Playlist.DAO.PlayListEntity;
+//import Playlist.ErrorMessanges.PlaylistErrorMessanges;
+//import Playlist.Exceptions.DuplicatePlaylistsException;
+//import Playlist.Exceptions.PlayListNotFoundException;
+//import Playlist.Service.Interfaces.PlayListDetails;
+//import User.DAO.UserEntity;
+//import User.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -47,45 +47,46 @@ public class PlayListsController extends BasePage{
 		Model page
 	) throws Exception 
 	{
-		try {
-			if(Objects.nonNull(createButton)) {
-				try {
-					createPlaylist(createButton);
-				}catch(Exception e) {
-					page.addAttribute("createPlayListNameError", e.getMessage());
-					return "playlists";
-				}
-			}
-			if( Objects.nonNull(deleteButton) )  
-				playListDetails.deleteById(deleteButton);
-			if( Objects.nonNull(mainButton) ) 
-				playListDetails
-					.withUser(user)
-					.setAsMain(mainButton);
-		}catch(Exception e) {
-			//TODO:SendErrorToTheModel
-			log.error(e.getMessage());
-		}
-			page.addAttribute("playLists", getAllUserPlayLists(auth));
-			page.addAttribute("mainPlayList", getMainPlayList(auth));
+//		try {
+//			if(Objects.nonNull(createButton)) {
+//				try {
+//					createPlaylist(createButton);
+//				}catch(Exception e) {
+//					page.addAttribute("createPlayListNameError", e.getMessage());
+//					return "playlists";
+//				}
+//			}
+//			if( Objects.nonNull(deleteButton) )  
+//				playListDetails.deleteById(deleteButton);
+//			if( Objects.nonNull(mainButton) ) 
+//				playListDetails
+//					.withUser(user)
+//					.setAsMain(mainButton);
+//		}catch(Exception e) {
+//			//TODO:SendErrorToTheModel
+//			log.error(e.getMessage());
+//		}
+//			page.addAttribute("playLists", getAllUserPlayLists(auth));
+//			page.addAttribute("mainPlayList", getMainPlayList(auth));
+//		return "playlists";
+//	}
+//	private void createPlaylist(String createButton) throws Exception {
+//			PlaylistCheck.nameIsValid(createButton);
+//			playListDetails.save( 
+//				PlayListBuilder
+//					.builder()
+//					.setName(createButton)
+//					.setUserEntity(user)
+//					.build() );
+//	}
+//	@ModelAttribute("playLists")
+//	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
+//		user = userService.findOnceByName(auth.getName());
+//		return 
+//			playListDetails
+//				.withUser(user)
+//				.findAll((o1, o2) ->  Boolean.compare(o2.getMain(), o1.getMain()) );
 		return "playlists";
-	}
-	private void createPlaylist(String createButton) throws Exception {
-			PlaylistCheck.nameIsValid(createButton);
-			playListDetails.save( 
-				PlayListBuilder
-					.builder()
-					.setName(createButton)
-					.setUserEntity(user)
-					.build() );
-	}
-	@ModelAttribute("playLists")
-	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
-		user = userService.findOnceByName(auth.getName());
-		return 
-			playListDetails
-				.withUser(user)
-				.findAll((o1, o2) ->  Boolean.compare(o2.getMain(), o1.getMain()) );
 	}
 	
 }

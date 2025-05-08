@@ -10,42 +10,66 @@ import org.apache.catalina.valves.rewrite.RandomizedTextRewriteMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.client.RestClient;
 
-import Playlist.Service.PlayListService;
-import Playlist.Service.Interfaces.PlayListDetails;
-import User.DAO.UserEntity;
-import User.Service.UserService;
-import User.Service.Interfaces.UserServiceDetails;
+//import Playlist.Service.PlayListService;
+//import Playlist.Service.Interfaces.PlayListDetails;
+//import User.DAO.UserEntity;
+//import User.Service.UserService;
+//import User.Service.Interfaces.UserServiceDetails;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor
+@Controller
 public class BasePage {
-	@Autowired
-	protected PlayListService playListDetails;
-	@Autowired
-	protected UserServiceDetails userService;
 	@Autowired
 	protected OAuth2AuthorizedClientManager manager;
 	
-	protected RestClient client = RestClient.builder()
+	protected RestClient client = RestClient
+			.builder()
 			.baseUrl("http://localhost:7070/api/")
 			.build();
-	protected UserEntity user;
-
+	protected OAuth2AuthorizedClient getOAuth2Client( Authentication auth ) {
+		
+		var request = OAuth2AuthorizeRequest
+			.withClientRegistrationId("FMS")
+			.principal(auth)
+			.build();
+		
+		return manager
+				.authorize(request);
+//				.getAccessToken()
+//				.getTokenValue();
+	}
 	@ModelAttribute("mainPlayList")
 	protected String getMainPlayList( Authentication auth ){
 		try {
-			user = userService.findOnceByName(auth.getName());
-			return 
-				playListDetails
-					.withUser(user)
-					.findOnceMainPlaylist()
-					.getName();
+			var cli = getOAuth2Client(auth);
+			if(cli == null)
+				return null;
+			
+			var token = cli.getAccessToken();
+			if(token == null)
+				return null;
+			
+			log.warn("TokenType: " +token.getTokenType().toString());
+			log.warn("TokenValue: "+token.getTokenValue().toString());
+			var c = client
+				.get()
+				.uri(auth.getName()+"/playlists/main")
+				.header("Authorize",token.getTokenType().toString()+token.getTokenValue())
+				.retrieve();
+
+			var mainName = c.body(String.class);
+			log.info(mainName);
+			return mainName;
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -54,34 +78,9 @@ public class BasePage {
 	}	
 	@ModelAttribute("user")
 	protected String getUserName(Authentication auth) {
-		var request = OAuth2AuthorizeRequest
-		.withClientRegistrationId("FMS")
-		.principal(auth)
-		.build();
-		
-		var token = manager
-				.authorize(request)
-				.getAccessToken()
-				.getTokenValue();
-		
-		log.warn(token.toString());
-		var c = client
-				.get()
-				.uri("username")
-				.header("Authorize","Bearer "+token)
-				.retrieve();
-
-		var username = c.body(String.class);
-		log.info(username);
-		try {
-			user = userService.findOnceByName(auth.getName());
-			return user.getUsername();
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-		}
-		return "Null";
+		return auth.getName();
 	}
+
 	//TODO::RealizeForAdminOnly
 	@ModelAttribute("background")
 	public String backgroundName() {
@@ -94,14 +93,11 @@ public class BasePage {
 					.toList();
 			var random = new Random();
 			var number = random.nextInt(0,list.size());
-			log.info(list.get(number).getFileName().toString());
 			return list.get(number).getFileName().toString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 		return "bg_3.jpg";
 	}
 }

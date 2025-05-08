@@ -1,4 +1,4 @@
-package Security.Configs;
+package FMSMain;
 
 import java.util.Map;
 
@@ -10,8 +10,7 @@ import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import Security.Providers.UserAuthProvider;
-import Security.Services.InDataBaseUserDetailService;
+//import Security.Providers.UserAuthProvider;
 
 @Configuration
 public class AuthenticationConfig {
@@ -26,14 +25,9 @@ public class AuthenticationConfig {
 		encoder.setDefaultPasswordEncoderForMatches(new BCryptPasswordEncoder());
 		return encoder;
 	}
-	
+
 //	@Bean
-//	InDataBaseUserDetailService users() {
-//		return new InDataBaseUserDetailService();
+//	AuthenticationProvider provider() {
+//		return new UserAuthProvider();
 //	}
-	
-	@Bean
-	AuthenticationProvider authProvider() {
-		return new UserAuthProvider();
-	}
 }
