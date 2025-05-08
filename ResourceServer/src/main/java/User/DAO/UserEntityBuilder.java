@@ -44,9 +44,9 @@ public class UserEntityBuilder {
 		return this;
 	}
 	public UserEntityBuilder setPlaylists(List<PlayListEntity> playlists) {
-		for( var p : playlists) 
-			if(p.getUser()==null)
-				p.setUser(user);
+//		for( var p : playlists) 
+//			if(p.getUser()==null)
+//				p.setUser(user);
 		this.user.setPlaylists(playlists);
 		return this;
 	}

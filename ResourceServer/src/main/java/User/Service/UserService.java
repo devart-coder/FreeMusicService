@@ -1,6 +1,7 @@
 package User.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,26 +28,31 @@ public class UserService implements UserServiceDetails{
 		return repos.findAll();
 	}
 	@Override
-	public UserEntity findOnceById(Long id) 
-		throws UserNotFoundException{
+	public UserEntity findOnceById(Long id)  
+		throws ResourceNotFoundException{
 		
 		UserCheck.idIsValid(id);
 		return 
 			repos
 			.findById(id)
 			.orElseThrow( 
-				() -> new UserNotFoundException("Can't found user with id '%d'".formatted(id)) );
+				() -> new ResourceNotFoundException("Can't found user with id '%d'".formatted(id)) );
 	}
 	@Override
-	public UserEntity findOnceByName(String username) 
-		throws Exception, UserNotFoundException{
+	public UserEntity findOnceByName(String username)  
+		throws UserNotFoundException{
 
-		UserCheck.usernameIsValid(username);
+		try {
+			UserCheck.usernameIsValid(username);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return 
 			repos
 			.findByUsername(username)
 			.orElseThrow( 
-				() -> new UserNotFoundException("Can't found user with name '%s'".formatted(username)) );
+				() -> new UserNotFoundException("Can't found user with id '%s'".formatted(username)) );
 	}
 	@Override
 	public void deleteByEntity(UserEntity user) {

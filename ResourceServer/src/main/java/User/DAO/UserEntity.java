@@ -33,14 +33,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity implements Serializable {
-	@Override
-	public String toString() {
-		return "UserEntity [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role
-				+ ", enabled=" + enabled + ", createdBy=" + createdBy + ", playlists=" + playlists + ", settings="
-				+ settings + "]";
-	}
-
-	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false)

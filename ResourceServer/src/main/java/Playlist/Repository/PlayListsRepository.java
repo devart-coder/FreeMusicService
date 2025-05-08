@@ -38,7 +38,7 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	@Query("update playlists p set p.size = ?1 where p.name = ?2 ")
 	Optional<Long> updateSizeByName(Long size, String name);
 
-	public List<PlayListEntity> findAllByUser(UserEntity user);
+//	public List<PlayListEntity> findAllByUser(UserEntity user);
 	
 	//TODO:?WhyThisNotDefault?
 	@Modifying

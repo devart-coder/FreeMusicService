@@ -18,20 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/register")
 public class RegistrationController {
-//	@Autowired
-//	private UserService userService;
-//	
-//	@GetMapping
-//	public String registerForm() {
-//		return "register";
-//	}
-//	@PostMapping
-//	public String authProcess( 
-//		@RequestParam(required = false)
-//		String username,
-//		@RequestParam(required = false)
-//		String password
-//	){
+	
+	@GetMapping
+	public String registerForm() {
+		return "register";
+	}
+	@PostMapping
+	public String authProcess( 
+		@RequestParam(required = false)
+		String username,
+		@RequestParam(required = false)
+		String password
+	){
 //		try {
 //			var user = userService.findOnceByName(username);
 //			log.error("User with name '"+user.getUsername()+"' exists.");
@@ -46,5 +44,6 @@ public class RegistrationController {
 //			log.error(e.getMessage());
 //		}
 //		return "redirect:/login";
-//	}
+		return null;
+	}
 }

@@ -23,12 +23,6 @@ import lombok.ToString;
 @Table(name = "playlists")
 @NoArgsConstructor
 public class PlayListEntity {
-	@Override
-	public String toString() {
-		return "PlayListEntity [Id=" + Id + ", name=" + name + ", main=" + main + ", user=" + user + ", size=" + size
-				+ ", createdBy=" + createdBy + "]";
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Getter
@@ -46,10 +40,10 @@ public class PlayListEntity {
 	@Getter
 	private Boolean main;
 
-	@ManyToOne
-	@Setter
-	@Getter
-	private UserEntity user;
+//	@ManyToOne
+//	@Setter
+//	@Getter
+//	private UserEntity user;
 	
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")

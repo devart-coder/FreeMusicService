@@ -208,7 +208,7 @@ public class PlayListService implements PlayListDetails {
 				log.error(e.getMessage());
 				
 				var p = PlayListBuilder.defaultPlaylist();
-				p.setUser(user);
+//				p.setUser(user);
 				return playlistService.save(p);
 			}
 			return null;
@@ -266,13 +266,15 @@ public class PlayListService implements PlayListDetails {
 			return null;
 		}
 		public List<PlayListEntity> findAll() {
-			var list = playListRepos.findAllByUser(user);
-			return list;
+//			var list = playListRepos.findAllByUser(user);
+//			return list;
+			return null;
 		}
 		public List<PlayListEntity> findAll(Comparator<PlayListEntity> c) {
-			var list = playListRepos.findAllByUser(user);
-			list.sort(c);
-			return list;
+//			var list = playListRepos.findAllByUser(user);
+//			list.sort(c);
+//			return list;
+			return null;
 		}
 	}
 }

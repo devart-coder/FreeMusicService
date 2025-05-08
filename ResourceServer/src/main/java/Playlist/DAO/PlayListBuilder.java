@@ -29,12 +29,12 @@ public class PlayListBuilder {
 		this.playlist.setMain(flag);
 		return this;
 	}
-	public PlayListBuilder setUserEntity(UserEntity user) {
-		if(user.getPlaylists() ==null)
-			user.setPlaylists(Arrays.asList(playlist));
-		this.playlist.setUser(user);
-		return this;
-	}
+//	public PlayListBuilder setUserEntity(UserEntity user) {
+//		if(user.getPlaylists() ==null)
+//			user.setPlaylists(Arrays.asList(playlist));
+//		this.playlist.setUser(user);
+//		return this;
+//	}
 	public PlayListBuilder setSize(Long size) {
 		this.playlist.setSize(size);
 		return this;
