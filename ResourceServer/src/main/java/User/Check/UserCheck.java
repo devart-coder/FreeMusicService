@@ -2,7 +2,7 @@ package User.Check;
 
 import java.util.Objects;
 
-import SharedCheks.SharedCheck;
+import SharedChecks.SharedCheck;
 import User.ErrorMessanges.UserErrorMessanges;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j

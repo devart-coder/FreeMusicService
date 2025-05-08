@@ -1,4 +1,4 @@
-package SharedCheks;
+package SharedChecks;
 
 import java.util.Objects;
 

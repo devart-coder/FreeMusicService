@@ -46,6 +46,7 @@ public class PlayListService implements PlayListDetails {
 	}
 
 	// Find
+	//ForAdmins
 	@Override
 	public List<PlayListEntity> findAll() {
 		return playListRepos.findAll();

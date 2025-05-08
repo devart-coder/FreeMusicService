@@ -31,6 +31,6 @@ public class SecureUser implements UserDetails {
 		return "SecureUser [user=" + user + "]";
 	}
 	public Long getId() {
-		return user.getId()
-;	}
+		return user.getId();
+	}
 }

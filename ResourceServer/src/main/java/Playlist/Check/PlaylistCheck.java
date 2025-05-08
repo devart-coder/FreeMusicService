@@ -3,7 +3,7 @@ package Playlist.Check;
 import java.util.Objects;
 
 import Playlist.ErrorMessanges.PlaylistErrorMessanges;
-import SharedCheks.SharedCheck;
+import SharedChecks.SharedCheck;
 
 public class PlaylistCheck extends SharedCheck{
 	public static boolean nameIsValid(String name) throws Exception{

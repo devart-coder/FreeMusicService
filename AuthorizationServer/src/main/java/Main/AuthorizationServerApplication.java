@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.boot.SpringApplication;
@@ -15,15 +16,24 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authorization.AuthoritiesAuthorizationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 
@@ -33,18 +43,15 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import Security.Providers.UserAuthProvider;
-import Security.Services.InDataBaseUserDetailService;
-
-
 @SpringBootApplication
 @Configuration
 @ComponentScan(basePackages = {
 		"User"
-		,"Playlist"})
+		,"Playlist"
+		,"Security"})
 @EnableJpaRepositories(basePackages = {
-		"User.Repository"
-		,"Playlist.Repository"})
+		"User",
+		"Playlist"})
 @EntityScan(basePackages = {
 		"User.DAO"
 		,"Playlist.DAO"})
@@ -68,7 +75,7 @@ public class AuthorizationServerApplication {
 	
 	@Bean
 	@Order(2)
-	SecurityFilterChain asSecondFilter(HttpSecurity http) throws Exception {
+	SecurityFilterChain asDefaultFilter(HttpSecurity http) throws Exception {
 		return
 			http
 			.formLogin(Customizer.withDefaults())
@@ -86,14 +93,6 @@ public class AuthorizationServerApplication {
 		return encoder;
 	}
 	@Bean
-	UserDetailsService users() {
-		return new InDataBaseUserDetailService();
-	}
-	@Bean
-	UserAuthProvider provider() {
-		return new UserAuthProvider();
-	}
-	@Bean
 	JWKSource<SecurityContext> jwkSource() throws NoSuchAlgorithmException{
 		var generator = KeyPairGenerator.getInstance("RSA");
 		generator.initialize(2048);
@@ -108,5 +107,26 @@ public class AuthorizationServerApplication {
 			.build();
 		var jwkSet = new JWKSet(rsaKey);
 		return new ImmutableJWKSet<>(jwkSet);
+	}
+	@Bean
+	RegisteredClientRepository clientRegistreredRepository() {
+		var fms=RegisteredClient.withId("FMS")
+			.clientId("client")
+			.clientSecret("{noop}secret")
+			.clientName("FMS")
+			.clientAuthenticationMethod( ClientAuthenticationMethod.CLIENT_SECRET_BASIC )
+			.authorizationGrantTypes(t -> t.addAll(
+					Set.of(
+							AuthorizationGrantType.AUTHORIZATION_CODE,
+							AuthorizationGrantType.CLIENT_CREDENTIALS)))
+			.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
+			//TODO::makeTokenTime
+//			.tokenSettings( TokenSettings
+//				.builder()
+//				.accessTokenTimeToLive(null)
+//				.build())
+			.scope( "openid" )
+			.build();
+		return new InMemoryRegisteredClientRepository(fms);
 	}
 }

@@ -16,13 +16,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity(name = "playlists")
 @Table(name = "playlists")
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class PlayListEntity {
+	@Override
+	public String toString() {
+		return "PlayListEntity [Id=" + Id + ", name=" + name + ", main=" + main + ", user=" + user + ", size=" + size
+				+ ", createdBy=" + createdBy + "]";
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Getter
@@ -30,20 +36,31 @@ public class PlayListEntity {
 
 	@Column(nullable = false)
 	@ColumnDefault(value = "'Default'")
+	@Setter
+	@Getter
 	private String name;
 
 	@Column(name = "main",nullable = false, columnDefinition = "boolean")
 	@ColumnDefault(value = "false")
+	@Setter
+	@Getter
 	private Boolean main;
 
 	@ManyToOne
+	@Setter
+	@Getter
 	private UserEntity user;
 	
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
+	@Setter
+	@Getter
 	private Long size;
 
 	@Column(nullable = false, updatable = false)
 	@ColumnDefault(value = "now()")
+	@Getter
+	@Setter
 	private LocalDate createdBy;
+
 }

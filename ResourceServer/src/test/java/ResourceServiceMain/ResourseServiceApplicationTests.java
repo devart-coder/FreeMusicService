@@ -1,4 +1,4 @@
-package Main;
+package ResourceServiceMain;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class OAuthResourseServiceApplicationTests {
+class ResourseServiceApplicationTests {
 	@Autowired
 	private MockMvc mock;
 	@Test
