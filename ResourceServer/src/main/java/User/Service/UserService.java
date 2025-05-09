@@ -18,15 +18,21 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService implements UserServiceDetails{
 	@Autowired
 	private UserRepository repos; 
+	@Autowired
+	private PasswordEncoder encoder;
+	
 	@Override
-	public UserEntity save(UserEntity user) throws Exception {
+	public UserEntity add(UserEntity user) throws Exception {
 		UserCheck.notNull(user);
+		user.setPassword(encoder.encode(user.getPassword()));
 		return repos.save(user);
 	}
+	
 	@Override
 	public Iterable<UserEntity> findAll(){
 		return repos.findAll();
 	}
+	
 	@Override
 	public UserEntity findOnceById(Long id)  
 		throws ResourceNotFoundException{
@@ -38,6 +44,7 @@ public class UserService implements UserServiceDetails{
 			.orElseThrow( 
 				() -> new ResourceNotFoundException("Can't found user with id '%d'".formatted(id)) );
 	}
+	
 	@Override
 	public UserEntity findOnceByName(String username)  
 		throws UserNotFoundException{
@@ -54,8 +61,9 @@ public class UserService implements UserServiceDetails{
 			.orElseThrow( 
 				() -> new UserNotFoundException("Can't found user with id '%s'".formatted(username)) );
 	}
+	
 	@Override
-	public void deleteByEntity(UserEntity user) {
+	public void remove(UserEntity user) {
 		UserCheck.notNull(user);
 		repos.delete(user);
 	}

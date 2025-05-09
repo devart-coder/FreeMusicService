@@ -3,10 +3,14 @@ package User.DAO.Settings;
 import java.io.Serializable;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DialectOverride.GeneratedColumn;
 
 import User.DAO.UserEntity;
+import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
@@ -19,25 +23,13 @@ import lombok.ToString;
 @Entity
 @Table(name = "user_settings")
 public class UserSettings implements Serializable{
-
-	@Override
-	public String toString() {
-		return "UserSettings [id=" + id + ", email=" + email + ", phoneNumber=" + phoneNumber
-				+ ", imagePath=" + imagePath + "]";
-	}
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Getter
 	private Long id;
 
-	@OneToOne
-	@MapsId
-	@Getter
-	@Setter
-	private UserEntity user;
-	
 	@Column(name = "email",nullable = true)
 	@Getter
 	@Setter

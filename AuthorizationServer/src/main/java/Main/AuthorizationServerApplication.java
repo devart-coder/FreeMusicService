@@ -120,7 +120,7 @@ public class AuthorizationServerApplication {
 							AuthorizationGrantType.AUTHORIZATION_CODE,
 							AuthorizationGrantType.CLIENT_CREDENTIALS)))
 			.redirectUri("http://localhost:8080/login/oauth2/code/FMS")
-			//TODO::makeTokenTime
+			//TODO::makeTokenTimeALive
 //			.tokenSettings( TokenSettings
 //				.builder()
 //				.accessTokenTimeToLive(null)

@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import Playlist.DAO.PlayListEntity;
 import User.DAO.Settings.UserSettings;
@@ -75,6 +77,9 @@ public class UserEntity implements Serializable {
 	
 	@Setter
 	@Getter
-	@OneToOne(cascade = CascadeType.ALL,mappedBy = "user")
-	private UserSettings settings; 
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	private UserSettings settings;
+
+	 
 }

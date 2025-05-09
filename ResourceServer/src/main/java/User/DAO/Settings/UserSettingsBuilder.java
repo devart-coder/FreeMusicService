@@ -12,9 +12,6 @@ public class UserSettingsBuilder {
 	public static UserSettingsBuilder builder() {
 		return new UserSettingsBuilder();
 	}
-	public static UserSettings defaultWithUser(UserEntity user) throws Exception {
-		return builder().setUser(user).build();
-	}
 	public UserSettingsBuilder setEmail(String newEmail) {
 		this.settings.setEmail(newEmail);
 		return this;
@@ -27,20 +24,18 @@ public class UserSettingsBuilder {
 		this.settings.setImagePath(newImagePath);
 		return this;
 	}
-	public UserSettingsBuilder setUser(UserEntity user) {
-		if(user.getSettings()==null)
-			user.setSettings(settings);
-		this.settings.setUser(user);
-		return this;
-	}
+//	public UserSettingsBuilder setUser(UserEntity user) {
+//		if(user.getSettings()==null)
+//			user.setSettings(settings);
+//		this.settings.setUser(user);
+//		return this;
+//	}
 	public UserSettings build() throws Exception {
 		if(this.settings.getImagePath()==null) {
 			//TODO::AddDefaultAvaterImagePath
 			settings.setImagePath("some_default_path");
 			log.warn(String.format("'image_path' field set default value: '%s'",settings.getImagePath()));
 		}
-		if(this.settings.getUser()==null)
-			throw new Exception("'User' field is null");
 		return settings;
 	}
 }

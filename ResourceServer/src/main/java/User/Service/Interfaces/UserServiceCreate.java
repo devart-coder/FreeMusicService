@@ -3,5 +3,5 @@ package User.Service.Interfaces;
 import User.DAO.UserEntity;
 
 public interface UserServiceCreate {
-	UserEntity save(UserEntity user) throws Exception;
+	UserEntity add(UserEntity user) throws Exception;
 }
