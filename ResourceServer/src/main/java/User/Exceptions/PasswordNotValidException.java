@@ -1,4 +1,4 @@
-package User.Check;
+package User.Exceptions;
 
 import lombok.Getter;
 import lombok.Setter;

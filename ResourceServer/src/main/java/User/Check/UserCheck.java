@@ -9,6 +9,7 @@ import SharedChecks.SharedCheck;
 import User.DAO.UserEntity;
 import User.DAO.Settings.UserSettingsBuilder;
 import User.ErrorMessanges.UserErrorMessanges;
+import User.Exceptions.PasswordNotValidException;
 import User.Exceptions.UsernameNotValidException;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -29,7 +30,7 @@ public class UserCheck extends SharedCheck{
 		if (username.isBlank())
 			throw new PasswordNotValidException(UserErrorMessanges.PASSWORD_IS_BLANK);
 	}
-	public static UserEntity filedsCheck(UserEntity user) throws Exception {
+	public static UserEntity filedsCheck(UserEntity user) throws UsernameNotValidException,PasswordNotValidException {
 		usernameIsValid(user.getUsername());
 		passwordIsValid(user.getPassword());
 		

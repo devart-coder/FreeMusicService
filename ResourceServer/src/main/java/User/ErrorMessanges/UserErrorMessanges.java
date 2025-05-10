@@ -10,4 +10,5 @@ public interface UserErrorMessanges {
 	static String PASSWORD_IS_BLANK = "'Password' is blank.";
 
 	static String USER_NOT_FOUND_WITH_NAME = "User with name '%s' not found.";
+	static String USER_NOT_FOUND_WITH_ID = "User with id '%d' not found.";
 }
