@@ -2,13 +2,20 @@ package Controllers.LoginAndRegistration;
 
 
 
+import java.util.Map;
+
 import org.springframework.http.MediaType;
+import org.springframework.security.web.util.RedirectUrlBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.service.invoker.UriBuilderFactoryArgumentResolver;
+import org.springframework.web.util.DefaultUriBuilderFactory;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriBuilderFactory;
 
 import User.DAO.UserEntity;
 import User.DAO.UserEntityBuilder;
@@ -36,32 +43,18 @@ public class RegistrationController {
 		String password
 	){
 		try {
-			var result = client.post()
+			var user = client.post()
 			.uri("user")
 			.contentType(MediaType.APPLICATION_JSON)
-			.body(UserEntityBuilder.defaulUserWith(username, password))
-			.retrieve();
-			var user = result.body(UserEntity.class);
+			.body(Map.of("username",username,"password",password))
+			.retrieve()
+			.body(UserEntity.class);
 			log.warn(user.toString());
+			return "redirect:/login";
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-//		try {
-//			var user = userService.findOnceByName(username);
-//			log.error("User with name '"+user.getUsername()+"' exists.");
-//			return "register";
-//		}catch(UserNotFoundException e) {
-//			try {
-//				userService.save(UserEntityBuilder.defaulUserWith(username, password));
-//			} catch (Exception ex) {
-//				log.error(ex.getMessage());
-//			}
-//		}catch(Exception e) {
-//			log.error(e.getMessage());
-//		}
-//		return "redirect:/login";
-		return null;
+		return "register";
 	}
 }

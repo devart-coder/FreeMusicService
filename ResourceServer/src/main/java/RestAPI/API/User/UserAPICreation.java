@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import User.DAO.UserEntity;
+import User.Exceptions.UserDuplicateException;
 
 public interface UserAPICreation {
-	public ResponseEntity<?> userCreationWithBody( @RequestBody UserEntity user);
-	public ResponseEntity<?> userCreationWithParams( @RequestParam String username, @RequestParam String password);
+	public UserEntity userCreationWithBody( @RequestBody UserEntity user) throws UserDuplicateException;
 }

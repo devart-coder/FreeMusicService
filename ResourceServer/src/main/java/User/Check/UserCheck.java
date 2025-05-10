@@ -21,9 +21,9 @@ public class UserCheck extends SharedCheck{
 			throw new Exception(UserErrorMessanges.USERNAME_IS_BLANK);
 	}
 	public static UserEntity filedsCheck(UserEntity user) throws Exception {
-		if(user.getUsername()==null) {
-			throw new Exception(String.format("'username' field is empty."));
-		}
+		idIsValid(user.getId()); 
+		usernameIsValid(user.getUsername());
+
 		if(user.getPassword()==null) {
 			throw new Exception(String.format("'password' field is empty."));
 		}

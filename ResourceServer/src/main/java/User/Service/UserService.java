@@ -2,11 +2,14 @@ package User.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import User.Check.UserCheck;
 import User.DAO.UserEntity;
+import User.Exceptions.UserDuplicateException;
 import User.Exceptions.UserNotFoundException;
 import User.Repository.UserRepository;
 import User.Service.Interfaces.UserServiceDetails;
@@ -22,10 +25,20 @@ public class UserService implements UserServiceDetails{
 	private PasswordEncoder encoder;
 	
 	@Override
-	public UserEntity add(UserEntity user) throws Exception {
-		UserCheck.notNull(user);
-		user.setPassword(encoder.encode(user.getPassword()));
-		return repos.save(user);
+	public UserEntity create(UserEntity user) throws UserDuplicateException {
+		try {
+//			UserCheck.notNull(user);
+			UserCheck.filedsCheck(user);
+		}catch(Exception e) {
+			log.error(e.getMessage());
+		}
+			if(repos.findByUsername(user.getUsername()) != null) 
+				throw new UserDuplicateException(HttpStatus.NOT_ACCEPTABLE, "User with name '%s' exists.".formatted(user.getUsername()));
+
+			user.setPassword(encoder.encode(user.getPassword()));
+			var newUser = repos.save(user);
+			log.info("User with id '%d' created.".formatted(newUser.getId()));
+			return newUser;
 	}
 	
 	@Override

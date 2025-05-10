@@ -29,47 +29,24 @@ import User.DAO.UserEntity;
 import User.DAO.UserEntityBuilder;
 import User.DAO.Settings.UserSettings;
 import User.DAO.Settings.UserSettingsBuilder;
+import User.Exceptions.UserDuplicateException;
 import User.Exceptions.UserNotFoundException;
 import User.Service.UserService;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequestMapping("api/")
 @NoArgsConstructor
-@Slf4j
 public class UserAPI implements UserAPICreation{
 	@Autowired
 	private UserService userService;
 	//Creation
 	@Override
 	@PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)  
-	public ResponseEntity<?> userCreationWithBody( @RequestBody UserEntity user){
-		try {
-			user = UserEntityBuilder.defaulUserWith(user.getUsername(), user.getPassword());
-			var newUser = userService.add(user);
-			log.info("User with id '"+newUser.getId()+"' was created.");
-			return ResponseEntity.ok( newUser );
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("ErrorMessage: ",e.getMessage()));
-		}
-	}
-	@Override
-	@PostMapping(value = "/user")  
-	public ResponseEntity<?> userCreationWithParams( 
-			@RequestParam String username
-			,@RequestParam String password){
-		try {
-			var user=UserEntityBuilder.defaulUserWith(username, password);
-			var newUser = userService.add(user);
-			log.info("User with id '"+user.getId()+"' was saved.");
-			return ResponseEntity.ok( newUser );
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("ErrorMessage: ",e.getMessage()));
-		}
+	public UserEntity userCreationWithBody( @RequestBody UserEntity user) throws UserDuplicateException{
+		return  userService.create(user) ;
 	}
 	//Search
 	@GetMapping("/{username}/info")

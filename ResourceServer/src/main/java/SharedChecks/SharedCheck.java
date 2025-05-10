@@ -16,7 +16,7 @@ public class SharedCheck {
 				throw new Exception(ID_LESS_ZERRO);
 			return true;
 		}catch(Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return false;
 	}
@@ -26,7 +26,7 @@ public class SharedCheck {
 				throw new Exception();
 			return true;
 		}catch(Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		return false;
 	}
@@ -40,7 +40,6 @@ public class SharedCheck {
 			return true;
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 	} 
