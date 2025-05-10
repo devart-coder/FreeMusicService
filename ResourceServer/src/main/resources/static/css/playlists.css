@@ -1,0 +1,152 @@
+body { 
+	background-color: black; 
+	background-size:100%;
+}
+a{
+	display:block;
+		
+	background-color:#333;
+	color:white;
+	border:1px gray solid;
+	
+	text-align:center;
+	text-decoration:none;	
+	font-size:25px;
+	padding:5px;
+}
+a:hover{
+	background-color:#555;
+}
+
+header, main { 
+	background-color: rgba(0,0,0,0.3);
+	color: rgba(50,50,50,0.3);
+}
+/*HEADER*/
+header .greetings{
+	color:#92A8D1;
+	text-align:center;
+	font-size:60px;
+	text-shadow: 8px 8px 3px rgba(0, 0, 0, 0.9); 
+}
+header .topmenu ul{
+	list-style-type: none;
+	margin:0;
+	padding:0;	
+	background-color:#333;
+}
+header .topmenu li{
+	width:25%;
+	float:left;
+}
+/*main*/
+main{
+	color:white;
+}
+.createNewPlayListLabels{
+	font-size: 30px;
+	margin-left:5%;
+	margin-bottom:10px;	
+}
+input[type=text]{
+	font-size: 20px;
+	width:50%;	
+	height:30px;
+	background-color: lightblue;
+}
+main .deleteButton{
+	height:50px;
+	width:100%;
+	color:lightblue;
+	font-size:100%;
+	text-align:left;
+	padding-left:10%;
+	background-color:rgba(0,0,0,0);
+	background-image:url('/images/Icons/Trash/trash_3.png');
+	background-repeat: no-repeat;
+	background-size: 10% 100%;
+}
+main .deleteButton:hover{
+	background-color:#bb2649;
+	color:white;
+	
+}
+main .createButton{
+	height:40px;
+	width:10%;
+	font-size:25px;
+	margin-top:5px;
+	padding-left:40px;		
+	background-image:url('/images/Icons/Plus/plus.png');
+	background-repeat: no-repeat;
+	background-size: 25% 100%;
+	border:none;
+	border-radius:5px;
+}
+main .createButton:hover{
+	background:#45B8AC;
+	color:white;
+	background-image:url('/images/Icons/Plus/plus.png');
+	background-repeat: no-repeat;
+	background-size: 25% 100%;
+}
+#createPlayListNameError{
+	color:red;
+	font-size:25px;
+	margin-top:55px;	
+}
+table{
+	width: 90%;
+	border-collapse:collapse;
+	margin-left:5%;
+}
+th {
+	height: 75px;
+	width: 25%;
+	border:white 2px solid;
+	font-size:30px;
+/*	background-color:#92A8D1;	*/
+	background-color:#333;
+	color:lightblue;
+}
+tr:hover{
+	background-color:coral;
+}
+
+td{
+	font-size:30px;
+	text-align:center;
+	vertical-align:center;
+	height: 50px;
+	border:white 2px solid;
+}
+footer{
+	color:gray;
+	background-color: rgba(0,0,0, 0.3);
+
+	border:1px gray solid;
+	
+	text-align:left;
+	font-size:25px;	
+
+	padding:5px;
+}
+footer .footFields{
+	color:#92A8D1;
+	border-left:5px #bb2649 solid;
+}
+footer .footFields #userField{
+	color:#6667ab;
+}
+footer .footFields #userLabel{
+	padding-left:5px;
+}
+
+img{
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	z-index:-1;
+}

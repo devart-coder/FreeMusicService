@@ -9,24 +9,30 @@ import SharedChecks.SharedCheck;
 import User.DAO.UserEntity;
 import User.DAO.Settings.UserSettingsBuilder;
 import User.ErrorMessanges.UserErrorMessanges;
+import User.Exceptions.UsernameNotValidException;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserCheck extends SharedCheck{
-	public static void usernameIsValid(String username) throws Exception{
+	public static void usernameIsValid(String username) throws UsernameNotValidException{
 		if(Objects.isNull(username) )
-			throw new Exception(UserErrorMessanges.USERNAME_IS_NULL);
+			throw new UsernameNotValidException(UserErrorMessanges.USERNAME_IS_NULL);
 		if (username.isEmpty())
-			throw new Exception(UserErrorMessanges.USERNAME_IS_EMPTY);
+			throw new UsernameNotValidException(UserErrorMessanges.USERNAME_IS_EMPTY);
 		if (username.isBlank())
-			throw new Exception(UserErrorMessanges.USERNAME_IS_BLANK);
+			throw new UsernameNotValidException(UserErrorMessanges.USERNAME_IS_BLANK);
+	}
+	public static void passwordIsValid(String username) throws PasswordNotValidException{
+		if(Objects.isNull(username) )
+			throw new PasswordNotValidException(UserErrorMessanges.PASSWORD_IS_NULL);
+		if (username.isEmpty())
+			throw new PasswordNotValidException(UserErrorMessanges.PASSWORD_IS_EMPTY);
+		if (username.isBlank())
+			throw new PasswordNotValidException(UserErrorMessanges.PASSWORD_IS_BLANK);
 	}
 	public static UserEntity filedsCheck(UserEntity user) throws Exception {
-		idIsValid(user.getId()); 
 		usernameIsValid(user.getUsername());
-
-		if(user.getPassword()==null) {
-			throw new Exception(String.format("'password' field is empty."));
-		}
+		passwordIsValid(user.getPassword());
+		
 		if(user.getRole() == null) {
 			user.setRole("ROLE_USER");
 			log.warn(String.format("'role' field set default value: '%s'",user.getRole()));

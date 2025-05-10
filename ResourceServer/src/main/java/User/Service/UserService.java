@@ -1,5 +1,7 @@
 package User.Service;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -9,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import User.Check.UserCheck;
 import User.DAO.UserEntity;
+import User.ErrorMessanges.UserErrorMessanges;
 import User.Exceptions.UserDuplicateException;
 import User.Exceptions.UserNotFoundException;
+import User.Exceptions.UsernameNotValidException;
 import User.Repository.UserRepository;
 import User.Service.Interfaces.UserServiceDetails;
 import lombok.NoArgsConstructor;
@@ -25,20 +29,16 @@ public class UserService implements UserServiceDetails{
 	private PasswordEncoder encoder;
 	
 	@Override
-	public UserEntity create(UserEntity user) throws UserDuplicateException {
-		try {
-//			UserCheck.notNull(user);
-			UserCheck.filedsCheck(user);
-		}catch(Exception e) {
-			log.error(e.getMessage());
-		}
-			if(repos.findByUsername(user.getUsername()) != null) 
-				throw new UserDuplicateException(HttpStatus.NOT_ACCEPTABLE, "User with name '%s' exists.".formatted(user.getUsername()));
+	public UserEntity create(UserEntity user) throws Exception {
+		UserCheck.notNull(user);
+		UserCheck.filedsCheck(user);
+		if(Objects.nonNull( repos.findByUsername(user.getUsername())) ) 
+			throw new UserDuplicateException(HttpStatus.NOT_ACCEPTABLE, "User with name '%s' exists.".formatted(user.getUsername()));
 
-			user.setPassword(encoder.encode(user.getPassword()));
-			var newUser = repos.save(user);
-			log.info("User with id '%d' created.".formatted(newUser.getId()));
-			return newUser;
+		user.setPassword(encoder.encode(user.getPassword()));
+		var newUser = repos.save(user);
+		log.info("User with id '%d' created.".formatted(newUser.getId()));
+		return newUser;
 	}
 	
 	@Override
@@ -59,20 +59,13 @@ public class UserService implements UserServiceDetails{
 	}
 	
 	@Override
-	public UserEntity findOnceByName(String username)  
-		throws UserNotFoundException{
-
-		try {
-			UserCheck.usernameIsValid(username);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public UserEntity findOnceByName(String username)  throws UserNotFoundException, UsernameNotValidException{
+		UserCheck.usernameIsValid(username);
 		return 
 			repos
 			.findByUsername(username)
 			.orElseThrow( 
-				() -> new UserNotFoundException("Can't found user with id '%s'".formatted(username)) );
+				() -> new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_NAME.formatted(username)) );
 	}
 	
 	@Override

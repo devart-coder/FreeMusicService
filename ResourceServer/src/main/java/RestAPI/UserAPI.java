@@ -24,13 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import RestAPI.API.User.UserAPICreation;
 import User.DAO.UserEntity;
-import User.DAO.UserEntityBuilder;
-import User.DAO.Settings.UserSettings;
-import User.DAO.Settings.UserSettingsBuilder;
-import User.Exceptions.UserDuplicateException;
 import User.Exceptions.UserNotFoundException;
+import User.Exceptions.UsernameNotValidException;
 import User.Service.UserService;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,25 +35,19 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("api/")
 @NoArgsConstructor
-public class UserAPI implements UserAPICreation{
+public class UserAPI {
 	@Autowired
 	private UserService userService;
-	//Creation
-	@Override
+	
 	@PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)  
-	public UserEntity userCreationWithBody( @RequestBody UserEntity user) throws UserDuplicateException{
+	public UserEntity userCreation( @RequestBody UserEntity user) throws Exception{
 		return  userService.create(user) ;
 	}
 	//Search
-	@GetMapping("/{username}/info")
-	public ResponseEntity<?> userInfo(@PathVariable String username){
-		try {
-			var user = userService.findOnceByName(username);
-			log.info("User with id '"+user.getId()+"' was created.");
-			return ResponseEntity.ok(user);
-		} catch ( Exception e) {
-			log.error(e.getMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("ErrorMessage: ",e.getMessage()));
-		}
+	@GetMapping("/user")
+	public UserEntity userInfo(@RequestParam String username) throws UserNotFoundException, UsernameNotValidException{
+		var user = userService.findOnceByName(username);
+		log.info("User with id '"+user.getId()+"' was created.");
+		return user;
 	}
 }
