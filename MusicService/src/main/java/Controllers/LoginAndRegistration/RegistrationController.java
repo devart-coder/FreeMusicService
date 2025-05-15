@@ -2,8 +2,11 @@ package Controllers.LoginAndRegistration;
 
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.util.RedirectUrlBuilder;
 import org.springframework.stereotype.Controller;
@@ -44,12 +47,17 @@ public class RegistrationController {
 	){
 		try {
 			var user = client.post()
-			.uri("user")
+			.uri("users")
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Map.of("username",username,"password",password))
 			.retrieve()
+//			.toEntity(UserEntity.class);
+			.onStatus(arg -> arg == HttpStatus.NOT_ACCEPTABLE, (request, response) -> {
+				log.warn("clientResponse: StatusText: "+response.getStatusText());
+				log.warn("clientResponse: Body: "+response.getBody());
+			})
 			.body(UserEntity.class);
-			log.warn(user.toString());
+			
 			return "redirect:/login";
 		} catch (Exception e) {
 			log.error(e.getMessage());

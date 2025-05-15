@@ -34,7 +34,8 @@ public class UserService implements UserServiceDetails{
 	public UserEntity create(UserEntity user) throws UserDuplicateException,UsernameNotValidException,PasswordNotValidException {
 		UserCheck.notNull(user);
 		UserCheck.filedsCheck(user);
-		if(Objects.nonNull( repos.findByUsername(user.getUsername())) ) 
+		log.warn( repos.findByUsername(user.getUsername()).toString() );
+		if(repos.findByUsername(user.getUsername()).isPresent())
 			throw new UserDuplicateException(HttpStatus.NOT_ACCEPTABLE, "User with name '%s' exists.".formatted(user.getUsername()));
 
 		user.setPassword(encoder.encode(user.getPassword()));
@@ -80,18 +81,18 @@ public class UserService implements UserServiceDetails{
 	}
 
 	public void deleteById(Long user_id) throws UserNotFoundException{
+		if(UserCheck.idIsValid(user_id)==false)
+			return;
 		if(repos.existsById(user_id)==false)
 			throw new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_ID.formatted(user_id));
-		if(UserCheck.idIsValid(user_id))
-			repos.deleteById(user_id);
+		repos.deleteById(user_id);
 	}
 
 	public UserEntity updateByUsername(String username, UserEntity newUser) throws UsernameNotValidException, PasswordNotValidException {
 		var user = repos
 				.findByUsername(username)
 				.orElseThrow(
-						() -> 
-							new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_NAME.formatted(username)) );
+					() -> new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_NAME.formatted(username)) );
 
 		//'Id' and 'CreatedBy' fiels not updateable.
 		if(Objects.nonNull(newUser.getUsername()) && user.getUsername().equalsIgnoreCase(newUser.getUsername())==false) {
