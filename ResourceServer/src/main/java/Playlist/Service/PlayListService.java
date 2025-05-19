@@ -208,7 +208,6 @@ public class PlayListService implements PlayListDetails {
 				log.error(e.getMessage());
 				
 				var p = PlayListBuilder.defaultPlaylist();
-//				p.setUser(user);
 				return playlistService.save(p);
 			}
 			return null;
