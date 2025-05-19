@@ -3,13 +3,17 @@ package Controllers.LoginAndRegistration;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStreamReader;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.util.RedirectUrlBuilder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +23,10 @@ import org.springframework.web.service.invoker.UriBuilderFactoryArgumentResolver
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriBuilderFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.shaded.gson.JsonObject;
 
 import User.DAO.UserEntity;
 import User.DAO.UserEntityBuilder;
@@ -43,26 +51,31 @@ public class RegistrationController {
 		@RequestParam(required = false)
 		String username,
 		@RequestParam(required = false)
-		String password
+		String password,
+		Model page
 	){
-		try {
-			var user = client.post()
+		var user = client.post()
 			.uri("users")
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Map.of("username",username,"password",password))
-			.retrieve()
-//			.toEntity(UserEntity.class);
-			.onStatus(arg -> arg == HttpStatus.NOT_ACCEPTABLE, (request, response) -> {
-				log.warn("clientResponse: StatusText: "+response.getStatusText());
-				log.warn("clientResponse: Body: "+response.getBody());
-			})
-			.body(UserEntity.class);
-			
-			return "redirect:/login";
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-		}
-		return "register";
+			.exchange((clientRequest, clientResponse) -> {
+				if(clientResponse.getStatusCode().is4xxClientError()) {
+					try (var is =  clientResponse.getBody() ) {
+						var node = new ObjectMapper()
+								.readTree(is)
+								.get("ErrorMessage");
+						if(Objects.isNull(node)) 
+							log.error("JsonNode is null.");
+						if(node.isTextual()) 
+							page.addAttribute("message",node.textValue());
+						else 
+							log.error("JsonNode have not a text type value.");
+					}
+					return null;
+				}
+				else
+					return clientResponse.bodyTo(UserEntity.class);
+			});
+			return Objects.isNull(user) ? "register" : "redirect:/login";
 	}
 }
