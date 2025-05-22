@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
+import Playlist.Check.PlaylistNameIsNotValidException;
 import Playlist.DAO.PlayListEntity;
 import Playlist.Exceptions.DuplicatePlaylistsException;
 import Playlist.Exceptions.PlayListNotFoundException;
@@ -46,17 +47,9 @@ public class PlaylistAPI {
 		return playlistService.withUser(user).findAll();
 	}
 	@PostMapping( value =  "/{user_id}/playlists/add" , consumes = MediaType.APPLICATION_JSON_VALUE )
-	public PlayListEntity addNewPlaylist(@PathVariable(name  = "user_id") Long id,@RequestBody PlayListEntity newPlaylist) {
-		
-		if(newPlaylist.getMain() == null)
-			newPlaylist.setMain(false);
-		if(newPlaylist.getCreatedBy() == null)
-			newPlaylist.setCreatedBy(LocalDate.now());
-		if(newPlaylist.getSize() == null)
-			newPlaylist.setSize(0l);
-		
+	public PlayListEntity addNewPlaylist(@PathVariable(name  = "user_id") Long id,@RequestBody PlayListEntity newPlaylist)
+			throws PlaylistNameIsNotValidException {
 		var user = userService.findOnceById(id);
 		return playlistService.withUser(user).add(newPlaylist);
-//		return playlistService.add(newPlaylist);
 	}
 }

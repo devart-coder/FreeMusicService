@@ -36,7 +36,7 @@ public class UserService implements UserServiceDetails{
 		UserCheck.filedsCheck(user);
 		log.warn( repos.findByUsername(user.getUsername()).toString() );
 		if(repos.findByUsername(user.getUsername()).isPresent())
-			throw new UserDuplicateException(HttpStatus.NOT_ACCEPTABLE, "User with name '%s' exists.".formatted(user.getUsername()));
+			throw new UserDuplicateException("User with name '%s' exists.".formatted(user.getUsername()));
 
 		user.setPassword(encoder.encode(user.getPassword()));
 		var newUser = repos.save(user);
@@ -88,7 +88,8 @@ public class UserService implements UserServiceDetails{
 		repos.deleteById(user_id);
 	}
 
-	public UserEntity updateByUsername(String username, UserEntity newUser) throws UsernameNotValidException, PasswordNotValidException {
+	public UserEntity updateByUsername(String username, UserEntity newUser) 
+			throws UsernameNotValidException, PasswordNotValidException, UserNotFoundException {
 		var user = repos
 				.findByUsername(username)
 				.orElseThrow(

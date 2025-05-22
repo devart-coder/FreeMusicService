@@ -8,12 +8,13 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import Playlist.Check.PlaylistCheck;
+import Playlist.Check.PlaylistNameIsNotValidException;
 import Playlist.DAO.PlayListBuilder;
 import Playlist.DAO.PlayListEntity;
 import Playlist.ErrorMessanges.PlaylistErrorMessanges;
 import Playlist.Exceptions.DuplicatePlaylistsException;
 import Playlist.Exceptions.PlayListNotFoundException;
+import Playlist.Exceptions.PlaylistCheck;
 import Playlist.Repository.PlayListsRepository;
 import Playlist.Service.Interfaces.PlayListDetails;
 import User.DAO.UserEntity;
@@ -144,7 +145,6 @@ public class PlayListService implements PlayListDetails {
 					}
 				);
 		}
-		
 		public List<PlayListEntity> findAll() {
 			return user.getPlaylists();
 		}
@@ -154,10 +154,10 @@ public class PlayListService implements PlayListDetails {
 //			return list;
 			return null;
 		}
-		public PlayListEntity add(PlayListEntity newPlaylist) {
-			
-			
-			return null;
+		public PlayListEntity add(PlayListEntity newPlaylist) throws PlaylistNameIsNotValidException{
+			PlaylistCheck.filedsCheck(newPlaylist);
+			user.getPlaylists().add(newPlaylist);
+			return playListRepos.save(newPlaylist);
 		}
 	}
 	// Create
