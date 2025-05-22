@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import Playlist.Check.PlaylistNameIsNotValidException;
+import Playlist.Check.PlaylistCheck;
 import Playlist.DAO.PlayListBuilder;
 import Playlist.DAO.PlayListEntity;
 import Playlist.ErrorMessanges.PlaylistErrorMessanges;
 import Playlist.Exceptions.DuplicatePlaylistsException;
 import Playlist.Exceptions.PlayListNotFoundException;
-import Playlist.Exceptions.PlaylistCheck;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import Playlist.Repository.PlayListsRepository;
 import Playlist.Service.Interfaces.PlayListDetails;
 import User.DAO.UserEntity;

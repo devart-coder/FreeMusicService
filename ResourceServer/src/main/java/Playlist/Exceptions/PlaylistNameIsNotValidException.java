@@ -1,4 +1,4 @@
-package Playlist.Check;
+package Playlist.Exceptions;
 
 public class PlaylistNameIsNotValidException extends Exception {
 

@@ -1,11 +1,11 @@
-package Playlist.Exceptions;
+package Playlist.Check;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-import Playlist.Check.PlaylistNameIsNotValidException;
 import Playlist.DAO.PlayListEntity;
 import Playlist.ErrorMessanges.PlaylistErrorMessanges;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import SharedChecks.SharedCheck;
 
 public class PlaylistCheck extends SharedCheck{

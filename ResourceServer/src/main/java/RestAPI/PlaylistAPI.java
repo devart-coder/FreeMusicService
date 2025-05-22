@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
-import Playlist.Check.PlaylistNameIsNotValidException;
 import Playlist.DAO.PlayListEntity;
 import Playlist.Exceptions.DuplicatePlaylistsException;
 import Playlist.Exceptions.PlayListNotFoundException;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import Playlist.Service.PlayListService;
 import Playlist.Service.Interfaces.PlayListDetails;
 import User.Service.UserService;
