@@ -1,17 +1,9 @@
 package Controllers.LoginAndRegistration;
 
-
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Objects;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.util.RedirectUrlBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,20 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.service.invoker.UriBuilderFactoryArgumentResolver;
-import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriBuilderFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.gson.JsonObject;
 
 import User.DAO.UserEntity;
-import User.DAO.UserEntityBuilder;
-//import User.DAO.UserEntityBuilder;
-//import User.Exceptions.UserNotFoundException;
-//import User.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

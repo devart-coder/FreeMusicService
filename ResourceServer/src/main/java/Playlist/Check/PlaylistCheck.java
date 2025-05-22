@@ -2,6 +2,7 @@ package Playlist.Check;
 
 import java.util.Objects;
 
+import Playlist.DAO.PlayListEntity;
 import Playlist.ErrorMessanges.PlaylistErrorMessanges;
 import SharedChecks.SharedCheck;
 
@@ -14,5 +15,8 @@ public class PlaylistCheck extends SharedCheck{
 		if (name.isBlank())
 			throw new Exception(PlaylistErrorMessanges.NAME_IS_BLANK);
 		return true;
+	}
+	public static void filedsCheck(PlayListEntity playlist) {
+//		if(pla)
 	}
 }
