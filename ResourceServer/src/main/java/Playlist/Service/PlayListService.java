@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import Playlist.Check.PlaylistCheck;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class PlayListService implements PlayListDetails {
 	@Autowired
 	private PlayListsRepository playListRepos;
+
 	public class Wrapper<T extends UserEntity > {
 		private PlayListDetails playlistService;
 		private  T user;
@@ -155,9 +158,9 @@ public class PlayListService implements PlayListDetails {
 			user.getPlaylists()
 				.stream()
 				.forEach(p -> {
-					if(!p.getName().equals(PlayListDetails.DEFAULT_NAME))
-						playlistService.updateMainByEntity(false, p);
-					}
+							if(!p.getName().equals(PlayListDetails.DEFAULT_NAME))
+								playlistService.updateMainByEntity(false, p);
+						}
 				);
 		}
 		public List<PlayListEntity> findAll() {
@@ -265,15 +268,18 @@ public class PlayListService implements PlayListDetails {
 
 	// Delete
 	@Override
-	public void delete(PlayListEntity playlist) {
+	public void delete(PlayListEntity playlist)throws PlayListNotFoundException {
 		if (PlaylistCheck.notNull(playlist))
-			playListRepos.delete(playlist);
+			deleteById(playlist.getId());
 	}
 
 	@Override
-	public void deleteById(Long id) {
+	public void deleteById(Long id) throws PlayListNotFoundException {
 		if (PlaylistCheck.idIsValid(id))
-			playListRepos.deleteById(id);
+			if(playListRepos.existsById(id)) 
+				playListRepos.deleteById(id);
+			else
+				throw new PlayListNotFoundException(PlaylistErrorMessanges.PLAYLIST_NOT_FOUND_WITH_ID.formatted(id));
 	}
 	public <T extends UserEntity> Wrapper<T> withUser(T user) {
 		return new Wrapper<T>(this, user);
