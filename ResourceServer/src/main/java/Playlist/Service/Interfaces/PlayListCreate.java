@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import Playlist.DAO.PlayListEntity;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 
 
 public interface PlayListCreate {

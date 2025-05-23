@@ -51,18 +51,21 @@ public class UserService implements UserServiceDetails{
 	
 	@Override
 	public UserEntity findOnceById(Long id)  
-		throws ResourceNotFoundException{
+		throws UserNotFoundException{
 		
 		UserCheck.idIsValid(id);
-		return 
+		var user = 
 			repos
 			.findById(id)
 			.orElseThrow( 
 				() -> new ResourceNotFoundException("Can't found user with id '%d'".formatted(id)) );
+		log.info("User with id '"+user.getId()+"' was found.");
+		return user;
 	}
 	
 	@Override
-	public UserEntity findOnceByName(String username)  throws UserNotFoundException, UsernameNotValidException{
+	public UserEntity findOnceByName(String username)
+		throws UserNotFoundException, UsernameNotValidException{
 		UserCheck.usernameIsValid(username);
 		 
 		var user = 
@@ -70,7 +73,7 @@ public class UserService implements UserServiceDetails{
 			.findByUsername(username)
 			.orElseThrow( 
 				() -> new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_NAME.formatted(username)) );
-		log.info("User with id '"+user.getId()+"' was created.");
+		log.info("User with id '"+user.getId()+"' was found.");
 		return user;
 	}
 	

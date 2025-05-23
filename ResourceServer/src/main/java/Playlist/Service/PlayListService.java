@@ -2,6 +2,8 @@ package Playlist.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -131,7 +133,20 @@ public class PlayListService implements PlayListDetails {
 				return null;
 			}
 		}
-		
+		public PlayListEntity findOncePlaylistById(Long playlistId)
+				throws DuplicatePlaylistsException, PlayListNotFoundException{
+			PlaylistCheck.idIsValid(playlistId);
+				if(playlistStream(playlistId).count() > 1 )
+					throw new DuplicatePlaylistsException(PlaylistErrorMessanges.DUPLICATED);
+				return 
+					playlistStream(playlistId)
+					.findFirst()
+					.orElseThrow(
+						() -> new PlayListNotFoundException(
+								PlaylistErrorMessanges
+								.PLAYLIST_NOT_FOUND_WITH_ID
+								.formatted(playlistId)));
+		}
 		public void  setDefaultPlayListAsMain() {
 			if(PlaylistCheck.isNull(user))
 				return;
@@ -163,8 +178,6 @@ public class PlayListService implements PlayListDetails {
 	// Create
 	@Override
 	public PlayListEntity add(PlayListEntity newPlayList){
-		PlaylistCheck.notNull(newPlayList);
-		// TODO::AddCheckOnExists
 		return playListRepos.save(newPlayList);
 	}
 
@@ -264,6 +277,26 @@ public class PlayListService implements PlayListDetails {
 	}
 	public <T extends UserEntity> Wrapper<T> withUser(T user) {
 		return new Wrapper<T>(this, user);
+	}
+
+	public PlayListEntity updateById(Long playlistId, PlayListEntity newPlaylist)
+		throws PlaylistNameIsNotValidException, PlayListNotFoundException {
+			var playlist = playListRepos
+				.findById(playlistId)
+				.orElseThrow(
+					() -> new PlayListNotFoundException(PlaylistErrorMessanges.PLAYLIST_NOT_FOUND_WITH_ID.formatted(playlistId)));
+			fieldsCopy(newPlaylist,playlist);
+		return 	add(playlist);
+	}
+
+	private void fieldsCopy(PlayListEntity source, PlayListEntity dest) {
+		//Id and Creation time not supported.
+		if(Objects.nonNull(source.getMain()) && Objects.equals(source.getMain(), dest.getMain())==false)
+			dest.setMain(source.getMain());
+		if(Objects.nonNull(source.getName()) && source.getName().equalsIgnoreCase(dest.getName())==false)
+			dest.setName(source.getName());
+		if(Objects.nonNull(source.getSize()) && Objects.equals(source.getSize(), dest.getSize())==false)
+			dest.setSize(source.getSize());
 	}
 	
 	

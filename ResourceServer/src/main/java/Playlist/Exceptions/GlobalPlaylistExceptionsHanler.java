@@ -18,5 +18,11 @@ public class GlobalPlaylistExceptionsHanler {
 		return ResponseEntity
 				.status(HttpStatus.NOT_ACCEPTABLE)
 				.body(Map.of(ERROR_MESSAGE,e.getMessage()));
-		}
+	}
+	@ExceptionHandler
+	public ResponseEntity<Map<String,String>> catchPlaylistNotFoundException(PlayListNotFoundException e){
+		return ResponseEntity
+				.status(HttpStatus.NOT_FOUND)
+				.body(Map.of(ERROR_MESSAGE,e.getMessage()));
+	}
 }
