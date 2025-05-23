@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepo
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestClient;
 
 @Configuration
 @SpringBootApplication
@@ -28,7 +29,8 @@ public class MusicServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
 	}
-@Bean
+	
+	@Bean
 	SecurityFilterChain filterChain (
 			HttpSecurity https) throws Exception {
 		return 
@@ -57,7 +59,7 @@ public class MusicServiceApplication {
 		)
 		.build();
 	}
-@Bean
+	@Bean
 	ClientRegistrationRepository clientRepos() {
 		var fms = ClientRegistration
 				.withRegistrationId("FMS")
@@ -87,5 +89,13 @@ public class MusicServiceApplication {
 		var cm = new DefaultOAuth2AuthorizedClientManager(repos, oauth2repos);
 		cm.setAuthorizedClientProvider(provider);
 		return cm;
+	}
+	@Bean
+	RestClient restClient() {
+		return RestClient
+			.builder()
+			.baseUrl("http://localhost:7070/api/")
+			.build();
+
 	}
 }
