@@ -3,6 +3,7 @@ package User.Exceptions;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,7 +18,7 @@ public class GlobalUserExceptionsHandler {
 	public ResponseEntity<Map<String,Object>> catchUserDuplicateException(UserDuplicateException u){
 		log.error(ERROR_MESSAGE,u.getMessage());
 		return ResponseEntity
-				.status(u.getStatus())
+				.status(HttpStatus.NOT_ACCEPTABLE)
 				.body( Map.of( ERROR_MESSAGE,u.getMessage() ) );
 	}
 	@ExceptionHandler

@@ -40,11 +40,6 @@ public class PlayListEntity {
 	@Getter
 	private Boolean main;
 
-//	@ManyToOne
-//	@Setter
-//	@Getter
-//	private UserEntity user;
-	
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
 	@Setter
