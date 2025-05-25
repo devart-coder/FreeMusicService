@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,12 +46,12 @@ public class PlaylistAPI {
 			var user = userService.findOnceById(user_id);
 			return playlistService.withUser(user).findOnceMainPlaylist();
 	}
-//	@GetMapping("/playlists/{playlist_id}")
-//	public PlayListEntity getUserPLaylistById(@PathVariable Long user_id, @PathVariable Long playlist_id)
-//			throws UserNotFoundException, DuplicatePlaylistsException, PlayListNotFoundException {
-//		var user = userService.findOnceById(user_id);
-//		return playlistService.withUser(user).findOncePlaylistById(playlist_id);
-//	}
+	@GetMapping("/playlists/{playlist_id}")
+	public PlayListEntity getUserPLaylistById(@PathVariable Long user_id, @PathVariable Long playlist_id)
+			throws UserNotFoundException, DuplicatePlaylistsException, PlayListNotFoundException {
+		var user = userService.findOnceById(user_id);
+		return playlistService.withUser(user).findOncePlaylistById(playlist_id);
+	}
 	@GetMapping("/{user_id}/playlists")
 	public List<PlayListEntity> getUserPLaylists(@PathVariable Long user_id) throws UserNotFoundException {
 		var user = userService.findOnceById(user_id);
@@ -70,11 +71,17 @@ public class PlaylistAPI {
 		return playlistService.withUser(user).add(newPlaylist);
 	}
 
-	@PutMapping(value = "/playlist/{playlist_id}" , consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PutMapping(value = "/playlists/{playlist_id}" , consumes = MediaType.APPLICATION_JSON_VALUE)
 	public PlayListEntity updatePlaylists(
-			@PathVariable(name= "playlist_id") Long playlistId,
+			@PathVariable(name = "playlist_id") Long playlistId,
 			@RequestBody PlayListEntity newPlaylist) 
 			throws PlaylistNameIsNotValidException, PlayListNotFoundException {
 		return playlistService.updateById(playlistId,newPlaylist);
+	}
+
+	@DeleteMapping(value = "/playlists/{playlist_id}")
+	public void deletePlaylists( @PathVariable(name = "playlist_id") Long playlistId )
+			throws PlaylistNameIsNotValidException, PlayListNotFoundException {
+		 playlistService.deleteById(playlistId);
 	}
 }

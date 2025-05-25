@@ -26,8 +26,4 @@ public class AuthenticationConfig {
 		return encoder;
 	}
 
-//	@Bean
-//	AuthenticationProvider provider() {
-//		return new UserAuthProvider();
-//	}
 }
