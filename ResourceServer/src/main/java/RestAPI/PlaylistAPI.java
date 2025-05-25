@@ -46,12 +46,12 @@ public class PlaylistAPI {
 			var user = userService.findOnceById(user_id);
 			return playlistService.withUser(user).findOnceMainPlaylist();
 	}
-//	@GetMapping("/playlists/{playlist_id}")
-//	public PlayListEntity getUserPLaylistById(@PathVariable Long user_id, @PathVariable Long playlist_id)
-//			throws UserNotFoundException, DuplicatePlaylistsException, PlayListNotFoundException {
-//		var user = userService.findOnceById(user_id);
-//		return playlistService.withUser(user).findOncePlaylistById(playlist_id);
-//	}
+	@GetMapping("/playlists/{playlist_id}")
+	public PlayListEntity getUserPLaylistById(@PathVariable Long user_id, @PathVariable Long playlist_id)
+			throws UserNotFoundException, DuplicatePlaylistsException, PlayListNotFoundException {
+		var user = userService.findOnceById(user_id);
+		return playlistService.withUser(user).findOncePlaylistById(playlist_id);
+	}
 	@GetMapping("/{user_id}/playlists")
 	public List<PlayListEntity> getUserPLaylists(@PathVariable Long user_id) throws UserNotFoundException {
 		var user = userService.findOnceById(user_id);

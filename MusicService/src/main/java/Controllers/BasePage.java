@@ -46,6 +46,14 @@ public class BasePage {
 		
 		return manager.authorize(request);
 	}
+	protected String getTokenValue(Authentication auth) {
+		return getOAuth2Client(auth).getAccessToken().getTokenValue();
+	}
+	protected String getTokenType(Authentication auth) {
+		return getOAuth2Client(auth).getAccessToken().getTokenType().toString();
+	}
+	
+	
 	@ModelAttribute("mainPlayList")
 	protected String getMainPlayList( Authentication auth ){
 			var cli = getOAuth2Client(auth);
