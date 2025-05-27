@@ -10,36 +10,30 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
 
-@ControllerAdvice
 @Slf4j
+@ControllerAdvice
 public class GlobalUserExceptionsHandler {
 	private final String ERROR_MESSAGE = "ErrorMessage";
-	@ExceptionHandler
-	public ResponseEntity<Map<String,Object>> catchUserDuplicateException(UserDuplicateException u){
+	private ResponseEntity<Map<String,String>> local ( HttpStatus status, Exception u ){
 		log.error(ERROR_MESSAGE,u.getMessage());
 		return ResponseEntity
-				.status(HttpStatus.NOT_ACCEPTABLE)
+				.status(status)
 				.body( Map.of( ERROR_MESSAGE,u.getMessage() ) );
+	} 
+	@ExceptionHandler
+	public ResponseEntity<Map<String,String>> catchUserDuplicateException(UserDuplicateException u){
+		return local(HttpStatus.NOT_ACCEPTABLE,u);
 	}
 	@ExceptionHandler
 	public ResponseEntity<Map<String,String>> catchUsernameNotValidException(UsernameNotValidException u){
-		log.error(ERROR_MESSAGE,u.getMessage());
-		return ResponseEntity
-				.status(HttpStatus.NOT_ACCEPTABLE)
-				.body( Map.of( ERROR_MESSAGE,u.getMessage() ) );
+		return local(HttpStatus.NOT_ACCEPTABLE,u);
 	}
 	@ExceptionHandler
 	public ResponseEntity<Map<String,String>> catchPasswordNotValidException(PasswordNotValidException u){
-		log.error(ERROR_MESSAGE,u.getMessage());
-		return ResponseEntity
-				.status(HttpStatus.NOT_ACCEPTABLE)
-				.body( Map.of( ERROR_MESSAGE,u.getMessage() ) );
+		return local(HttpStatus.NOT_ACCEPTABLE,u);
 	}
 	@ExceptionHandler
 	public ResponseEntity<Map<String,String>> catchUserNotfoundException(UserNotFoundException u){
-		log.error(ERROR_MESSAGE,u.getMessage());
-		return ResponseEntity
-				.status(HttpStatus.NOT_ACCEPTABLE)
-				.body( Map.of(ERROR_MESSAGE,u.getMessage()) );
+		return local(HttpStatus.NOT_FOUND,u);
 	}
 }
