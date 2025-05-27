@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-import Handlers.ExceptionHandlerFactory;
+import Handlers.ResponseExceptionHandlerFactory;
 import Playlist.DAO.PlayListEntity;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,56 +39,52 @@ public class PlayListsController extends BasePage{
 		Model page
 	) throws Exception 
 	{
-			var handle = 
-					ExceptionHandlerFactory
+			var handler = 
+					ResponseExceptionHandlerFactory
 					.getInstance()
-					.setResultType(PlayListEntity.class)
-					.setPage(page)
-					.setMessage("createPlayListNameError")
-					.exchange();
+					.setBodyType(PlayListEntity.class)
+					.setModel(page)
+					.setHolderName("createPlayListNameError")
+					.handler(HttpStatus.NOT_ACCEPTABLE);
 					
 
 			if(Objects.nonNull(createButton)) {
-				client
+				restClient
 					.post()
-					.uri(userId+"/playlists/add")
-					.header("Authentication", getTokenType(auth) + getTokenValue(auth))
+					.uri(user.getId()+"/playlists/add")
+					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
 					.body(Map.of("name",createButton))
-					.exchange(handle);
+					.exchange(handler);
 			}
 			if( Objects.nonNull(deleteButton) ) {
-				client
+				restClient
 					.delete()
 					.uri("playlists/"+deleteButton)
-					.header("Authentication", getTokenType(auth) + getTokenValue(auth))
-					.exchange(handle);
+					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+					.exchange(handler);
 			} 
 			if( Objects.nonNull(mainButton) ) {
-				client
+				restClient
 					.put()
 					.uri("playlists/"+mainButton)
-					.header("Authentication", getTokenType(auth) + getTokenValue(auth))
-					.exchange(handle);
+					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+					.exchange(handler);
 			} 
 			page.addAttribute("playLists", getAllUserPlayLists(auth));
-			page.addAttribute("mainPlayList", getMainPlayList(auth));
+			page.addAttribute("mainPlayList", getMainPlayList());
 		return "playlists";
 	}
 	@ModelAttribute("playLists")
 	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
-		
-		if(userId == null)
-			getUserName(auth);
-			
-		var handle = ExceptionHandlerFactory
+		var handler = ResponseExceptionHandlerFactory
 				.getInstance()
-				.setResultType(List.class)
-				.exchange();
+				.setBodyType(List.class)
+				.handler(HttpStatus.NOT_ACCEPTABLE);
 		
-		return client
+		return restClient
 			.get()
-			.uri(userId+"/playlists")
-			.header("Authentication", getTokenType(auth)+getTokenValue(auth))
-			.exchange(handle);
+			.uri(user.getId()+"/playlists")
+			.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+			.exchange(handler);
 	}
 }

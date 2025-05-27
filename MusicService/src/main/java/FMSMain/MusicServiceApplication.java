@@ -6,8 +6,17 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 //import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
@@ -20,11 +29,18 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.annotation.SessionScope;
+
+import Handlers.ResponseExceptionHandlerFactory;
+import User.DAO.UserEntity;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @SpringBootApplication
 @ComponentScan(basePackages = {"Controllers"})
 public class MusicServiceApplication {
+	protected final String AUTHENTICATION = "Authentication";
 
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
@@ -97,5 +113,32 @@ public class MusicServiceApplication {
 			.baseUrl("http://localhost:7070/api/")
 			.build();
 
+	}
+	@Bean
+	@SessionScope
+	OAuth2AuthorizedClient getOAuth2Client( OAuth2AuthorizedClientManager manager ) {
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth == null) 
+			return null;
+
+		var request = OAuth2AuthorizeRequest
+			.withClientRegistrationId("FMS")
+			.principal(auth)
+			.build();
+		
+		return manager.authorize(request);
+	}
+	
+	@Bean
+	@SessionScope
+	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
+		var accessToken = cli.getAccessToken();
+		var tokenType = accessToken.getTokenType();
+		var tokenValue = tokenType.getValue();
+		return client
+			.get()
+			.uri("users/"+cli.getPrincipalName())
+			.header(AUTHENTICATION,tokenType+tokenValue)
+			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
 	}
 }

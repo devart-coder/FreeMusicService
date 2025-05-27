@@ -2,6 +2,7 @@ package Handlers;
 
 import java.util.Objects;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.client.RestClient.RequestHeadersSpec.ExchangeFunction;
 
@@ -10,12 +11,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ExceptionHandler<T> {
+public class ResponseExceptionHandler<T> {
 	private Model page;
 	private String message = "error";
 	
 	private Class<T> classType;
-	public ExceptionHandler(Class<T> type) {
+	public ResponseExceptionHandler(Class<T> type) {
 		setClassType(type);
 	}
 	protected Class<T> getClassType() {
@@ -25,10 +26,10 @@ public class ExceptionHandler<T> {
 		this.classType = classType;
 	}
 
-	public ExchangeFunction<T> exchange(){
+	public ExchangeFunction<T> handler(HttpStatus status){
 		return 
 			(clientRequest, clientResponse) -> {
-				if(clientResponse.getStatusCode().is4xxClientError()) {
+				if(clientResponse.getStatusCode().isSameCodeAs(status)) {
 					try ( var is = clientResponse.getBody() )  {
 						var node = new ObjectMapper()
 							.readTree(is)
@@ -36,7 +37,7 @@ public class ExceptionHandler<T> {
 						if(Objects.isNull(node)) 
 							log.error("JsonNode is null.");
 						if(node.isTextual()) { 
-							if(Objects.nonNull(getPage()))
+							if(Objects.nonNull(page))
 								page.addAttribute(message,node.textValue());
 						}
 						else 
@@ -48,20 +49,20 @@ public class ExceptionHandler<T> {
 					return clientResponse.bodyTo(getClassType());
 			};
 	};
-	public Model getPage() {
+	public Model getModel() {
 		return page;
 	}
 
-	public ExceptionHandler<T> setPage(Model page) {
+	public ResponseExceptionHandler<T> setModel(Model page) {
 		this.page = page;
 		return this;
 	}
 
-	public String getMessage() {
+	public String getHolderName() {
 		return message;
 	}
 
-	public ExceptionHandler<T> setMessage(String message) {
+	public ResponseExceptionHandler<T> setHolderName(String message) {
 		this.message = message;
 		return this;
 	}
