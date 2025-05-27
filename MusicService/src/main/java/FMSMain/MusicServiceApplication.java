@@ -6,8 +6,15 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 //import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
@@ -20,6 +27,11 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.annotation.SessionScope;
+
+import User.DAO.UserEntity;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @SpringBootApplication
@@ -97,5 +109,29 @@ public class MusicServiceApplication {
 			.baseUrl("http://localhost:7070/api/")
 			.build();
 
+	}
+	
+	@Bean
+	@SessionScope(proxyMode = ScopedProxyMode.TARGET_CLASS )
+	UserEntity getUser(RestClient client, OAuth2AuthorizedClientManager manager) {
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		if(auth == null) 
+			return null;
+		
+		var request = OAuth2AuthorizeRequest
+			.withClientRegistrationId("FMS")
+			.principal(auth)
+			.build();
+		
+		var cli = manager.authorize(request);
+		var token = cli.getAccessToken();
+		if(token == null)
+			return null;
+		return client
+				.get()
+				.uri("users/"+auth.getName())
+				.header("Authorize",token.getTokenType().toString()+token.getTokenValue())
+				.retrieve()
+				.body(UserEntity.class);
 	}
 }

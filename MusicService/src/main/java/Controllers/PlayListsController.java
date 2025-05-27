@@ -38,7 +38,7 @@ public class PlayListsController extends BasePage{
 		Model page
 	) throws Exception 
 	{
-			var handle = 
+			var handler = 
 					ExceptionHandlerFactory
 					.getInstance()
 					.setResultType(PlayListEntity.class)
@@ -50,24 +50,24 @@ public class PlayListsController extends BasePage{
 			if(Objects.nonNull(createButton)) {
 				client
 					.post()
-					.uri(userId+"/playlists/add")
+					.uri(user.getId()+"/playlists/add")
 					.header("Authentication", getTokenType(auth) + getTokenValue(auth))
 					.body(Map.of("name",createButton))
-					.exchange(handle);
+					.exchange(handler);
 			}
 			if( Objects.nonNull(deleteButton) ) {
 				client
 					.delete()
 					.uri("playlists/"+deleteButton)
 					.header("Authentication", getTokenType(auth) + getTokenValue(auth))
-					.exchange(handle);
+					.exchange(handler);
 			} 
 			if( Objects.nonNull(mainButton) ) {
 				client
 					.put()
 					.uri("playlists/"+mainButton)
 					.header("Authentication", getTokenType(auth) + getTokenValue(auth))
-					.exchange(handle);
+					.exchange(handler);
 			} 
 			page.addAttribute("playLists", getAllUserPlayLists(auth));
 			page.addAttribute("mainPlayList", getMainPlayList(auth));
@@ -76,18 +76,18 @@ public class PlayListsController extends BasePage{
 	@ModelAttribute("playLists")
 	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
 		
-		if(userId == null)
-			getUserName(auth);
+//		if(userId == null)
+//			getUserName(auth);
 			
-		var handle = ExceptionHandlerFactory
+		var handler = ExceptionHandlerFactory
 				.getInstance()
 				.setResultType(List.class)
 				.exchange();
 		
 		return client
 			.get()
-			.uri(userId+"/playlists")
+			.uri(user.getId()+"/playlists")
 			.header("Authentication", getTokenType(auth)+getTokenValue(auth))
-			.exchange(handle);
+			.exchange(handler);
 	}
 }
