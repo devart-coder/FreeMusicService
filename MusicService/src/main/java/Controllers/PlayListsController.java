@@ -73,22 +73,12 @@ public class PlayListsController extends BasePage{
 					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
 					.exchange(handler);
 			} 
-			page.addAttribute("playLists", getAllUserPlayLists(auth));
+			page.addAttribute("playLists", getAllUserPlayLists());
 			page.addAttribute("mainPlayList", getMainPlayList());
 		return "playlists";
 	}
 	@ModelAttribute("playLists")
-	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
-//		var handler = ResponseExceptionHandlerFactory
-//				.getInstance()
-//				.setBodyType(List.class)
-//				.handler(HttpStatus.NOT_ACCEPTABLE);
-//		
-//		return restClient
-//			.get()
-//			.uri(user.getId()+"/playlists")
-//			.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
-//			.exchange(handler);
+	public List<PlayListEntity> getAllUserPlayLists( ){
 		return playlists;
 	}
 }

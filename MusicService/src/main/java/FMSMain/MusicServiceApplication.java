@@ -29,6 +29,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.context.annotation.RequestScope;
@@ -45,7 +46,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MusicServiceApplication {
 	private final String AUTHENTICATION = "Authentication";
 	private final String BASE_URI = "http://localhost:7070/api/";
-	
+	private TokenType tokenType;
+	private String tokenValue;
+
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
 	}
@@ -139,7 +142,7 @@ public class MusicServiceApplication {
 	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
 		
 		var accessToken = cli.getAccessToken();
-		var tokenType = accessToken.getTokenType();
+		tokenType = accessToken.getTokenType();
 		tokenValue = tokenType.getValue();
 
 		return client
@@ -150,18 +153,15 @@ public class MusicServiceApplication {
 	}
 	@Bean
 	@RequestScope
-	List<PlayListEntity> getUserPlaylists(OAuth2AuthorizedClient cli,RestClient restClient, UserEntity user) {
+	List<PlayListEntity> getUserPlaylists(RestClient restClient, UserEntity user) {
 
-		var accessToken = cli.getAccessToken();
-		var tokenType = accessToken.getTokenType();
-		var tokenValue = tokenType.getValue();
-		
 		var handler = ResponseExceptionHandlerFactory
 				.getInstance()
 				.setBodyType(List.class)
 				.handler(HttpStatus.NOT_ACCEPTABLE);
 		
-		return restClient
+		return 
+			restClient
 			.get()
 			.uri(user.getId()+"/playlists")
 			.header(AUTHENTICATION, tokenValue + tokenValue)
