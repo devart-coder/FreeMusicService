@@ -1,4 +1,4 @@
-package ResourceServiceMain;
+package RSMain;
 
 import java.util.Map;
 
