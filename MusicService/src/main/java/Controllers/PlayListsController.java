@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 public class PlayListsController extends BasePage{
 	@GetMapping
 	public String view() { return "playlists"; }
+	@Autowired
+	protected List<PlayListEntity> playlists;
 	
 	@PostMapping
 	public String playListActions(
@@ -76,15 +79,16 @@ public class PlayListsController extends BasePage{
 	}
 	@ModelAttribute("playLists")
 	public List<PlayListEntity> getAllUserPlayLists( Authentication auth ) throws Exception {
-		var handler = ResponseExceptionHandlerFactory
-				.getInstance()
-				.setBodyType(List.class)
-				.handler(HttpStatus.NOT_ACCEPTABLE);
-		
-		return restClient
-			.get()
-			.uri(user.getId()+"/playlists")
-			.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
-			.exchange(handler);
+//		var handler = ResponseExceptionHandlerFactory
+//				.getInstance()
+//				.setBodyType(List.class)
+//				.handler(HttpStatus.NOT_ACCEPTABLE);
+//		
+//		return restClient
+//			.get()
+//			.uri(user.getId()+"/playlists")
+//			.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+//			.exchange(handler);
+		return playlists;
 	}
 }

@@ -1,5 +1,7 @@
 package FMSMain;
 
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -33,6 +35,7 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.context.annotation.SessionScope;
 
 import Handlers.ResponseExceptionHandlerFactory;
+import Playlist.DAO.PlayListEntity;
 import User.DAO.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,8 +43,9 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootApplication
 @ComponentScan(basePackages = {"Controllers"})
 public class MusicServiceApplication {
-	protected final String AUTHENTICATION = "Authentication";
-
+	private final String AUTHENTICATION = "Authentication";
+	private final String BASE_URI = "http://localhost:7070/api/";
+	
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
 	}
@@ -108,9 +112,10 @@ public class MusicServiceApplication {
 	}
 	@Bean
 	RestClient restClient() {
-		return RestClient
+		return 
+			RestClient
 			.builder()
-			.baseUrl("http://localhost:7070/api/")
+			.baseUrl(BASE_URI)
 			.build();
 
 	}
@@ -132,13 +137,34 @@ public class MusicServiceApplication {
 	@Bean
 	@SessionScope
 	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
+		
 		var accessToken = cli.getAccessToken();
 		var tokenType = accessToken.getTokenType();
-		var tokenValue = tokenType.getValue();
+		tokenValue = tokenType.getValue();
+
 		return client
 			.get()
 			.uri("users/"+cli.getPrincipalName())
 			.header(AUTHENTICATION,tokenType+tokenValue)
 			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
+	}
+	@Bean
+	@RequestScope
+	List<PlayListEntity> getUserPlaylists(OAuth2AuthorizedClient cli,RestClient restClient, UserEntity user) {
+
+		var accessToken = cli.getAccessToken();
+		var tokenType = accessToken.getTokenType();
+		var tokenValue = tokenType.getValue();
+		
+		var handler = ResponseExceptionHandlerFactory
+				.getInstance()
+				.setBodyType(List.class)
+				.handler(HttpStatus.NOT_ACCEPTABLE);
+		
+		return restClient
+			.get()
+			.uri(user.getId()+"/playlists")
+			.header(AUTHENTICATION, tokenValue + tokenValue)
+			.exchange(handler);
 	}
 }
