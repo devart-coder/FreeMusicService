@@ -29,30 +29,24 @@ public class PlayListBuilder {
 		this.playlist.setMain(flag);
 		return this;
 	}
-//	public PlayListBuilder setUserEntity(UserEntity user) {
-//		if(user.getPlaylists() ==null)
-//			user.setPlaylists(Arrays.asList(playlist));
-//		this.playlist.setUser(user);
-//		return this;
-//	}
 	public PlayListBuilder setSize(Long size) {
 		this.playlist.setSize(size);
 		return this;
 	}
 	public PlayListEntity build() {
-		if(this.playlist.getName() ==null) {
+		if(this.playlist.getName() == null) {
 			this.playlist.setName("Default");
 			log.warn(String.format("'name' field set default value: '%s'.",this.playlist.getName()));
 		}
-		if(this.playlist.getMain()==null) {
+		if(this.playlist.getMain() == null) {
 			this.playlist.setMain(false);
 			log.warn(String.format("'main' field set default value: '%s'.",this.playlist.getMain()));
 		}
-		if (this.playlist.getSize()==null) {
+		if (this.playlist.getSize() == null) {
 			this.playlist.setSize(0l);
 			log.warn(String.format("'size' field set default value: '%s'.",this.playlist.getSize()));
 		}
-		if(this.playlist.getCreatedBy()==null) {
+		if(this.playlist.getCreatedBy() == null) {
 			this.playlist.setCreatedBy(LocalDate.now());
 			log.warn(String.format("'createdBy' field set default value: '%s'",this.playlist.getCreatedBy()));
 		}

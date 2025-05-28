@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Controller;
@@ -27,9 +28,14 @@ public class BasePage {
 	protected RestClient restClient;
 	@Autowired
 	protected UserEntity user;
+	@Qualifier(value = "getMain")
+	@Autowired
+	protected PlayListEntity main;
 	@Autowired
 	protected OAuth2AuthorizedClient authClient;
-
+//	@Autowired
+//	private PlayListEntity main;
+	
 	protected String getTokenValue() {
 		return authClient.getAccessToken().getTokenValue();
 	}
@@ -40,17 +46,7 @@ public class BasePage {
 
 	@ModelAttribute("mainPlayList")
 	protected String getMainPlayList() {
-		var token = authClient.getAccessToken();
-		if (token == null) {
-			log.error("Token is null");
-			return null;
-		}
-		var main = restClient.get().uri(user.getId() + "/playlists/main")
-				.header(AUTHENTICATION, token.getTokenType().toString() + token.getTokenValue()).retrieve()
-				.body(PlayListEntity.class);
-
-		log.info(main.getName());
-		return main.getName();
+		return main == null ? "NUll" : main.getName();
 	}
 
 	@ModelAttribute("user")

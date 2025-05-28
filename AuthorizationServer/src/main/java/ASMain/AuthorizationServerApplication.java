@@ -1,4 +1,4 @@
-package Main;
+package ASMain;
 
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;

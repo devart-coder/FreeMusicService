@@ -1,25 +1,19 @@
 package FMSMain;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-//import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -29,7 +23,6 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.context.annotation.RequestScope;
@@ -43,12 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @SpringBootApplication
 @ComponentScan(basePackages = {"Controllers"})
+@Slf4j
 public class MusicServiceApplication {
-	private final String AUTHENTICATION = "Authentication";
 	private final String BASE_URI = "http://localhost:7070/api/";
-	private TokenType tokenType;
-	private String tokenValue;
-
+	private final String tokenHeaderName = "Authorization";
+	private String tokenHeaderValue;
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
 	}
@@ -138,18 +130,18 @@ public class MusicServiceApplication {
 	}
 	
 	@Bean
-	@SessionScope
+//	@SessionScope
+	@RequestScope
 	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
 		
 		var accessToken = cli.getAccessToken();
-		tokenType = accessToken.getTokenType();
-		tokenValue = tokenType.getValue();
-
-		return client
+		tokenHeaderValue = accessToken.getTokenType()+accessToken.getTokenValue();
+		var user = client
 			.get()
 			.uri("users/"+cli.getPrincipalName())
-			.header(AUTHENTICATION,tokenType+tokenValue)
+			.header(tokenHeaderName,tokenHeaderValue)
 			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
+		return user;
 	}
 	@Bean
 	@RequestScope
@@ -160,11 +152,29 @@ public class MusicServiceApplication {
 				.setBodyType(List.class)
 				.handler(HttpStatus.NOT_ACCEPTABLE);
 		
-		return 
+		var response =  
 			restClient
 			.get()
-			.uri(user.getId()+"/playlists")
-			.header(AUTHENTICATION, tokenValue + tokenValue)
+			.uri(user.getId() + "/playlists")
+			.header(tokenHeaderName,tokenHeaderValue)
 			.exchange(handler);
+		return response;
 	}
+	@Bean
+	@RequestScope
+	PlayListEntity getMain(UserEntity user, RestClient restClient) {
+		var handler = ResponseExceptionHandlerFactory
+				.getInstance()
+				.setBodyType(PlayListEntity.class)
+				.handler(HttpStatus.NOT_ACCEPTABLE);
+		var main = 
+				restClient
+				.get()
+				.uri(user.getId() + "/playlists/main")
+				.header(tokenHeaderName,tokenHeaderValue)
+				.exchange(handler);
+		return main;
+		
+	}
+
 }
