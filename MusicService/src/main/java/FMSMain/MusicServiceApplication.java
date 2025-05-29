@@ -3,6 +3,7 @@ package FMSMain;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Order;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.context.annotation.RequestScope;
@@ -130,8 +132,8 @@ public class MusicServiceApplication {
 	}
 	
 	@Bean
-//	@SessionScope
-	@RequestScope
+//	@RequestScope
+	@SessionScope
 	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
 		
 		var accessToken = cli.getAccessToken();
@@ -142,6 +144,14 @@ public class MusicServiceApplication {
 			.header(tokenHeaderName,tokenHeaderValue)
 			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
 		return user;
+	}
+	@Bean
+	@SessionScope
+	TokenHeader token(OAuth2AuthorizedClient cli) {
+		var accessToken = cli.getAccessToken();
+		var token = new TokenHeader();
+		token.setTokenHeader(accessToken.getTokenType()+accessToken.getTokenValue());
+		return token;
 	}
 	@Bean
 	@RequestScope

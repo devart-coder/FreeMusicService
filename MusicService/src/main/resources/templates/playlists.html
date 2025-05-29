@@ -5,7 +5,7 @@
  	 <link th:href="@{css/playlists.css}" rel="stylesheet">
  </head>
 <body>
-	<img src="/images/volume_background_2.jpg">
+	<img th:if="${background}" th:src="@{'images/backgrounds/' + ${background} }" alt ="Background not set">
 	<header>	
 		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
 		<div class="greetings">Welcome to Free Music Service</div>
@@ -29,7 +29,7 @@
 					<button class="createButton" type="submit">
 						Create
 					</button>
-					<span id="createPlayListNameError" th:text="${createPlayListNameError}"></span>
+					<span id="createPlayListNameError" th:text="${create_error}"></span>
 				</form>
 			</div>
 		</section>
@@ -38,28 +38,18 @@
 			<table>
 				<thead>
 					<tr>
-						<th>
-							Act	
-						</th>
-						<th>
-							Name
-						</th>
-						<th>
-							Songs
-						</th>
-						<th>
-							CreationTime
-						</th>
+						<th>Act</th>
+						<th>Name</th>
+						<th>Songs</th>
+						<th>CreationTime</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="pl:${playLists}"  >
+					<tr th:each="pl:${playlists}"  >
 						<td >
 						<form method="post">
-							<input  type="hidden" name="_csrf" th:value="${_csrf.token}">
-							<button class="deleteButton" type="submit" name="deleteButton" th:value="${pl.id}">
-							Delete
-							</button>
+							<input  type = "hidden" name = "_csrf" th:value="${_csrf.token}">
+							<button class = "deleteButton" type = "submit" name = "deleteButton" th:value="${pl.id}">Delete</button>
 						</form>
 						</td>
 						<td th:text="${pl.name}" ></td>
@@ -78,7 +68,7 @@
 		
 		<div class="footFields">
 			<span id="userLabel">Playlist:</span>
-			<span id="userField" th:text="${mainPlayList}"></span>
+			<span id="userField" th:text="${main_playlist.name}"></span>
 		</div>
 		
 		<form method="post" >	

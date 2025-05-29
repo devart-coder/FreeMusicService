@@ -4,6 +4,7 @@
 	<link th:href="@{css/search.css}" rel="stylesheet">
 </head>
 <body>
+	<img th:if="${background}" th:src="@{'images/backgrounds/' + ${background} }" alt ="Background not set">
 	<img class="background" src="/images/volume_background_2.jpg">
 	<header>	
 		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
