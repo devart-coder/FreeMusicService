@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<div th:fragment="user_bar">
+ 	<header>
+		<div class="footFields">		
+				<span id="userLabel">User:</span>
+				<span id="userField" th:text="${user}"></a>
+		</div>
+		<div class="footFields">
+				<span id="userLabel">Playlist:</span>
+				<span id="userField" th:text="${main_playlist.name}"></span>
+		</div>
+	</header>
+</div>
+</html>

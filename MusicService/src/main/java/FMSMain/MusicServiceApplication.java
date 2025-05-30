@@ -42,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MusicServiceApplication {
 	private final String BASE_URI = "http://localhost:7070/api/";
 	private final String tokenHeaderName = "Authorization";
-	private String tokenHeaderValue;
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
 	}
@@ -109,12 +108,7 @@ public class MusicServiceApplication {
 	}
 	@Bean
 	RestClient restClient() {
-		return 
-			RestClient
-			.builder()
-			.baseUrl(BASE_URI)
-			.build();
-
+		return RestClient.builder().baseUrl(BASE_URI).build();
 	}
 	@Bean
 	@SessionScope
@@ -132,20 +126,6 @@ public class MusicServiceApplication {
 	}
 	
 	@Bean
-//	@RequestScope
-	@SessionScope
-	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
-		
-		var accessToken = cli.getAccessToken();
-		tokenHeaderValue = accessToken.getTokenType()+accessToken.getTokenValue();
-		var user = client
-			.get()
-			.uri("users/"+cli.getPrincipalName())
-			.header(tokenHeaderName,tokenHeaderValue)
-			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
-		return user;
-	}
-	@Bean
 	@SessionScope
 	TokenHeader token(OAuth2AuthorizedClient cli) {
 		var accessToken = cli.getAccessToken();
@@ -153,9 +133,22 @@ public class MusicServiceApplication {
 		token.setTokenHeader(accessToken.getTokenType()+accessToken.getTokenValue());
 		return token;
 	}
+	
+	@Bean
+	@SessionScope
+	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli, TokenHeader token) {
+		
+		var user = client
+			.get()
+			.uri("users/"+cli.getPrincipalName())
+			.header(tokenHeaderName, token.getTokenHeader())
+			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
+		return user;
+	}
+	
 	@Bean
 	@RequestScope
-	List<PlayListEntity> getUserPlaylists(RestClient restClient, UserEntity user) {
+	List<PlayListEntity> getUserPlaylists(TokenHeader token, RestClient restClient, UserEntity user) {
 
 		var handler = ResponseExceptionHandlerFactory
 				.getInstance()
@@ -166,13 +159,13 @@ public class MusicServiceApplication {
 			restClient
 			.get()
 			.uri(user.getId() + "/playlists")
-			.header(tokenHeaderName,tokenHeaderValue)
+			.header(tokenHeaderName,token.getTokenHeader())
 			.exchange(handler);
 		return response;
 	}
 	@Bean
 	@RequestScope
-	PlayListEntity getMain(UserEntity user, RestClient restClient) {
+	PlayListEntity getMain(UserEntity user, RestClient restClient, TokenHeader token) {
 		var handler = ResponseExceptionHandlerFactory
 				.getInstance()
 				.setBodyType(PlayListEntity.class)
@@ -181,7 +174,7 @@ public class MusicServiceApplication {
 				restClient
 				.get()
 				.uri(user.getId() + "/playlists/main")
-				.header(tokenHeaderName,tokenHeaderValue)
+				.header(tokenHeaderName,token.getTokenHeader())
 				.exchange(handler);
 		return main;
 		
