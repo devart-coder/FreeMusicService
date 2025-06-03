@@ -1,98 +1,18 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
-	 <title>MusicPlayLists</title> 
- 	 <link th:href="@{css/playlists.css}" rel="stylesheet">
- </head>
+<html lang="en">
+<head th:replace="shared/page :: head">
 <body>
-	<img src="/images/volume_background_2.jpg">
-	<header>	
-		<div class="topmenu"> <a href="/home?logout">Log out</a> </div>
-		<div class="greetings">Welcome to Free Music Service</div>
-		<div class="topmenu">
-			<ul>
-				<li><a href="/home">Home</a></li>
-				<li><a href="/playlists">PlayLists</a></li>
-				<li><a href="/search">Songs</a></li>
-				<li><a href="/toplist">TopList</a></li>
-			</ul>
-		</div>
-	<header>
-	
-	<main>
-		<section>
-			<div class="createNewPlayListLabels">
-				<form method="post">
-				<span>New Playlist:</span>
-					<input type="hidden" name="_csrf" th:value="${_csrf.token}">
-					<input type="text" name="createButton" placeholder="Name">
-					<button class="createButton" type="submit">
-						Create
-					</button>
-					<span id="createPlayListNameError" th:text="${createPlayListNameError}"></span>
-				</form>
-			</div>
-		</section>
-
-		<section>
-			<table>
-				<thead>
-					<tr>
-						<th>
-							Act	
-						</th>
-						<th>
-							Name
-						</th>
-						<th>
-							Songs
-						</th>
-						<th>
-							CreationTime
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr th:each="pl:${playLists}"  >
-						<td >
-						<form method="post">
-							<input  type="hidden" name="_csrf" th:value="${_csrf.token}">
-							<button class="deleteButton" type="submit" name="deleteButton" th:value="${pl.id}">
-							Delete
-							</button>
-						</form>
-						</td>
-						<td th:text="${pl.name}" ></td>
-						<td th:text="${pl.size}"></td>
-						<td th:text="${pl.createdBy}"></td>
-					</tr>
-				</tbody>
-			</table>
-		</section>
-	</main>
-	<footer>
-		<div class="footFields">
-			<span id="userLabel">User:</span>
-			<span id = "userField" th:text="${user}"></a>
-		</div>
+	<div th:replace="shared/page :: header"></div>
+		<div th:replace = "playlists/new_playlist :: create"></div>
 		
-		<div class="footFields">
-			<span id="userLabel">Playlist:</span>
-			<span id="userField" th:text="${mainPlayList}"></span>
-		</div>
-		
-		<form method="post" >	
-			<input type="hidden" name="_csrf" th:value="${_csrf.token}">
-			<select th:name="mainButton">
-				<option 
-					th:each="pl:${playLists}"
-					th:text="${pl.name}"
-					th:value="${pl.id}"
-				></option>
-			</select>
-			<label for="mainButton"> set as </label>
-			<button type="submit">Main</button>
-		</form>
-	</footer>
+		<table th:replace = "playlists/table :: thread(~{:: .fields})"></table>
+			<tr class="fields">
+				<th>Act</th>
+				<th>Name</th>
+				<th>Size</th>
+				<th>CreatedBy</th>
+			</tr>
+			<div th:replace = "playlists/table :: tbody(${playlists})"></div>
+		</table>
 </body>
 </html>

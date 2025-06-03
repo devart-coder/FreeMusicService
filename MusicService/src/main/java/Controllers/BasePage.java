@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.client.RestClient;
 
+import FMSMain.TokenHeader;
 import Playlist.DAO.PlayListEntity;
 import User.DAO.UserEntity;
 import lombok.NoArgsConstructor;
@@ -24,29 +25,22 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class BasePage {
 	protected final String AUTHENTICATION = "Authentication";
+	
 	@Autowired
 	protected RestClient restClient;
+	
 	@Autowired
 	protected UserEntity user;
-	@Qualifier(value = "getMain")
+	
 	@Autowired
 	protected PlayListEntity main;
-	@Autowired
-	protected OAuth2AuthorizedClient authClient;
-//	@Autowired
-//	private PlayListEntity main;
 	
-	protected String getTokenValue() {
-		return authClient.getAccessToken().getTokenValue();
-	}
+	@Autowired
+	protected TokenHeader token;
 
-	protected String getTokenType() {
-		return authClient.getAccessToken().getTokenType().toString();
-	}
-
-	@ModelAttribute("mainPlayList")
-	protected String getMainPlayList() {
-		return main == null ? "NUll" : main.getName();
+	@ModelAttribute("main_playlist")
+	protected PlayListEntity mainPlaylist() {
+		return main;
 	}
 
 	@ModelAttribute("user")

@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,11 +33,13 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequestMapping("/playlists")
 public class PlayListsController extends BasePage{
-	@GetMapping
-	public String view() { return "playlists"; }
+	
 	@Qualifier(value = "getUserPlaylists")
 	@Autowired
 	protected List<PlayListEntity> playlists;
+
+	@GetMapping
+	public String view() { return "playlists"; }
 	
 	@PostMapping
 	public String playListActions(
@@ -46,16 +49,14 @@ public class PlayListsController extends BasePage{
 		Long deleteButton,
 		@RequestParam(required = false)
 		Long mainButton,
-		Authentication auth,
 		Model page
-	) throws Exception 
-	{
+	) {
 			var handler = 
 					ResponseExceptionHandlerFactory
 					.getInstance()
 					.setBodyType(PlayListEntity.class)
 					.setModel(page)
-					.setHolderName("createPlayListNameError")
+					.setHolderName("create_error")
 					.handler(HttpStatus.NOT_ACCEPTABLE);
 					
 
@@ -63,7 +64,7 @@ public class PlayListsController extends BasePage{
 				restClient
 					.post()
 					.uri(user.getId()+"/playlists/add")
-					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+					.header(AUTHENTICATION, token.getTokenHeader())
 					.body(Map.of("name",createButton))
 					.exchange(handler);
 			}
@@ -71,7 +72,7 @@ public class PlayListsController extends BasePage{
 				restClient
 					.delete()
 					.uri("playlists/"+deleteButton)
-					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+					.header(AUTHENTICATION, token.getTokenHeader())
 					.exchange(handler);
 			} 
 			if( Objects.nonNull(mainButton) ) {
@@ -79,14 +80,12 @@ public class PlayListsController extends BasePage{
 					.put()
 					.uri("playlists/"+mainButton)
 					.body(Map.of("main",true))
-					.header(AUTHENTICATION, getTokenValue()+ getTokenValue())
+					.header(AUTHENTICATION, token.getTokenHeader())
 					.exchange(handler);
 			} 
-			page.addAttribute("playLists", getAllUserPlayLists());
-			page.addAttribute("mainPlayList", getMainPlayList());
 		return "playlists";
 	}
-	@ModelAttribute("playLists")
+	@ModelAttribute("playlists")
 	public List<PlayListEntity> getAllUserPlayLists( ){
 		return playlists;
 	}

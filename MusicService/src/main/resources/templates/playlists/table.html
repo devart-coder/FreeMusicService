@@ -1,0 +1,17 @@
+	<thead th:fragment="thread(table_head)">
+		<tr th:replace="${table_head}"></tr>
+	</thead>
+
+	<tbody th:fragment="tbody(playlists)">
+		<tr th:each="pl:${playlists}">
+   			<td >
+				<form method="post">
+					<input  type = "hidden" name = "_csrf" th:value="${_csrf.token}">
+					<button class = "deleteButton" type = "submit" name = "deleteButton" th:value="${pl.id}">Delete</button>
+				</form>
+			</td>
+			<td th:text="${pl.name}" ></td>
+			<td th:text="${pl.size}"></td>
+			<td th:text="${pl.createdBy}"></td>
+		</tr>
+	</tbody>

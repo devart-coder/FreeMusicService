@@ -3,6 +3,7 @@ package FMSMain;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Order;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.context.annotation.RequestScope;
@@ -40,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 public class MusicServiceApplication {
 	private final String BASE_URI = "http://localhost:7070/api/";
 	private final String tokenHeaderName = "Authorization";
-	private String tokenHeaderValue;
 	public static void main(String[] args) {
 		SpringApplication.run(MusicServiceApplication.class, args);
 	}
@@ -107,12 +108,7 @@ public class MusicServiceApplication {
 	}
 	@Bean
 	RestClient restClient() {
-		return 
-			RestClient
-			.builder()
-			.baseUrl(BASE_URI)
-			.build();
-
+		return RestClient.builder().baseUrl(BASE_URI).build();
 	}
 	@Bean
 	@SessionScope
@@ -130,22 +126,29 @@ public class MusicServiceApplication {
 	}
 	
 	@Bean
-//	@SessionScope
-	@RequestScope
-	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli) {
-		
+	@SessionScope
+	TokenHeader token(OAuth2AuthorizedClient cli) {
 		var accessToken = cli.getAccessToken();
-		tokenHeaderValue = accessToken.getTokenType()+accessToken.getTokenValue();
+		var token = new TokenHeader();
+		token.setTokenHeader(accessToken.getTokenType()+accessToken.getTokenValue());
+		return token;
+	}
+	
+	@Bean
+	@SessionScope
+	UserEntity getUser(RestClient client, OAuth2AuthorizedClient cli, TokenHeader token) {
+		
 		var user = client
 			.get()
 			.uri("users/"+cli.getPrincipalName())
-			.header(tokenHeaderName,tokenHeaderValue)
+			.header(tokenHeaderName, token.getTokenHeader())
 			.exchange(ResponseExceptionHandlerFactory.getInstance().setBodyType(UserEntity.class).handler(HttpStatus.NOT_FOUND));
 		return user;
 	}
+	
 	@Bean
 	@RequestScope
-	List<PlayListEntity> getUserPlaylists(RestClient restClient, UserEntity user) {
+	List<PlayListEntity> getUserPlaylists(TokenHeader token, RestClient restClient, UserEntity user) {
 
 		var handler = ResponseExceptionHandlerFactory
 				.getInstance()
@@ -156,13 +159,13 @@ public class MusicServiceApplication {
 			restClient
 			.get()
 			.uri(user.getId() + "/playlists")
-			.header(tokenHeaderName,tokenHeaderValue)
+			.header(tokenHeaderName,token.getTokenHeader())
 			.exchange(handler);
 		return response;
 	}
 	@Bean
 	@RequestScope
-	PlayListEntity getMain(UserEntity user, RestClient restClient) {
+	PlayListEntity getMain(UserEntity user, RestClient restClient, TokenHeader token) {
 		var handler = ResponseExceptionHandlerFactory
 				.getInstance()
 				.setBodyType(PlayListEntity.class)
@@ -171,7 +174,7 @@ public class MusicServiceApplication {
 				restClient
 				.get()
 				.uri(user.getId() + "/playlists/main")
-				.header(tokenHeaderName,tokenHeaderValue)
+				.header(tokenHeaderName,token.getTokenHeader())
 				.exchange(handler);
 		return main;
 		
