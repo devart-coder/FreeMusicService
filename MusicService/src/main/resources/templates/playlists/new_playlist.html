@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+	<section>
+	<div class="createNewPlayListLabels" th:fragment="create">
+			<form method="post">
+				<span>New Playlist:</span>
+				<input type="hidden" name="_csrf" th:value="${_csrf.token}">
+				<input type="text" name="createButton" placeholder="Name">
+				<button class="createButton" type="submit">Create</button>
+				<span id="createPlayListNameError" th:text="${create_error}"></span>
+			</form>
+	</div>
+	</section>
+</html>

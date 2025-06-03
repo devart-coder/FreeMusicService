@@ -1,0 +1,12 @@
+<head th:fragment="head">
+	<title>FreeMusicService</title> 
+	<link th:href="@{css/home.css}" rel="stylesheet">
+</head>
+	
+<header th:fragment="header">
+	<img th:if="${background}" th:src="@{'images/backgrounds/' + ${background} }" alt ="Background not set">
+	<div th:replace="shared/user_bar"></div>
+	<div th:replace="shared/menu :: logout"></div>
+	<div class="greetings">Welcome to Free Music Service</div>
+	<div th:replace="shared/menu :: topmenu"></div>
+</header>
