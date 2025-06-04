@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import Email.Mail;
+import Email.Service.EmailService;
 import User.DAO.UserEntity;
 import User.Exceptions.PasswordNotValidException;
 import User.Exceptions.UserDuplicateException;
@@ -45,10 +47,22 @@ import lombok.extern.slf4j.Slf4j;
 public class UserAPI {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private EmailService emailService;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)  
 	public UserEntity userCreation( @RequestBody UserEntity user) throws Exception{
-		return  userService.create(user);
+		var newUser = userService.create(user);
+		var mail = new Mail();
+		
+		String[] dest = {"devart.ymail@yandex.ru"};
+		
+		mail.setDestinations(dest);
+		mail.setSubject( "New user created." );
+		mail.setText("* User with id %d was created.\n* UsersOnline: %d\n* AllUsers: %d\n"
+				.formatted(newUser.getId(), /*TODO::OnlineNeddRealize*/ 1l, userService.findAll().size() ));
+		emailService.send(mail);
+		return newUser;
 	}
 	
 	@GetMapping("{username}")
