@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{shared/page :: head(playlists.css)}">
+<body>
+	<div th:replace="~{shared/page :: header}"></div>
+		<div th:replace = "~{playlists/new_playlist :: create}"></div>
+		
+		<table th:replace = "~{playlists/table :: thread(~{:: .fields})}"></table>
+			<tr class="fields">
+				<th>Act</th>
+				<th>Name</th>
+				<th>Size</th>
+				<th>CreatedBy</th>
+			</tr>
+			<div th:replace = "~{playlists/table :: tbody(${playlists})}"></div>
+		</table>
+</body>
+</html>
