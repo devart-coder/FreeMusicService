@@ -1,6 +1,7 @@
 package RestAPI;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +29,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import Email.EmailProperties;
+import Email.Mail;
+import Email.Service.EmailService;
 import User.DAO.UserEntity;
 import User.Exceptions.PasswordNotValidException;
 import User.Exceptions.UserDuplicateException;
@@ -45,10 +49,21 @@ import lombok.extern.slf4j.Slf4j;
 public class UserAPI {
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private EmailService emailService;
+	@Autowired
+	private EmailProperties emailProperties;
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)  
 	public UserEntity userCreation( @RequestBody UserEntity user) throws Exception{
-		return  userService.create(user);
+		var newUser = userService.create(user);
+		var mail = new Mail();
+		mail.setDestinations(emailProperties.getDestinations());
+		mail.setSubject( "New user was registered." );
+		mail.setText("* User with id %d and name '%s' was created at '%s'.\n* UsersOnline: %d\n* AllUsers: %d\n"
+			.formatted(newUser.getId(),newUser.getUsername(),newUser.getCreatedBy().format(DateTimeFormatter.ofPattern("dd MMM uuuu")), /*TODO::OnlineNeddRealize*/ 1l, userService.findAll().size() ));
+		emailService.sendSimpleMessage(mail);
+		return newUser;
 	}
 	
 	@GetMapping("{username}")

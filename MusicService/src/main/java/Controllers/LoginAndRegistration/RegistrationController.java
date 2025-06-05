@@ -3,6 +3,7 @@ package Controllers.LoginAndRegistration;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestClient;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import Handlers.ResponseExceptionHandlerFactory;
 import User.DAO.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,28 +38,22 @@ public class RegistrationController {
 		String password,
 		Model page
 	){
+		var handler = ResponseExceptionHandlerFactory
+				.getInstance()
+				.setBodyType(UserEntity.class)
+				.setModel(page)
+				.setHolderName("message")
+				.handler(HttpStatus.NOT_ACCEPTABLE);
+
 		var user = client.post()
 			.uri("users")
 			.contentType(MediaType.APPLICATION_JSON)
 			.body(Map.of("username",username,"password",password))
-			.exchange((clientRequest, clientResponse) -> {
-				if(clientResponse.getStatusCode().is4xxClientError()) {
-					try (var is =  clientResponse.getBody() ) {
-						var node = new ObjectMapper()
-								.readTree(is)
-								.get("ErrorMessage");
-						if(Objects.isNull(node)) 
-							log.error("JsonNode is null.");
-						if(node.isTextual()) 
-							page.addAttribute("message",node.textValue());
-						else 
-							log.error("JsonNode have not a text type value.");
-					}
-					return null;
-				}
-				else
-					return clientResponse.bodyTo(UserEntity.class);
-			});
-			return Objects.isNull(user) ? "register" : "redirect:/login";
+			.exchange(handler);
+		if(Objects.isNull(user)) {
+			return "register";
+		}else {
+			return "redirect:/login";
+		}
 	}
 }
