@@ -7,7 +7,8 @@ import Playlist.DAO.PlayListEntity;
 import Playlist.ErrorMessanges.PlaylistErrorMessanges;
 import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import SharedChecks.SharedCheck;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 public class PlaylistCheck extends SharedCheck{
 	public static boolean nameIsValid(String name) throws PlaylistNameIsNotValidException{
 		if(Objects.isNull(name) )
@@ -19,16 +20,21 @@ public class PlaylistCheck extends SharedCheck{
 		return true;
 	}
 	
-	public static void filedsCheck(PlayListEntity playlist) throws PlaylistNameIsNotValidException {
-		nameIsValid(playlist.getName());
-		
-		if( Objects.isNull(playlist.getMain()) )
+	public static void filedsCheck(PlayListEntity playlist)
+//		throws PlaylistNameIsNotValidException 
+	{
+//		nameIsValid(playlist.getName());
+		if(playlist.getName() == null) {
+			playlist.setName("Default");
+			log.warn(String.format("'name' field set default value: '%s'.",playlist.getName()));
+		}
+		if(playlist.getMain() == null) {
 			playlist.setMain(false);
-		
-		if( Objects.isNull(playlist.getSize()) )
-			playlist.setSize(0l);
-		
-		if( Objects.isNull(playlist.getCreatedBy()))
+			log.warn(String.format("'main' field set default value: '%s'.",playlist.getMain()));
+		}
+		if(playlist.getCreatedBy() == null) {
 			playlist.setCreatedBy(LocalDate.now());
+			log.warn(String.format("'createdBy' field set default value: '%s'",playlist.getCreatedBy()));
+		}
 	}
 }

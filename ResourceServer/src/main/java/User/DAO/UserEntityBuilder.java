@@ -11,9 +11,12 @@ import org.springframework.stereotype.Component;
 
 import Playlist.DAO.PlayListBuilder;
 import Playlist.DAO.PlayListEntity;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import User.Check.UserCheck;
 import User.DAO.Settings.UserSettings;
 import User.DAO.Settings.UserSettingsBuilder;
+import User.Exceptions.PasswordNotValidException;
+import User.Exceptions.UsernameNotValidException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -65,7 +68,8 @@ public class UserEntityBuilder {
 		this.user.setActive(online);
 		return this;
 	}
-	public UserEntity build() throws Exception {
+	public UserEntity build() 
+			throws UsernameNotValidException, PasswordNotValidException, PlaylistNameIsNotValidException {
 		UserCheck.filedsCheck(user);
 		return user;
 	}

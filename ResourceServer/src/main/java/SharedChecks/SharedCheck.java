@@ -1,5 +1,6 @@
 package SharedChecks;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,6 @@ public class SharedCheck {
 	protected static final String ARG_IS_NULL = "Argument is null.";
 	protected static final String ID_IS_NULL ="'Id' field is null.";
 	protected static final String ID_LESS_ZERRO ="'Id' field less zerro.";
-
 	private static boolean idGreaterOrEqualZerro(Long id) {
 		try {
 			if( id < 0 )

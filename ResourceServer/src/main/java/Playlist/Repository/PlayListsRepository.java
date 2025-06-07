@@ -25,25 +25,12 @@ public interface PlayListsRepository extends JpaRepository<PlayListEntity, Long>
 	
 	@Modifying
 	@Transactional
-	@Query("update playlists p set p.size = ?1 where p.id = ?2 ")
-	void updateSizeById(Long size, Long id);
-
-	@Modifying
-	@Transactional
 	@Query("update playlists p set p.main = ?1 where p.name = ?2 ")
 	void updateMainByName(Boolean newMain, String name);
 	
 	@Modifying
 	@Transactional
-	@Query("update playlists p set p.size = ?1 where p.name = ?2 ")
-	Optional<Long> updateSizeByName(Long size, String name);
-
-//	public List<PlayListEntity> findAllByUser(UserEntity user);
-	
-	//TODO:?WhyThisNotDefault?
-	@Modifying
-	@Transactional
-	@Query("delete from playlists p where  p.id = ?1 ")
+//	@Query("delete from playlists p where  p.id = ?1 ")
 	void deleteById(Long id);
 	
 }

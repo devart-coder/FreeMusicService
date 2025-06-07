@@ -7,22 +7,19 @@ import javax.sound.midi.Track;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import User.DAO.UserEntity;
+import Playlist.DAO.Track.TrackEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity(name = "playlists")
 @Table(name = "playlists")
@@ -44,14 +41,9 @@ public class PlayListEntity {
 	private Boolean main;
 
 	@Setter
-	@Column(nullable = false)
-	@ColumnDefault(value = "0")
-	private Long size;
-	
-	@Setter
-	@Column
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<Track> tracks;
+	@JoinColumn(name = "playlist_id")
+	private List<TrackEntity> tracks;
 	
 	@Setter
 	@Column(nullable = false, updatable = false)

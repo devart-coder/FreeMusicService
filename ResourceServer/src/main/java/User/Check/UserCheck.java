@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import Playlist.DAO.PlayListBuilder;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import SharedChecks.SharedCheck;
 import User.DAO.UserEntity;
 import User.DAO.Settings.UserSettingsBuilder;
@@ -34,25 +35,21 @@ public class UserCheck extends SharedCheck{
 	}
 	
 	public static void filedsCheck(UserEntity user)
-			throws UsernameNotValidException, PasswordNotValidException {
+			throws UsernameNotValidException, PasswordNotValidException, PlaylistNameIsNotValidException {
 		usernameIsValid(user.getUsername());
 		passwordIsValid(user.getPassword());
 		
+		//OnlineAndLastEntryNotSet
 		roleCheck(user);
 		activeCheck(user);
-		//OnlineNotSetHere
 		playlistsCheck(user);
 		settingsCheck(user);
-		//LastEntityNotSetHere
 		createdByCheck(user);
 	}
 	private static void createdByCheck(UserEntity user) {
 		if(user.getCreatedBy()==null) {
-			final String pattern = "HH:mm:ss dd-MMM-uuu";
-			var formatter = DateTimeFormatter.ofPattern(pattern);
-			
-			user.setCreatedBy(
-				LocalDateTime.parse(LocalDateTime.now().toString(), formatter) );
+			log.error(LocalDateTime.now().toString());
+			user.setCreatedBy( LocalDateTime.now() );
 			log.warn(String.format("'createdBy' field set default value: '%s'",user.getCreatedBy()));
 		}
 	}
@@ -62,7 +59,9 @@ public class UserCheck extends SharedCheck{
 			log.warn(String.format("'settings' field set default value"));
 		}
 	}
-	private static void playlistsCheck(UserEntity user) {
+	private static void playlistsCheck(UserEntity user) 
+			throws PlaylistNameIsNotValidException 
+	{
 		if(user.getPlaylists() == null) {
 			user.setPlaylists( Arrays.asList(PlayListBuilder.defaultPlaylist()) );
 			log.warn(String.format("'playlist' field set default value"));
