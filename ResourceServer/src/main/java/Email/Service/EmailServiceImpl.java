@@ -22,7 +22,6 @@ public class EmailServiceImpl implements EmailService {
 	@Override
 	@Async
 	public void sendSimpleMessage(Mail mail) {
-        
 		var mess = new SimpleMailMessage();
 		mess.setFrom(emailProperties.getUsername());
 		mess.setTo(mail.getDestinations());

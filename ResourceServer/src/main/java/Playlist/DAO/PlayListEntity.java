@@ -1,6 +1,9 @@
 package Playlist.DAO;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import javax.sound.midi.Track;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -21,35 +24,38 @@ import lombok.ToString;
 
 @Entity(name = "playlists")
 @Table(name = "playlists")
+@Getter
 @NoArgsConstructor
 public class PlayListEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Getter
 	private Long Id;
 
 	@Column(nullable = false)
 	@ColumnDefault(value = "'Default'")
 	@Setter
-	@Getter
 	private String name;
 
 	@Column(name = "main",nullable = false, columnDefinition = "boolean")
 	@ColumnDefault(value = "false")
 	@Setter
-	@Getter
 	private Boolean main;
 
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
 	@Setter
-	@Getter
 	private Long size;
-
+	
+	@Column
+	@Setter
+	private List<Track> tracks;
+	
 	@Column(nullable = false, updatable = false)
 	@ColumnDefault(value = "now()")
-	@Getter
 	@Setter
 	private LocalDate createdBy;
-
+	
+	
+	
+	
 }
