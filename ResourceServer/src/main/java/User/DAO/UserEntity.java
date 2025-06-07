@@ -65,16 +65,6 @@ public class UserEntity {
 	private boolean online;
 	
 	@Setter
-	@Column(nullable = false)
-	@ColumnDefault(value = "now()")
-	private LocalDateTime lastEntry;
-	
-	@Setter
-	@Column(nullable = false,updatable = false)
-	@ColumnDefault(value = "now()")
-	private LocalDateTime createdBy;
-	
-	@Setter
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private List<PlayListEntity> playlists;
@@ -84,5 +74,12 @@ public class UserEntity {
 	@JoinColumn(name = "user_id")
 	private UserSettings settings;
 
-	 
+	@Setter
+	@Column
+	private LocalDateTime lastEntry;
+	
+	@Setter
+	@Column(nullable = false,updatable = false)
+	@ColumnDefault(value = "now()")
+	private LocalDateTime createdBy;
 }

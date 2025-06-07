@@ -113,8 +113,8 @@ public class UserService implements UserServiceDetails{
 			user.setRole(newUser.getRole());
 			log.warn("'Role' was update.");
 		}
-		if(Objects.nonNull(newUser.isEnabled()) && user.isEnabled()!=newUser.isEnabled()) {
-			user.setEnabled(newUser.isEnabled());
+		if(Objects.nonNull(newUser.isActive()) && user.isActive()!=newUser.isActive()) {
+			user.setActive(newUser.isActive());
 			log.warn("'Enable' was update.");
 		}
 		if(Objects.nonNull(newUser.getPlaylists()) && Objects.deepEquals(user.getPlaylists(), newUser.getPlaylists()) == false) {

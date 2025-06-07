@@ -32,29 +32,25 @@ public class UserCheck extends SharedCheck{
 		if (username.isBlank())
 			throw new PasswordNotValidException(UserErrorMessanges.PASSWORD_IS_BLANK);
 	}
-	private static void roleCheck(UserEntity user) {
-		if(user.getRole() == null) {
-			user.setRole("ROLE_USER");
-			log.warn(String.format("'role' field set default value: '%s'",user.getRole()));
-		}
-	}
-	public static UserEntity filedsCheck(UserEntity user) throws UsernameNotValidException,PasswordNotValidException {
+	
+	public static void filedsCheck(UserEntity user)
+			throws UsernameNotValidException, PasswordNotValidException {
 		usernameIsValid(user.getUsername());
 		passwordIsValid(user.getPassword());
 		
 		roleCheck(user);
 		activeCheck(user);
+		//OnlineNotSetHere
 		playlistsCheck(user);
 		settingsCheck(user);
+		//LastEntityNotSetHere
 		createdByCheck(user);
-		
-		return user;
-		
 	}
 	private static void createdByCheck(UserEntity user) {
-		final String pattern = "HH:mm:ss dd-MMM-uuu VV";
-		var formatter = DateTimeFormatter.ofPattern(pattern);
 		if(user.getCreatedBy()==null) {
+			final String pattern = "HH:mm:ss dd-MMM-uuu";
+			var formatter = DateTimeFormatter.ofPattern(pattern);
+			
 			user.setCreatedBy(
 				LocalDateTime.parse(LocalDateTime.now().toString(), formatter) );
 			log.warn(String.format("'createdBy' field set default value: '%s'",user.getCreatedBy()));
@@ -76,6 +72,12 @@ public class UserCheck extends SharedCheck{
 		if(user.isActive()==false) {
 			user.setActive(true);
 			log.warn(String.format("'enabled' field set default value: '%s'",user.isActive()));
+		}
+	}
+	private static void roleCheck(UserEntity user) {
+		if(user.getRole() == null) {
+			user.setRole("ROLE_USER");
+			log.warn(String.format("'role' field set default value: '%s'",user.getRole()));
 		}
 	}
 }

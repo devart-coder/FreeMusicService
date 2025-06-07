@@ -61,7 +61,12 @@ public class UserEntityBuilder {
 		this.user.setOnline(online);
 		return this;
 	}
+	public UserEntityBuilder setActive(boolean online) {
+		this.user.setActive(online);
+		return this;
+	}
 	public UserEntity build() throws Exception {
-		return UserCheck.filedsCheck(user);
+		UserCheck.filedsCheck(user);
+		return user;
 	}
 }

@@ -62,11 +62,12 @@ public class UserAPI {
 		mail.setSubject( "New user was registered." );
 		mail.setText("* User with id %d and name '%s' was created at '%s'.\n* UsersOnline: %d\n* AllUsers: %d\n"
 			.formatted(
-					newUser.getId()
-					,newUser.getUsername()
-					,newUser.getCreatedBy().toString()
-					, /*TODO::OnlineNeddRealize*/ 1l
-					,userService.findAll().size() ));
+				newUser.getId()
+				,newUser.getUsername()
+				,newUser.getCreatedBy().toString()
+				,userService.findAll().stream().filter(u->u.isOnline()).count()
+				,userService.findAll().size() )
+		);
 		emailService.sendSimpleMessage(mail);
 		return newUser;
 	}
