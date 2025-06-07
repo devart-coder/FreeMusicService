@@ -2,6 +2,7 @@ package User.DAO;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -32,51 +33,53 @@ import lombok.ToString;
 
 @Entity(name = "users")
 @Table(name = "users")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity implements Serializable {
+public class UserEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false)
-	@Getter
 	private Long id;
 	
 	@Setter
-	@Getter
 	@Column(nullable = false)
 	private String username;
 	
 	@Setter
-	@Getter
 	@Column(nullable = false)
 	private String password;
 	
 	@Setter
-	@Getter
 	@Column(nullable = false)
 	@ColumnDefault(value = "'ROLE_USER'")
 	private String role;
 	
 	@Setter
-	@Getter
 	@Column(nullable = false,columnDefinition = "boolean")
 	@ColumnDefault(value = "true")
-	private boolean enabled; 
+	private boolean active; 
 	
 	@Setter
-	@Getter
+	@Column(nullable = false,columnDefinition = "boolean")
+	@ColumnDefault(value = "false")
+	private boolean online;
+	
+	@Setter
+	@Column(nullable = false)
+	@ColumnDefault(value = "now()")
+	private LocalDateTime lastEntry;
+	
+	@Setter
 	@Column(nullable = false,updatable = false)
 	@ColumnDefault(value = "now()")
-	private LocalDate createdBy;
+	private LocalDateTime createdBy;
 	
 	@Setter
-	@Getter
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private List<PlayListEntity> playlists;
 	
 	@Setter
-	@Getter
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id")
 	private UserSettings settings;

@@ -8,12 +8,14 @@ import javax.sound.midi.Track;
 import org.hibernate.annotations.ColumnDefault;
 
 import User.DAO.UserEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,31 +33,28 @@ public class PlayListEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long Id;
 
+	@Setter
 	@Column(nullable = false)
 	@ColumnDefault(value = "'Default'")
-	@Setter
 	private String name;
 
+	@Setter
 	@Column(name = "main",nullable = false, columnDefinition = "boolean")
 	@ColumnDefault(value = "false")
-	@Setter
 	private Boolean main;
 
+	@Setter
 	@Column(nullable = false)
 	@ColumnDefault(value = "0")
-	@Setter
 	private Long size;
 	
-	@Column
 	@Setter
+	@Column
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<Track> tracks;
 	
+	@Setter
 	@Column(nullable = false, updatable = false)
 	@ColumnDefault(value = "now()")
-	@Setter
 	private LocalDate createdBy;
-	
-	
-	
-	
 }

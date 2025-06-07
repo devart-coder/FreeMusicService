@@ -1,6 +1,8 @@
 package User.Check;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -30,31 +32,50 @@ public class UserCheck extends SharedCheck{
 		if (username.isBlank())
 			throw new PasswordNotValidException(UserErrorMessanges.PASSWORD_IS_BLANK);
 	}
-	public static UserEntity filedsCheck(UserEntity user) throws UsernameNotValidException,PasswordNotValidException {
-		usernameIsValid(user.getUsername());
-		passwordIsValid(user.getPassword());
-		
+	private static void roleCheck(UserEntity user) {
 		if(user.getRole() == null) {
 			user.setRole("ROLE_USER");
 			log.warn(String.format("'role' field set default value: '%s'",user.getRole()));
 		}
-		if(user.isEnabled()==false) {
-			user.setEnabled(true);
-			log.warn(String.format("'enabled' field set default value: '%s'",user.isEnabled()));
+	}
+	public static UserEntity filedsCheck(UserEntity user) throws UsernameNotValidException,PasswordNotValidException {
+		usernameIsValid(user.getUsername());
+		passwordIsValid(user.getPassword());
+		
+		roleCheck(user);
+		activeCheck(user);
+		playlistsCheck(user);
+		settingsCheck(user);
+		createdByCheck(user);
+		
+		return user;
+		
+	}
+	private static void createdByCheck(UserEntity user) {
+		final String pattern = "HH:mm:ss dd-MMM-uuu VV";
+		var formatter = DateTimeFormatter.ofPattern(pattern);
+		if(user.getCreatedBy()==null) {
+			user.setCreatedBy(
+				LocalDateTime.parse(LocalDateTime.now().toString(), formatter) );
+			log.warn(String.format("'createdBy' field set default value: '%s'",user.getCreatedBy()));
 		}
-		if(user.getPlaylists() == null) {
-			user.setPlaylists( Arrays.asList(PlayListBuilder.defaultPlaylist()) );
-			log.warn(String.format("'playlist' field set default value"));
-		}
+	}
+	private static void settingsCheck(UserEntity user) {
 		if(user.getSettings()==null) {
 			user.setSettings(UserSettingsBuilder.builder().build());
 			log.warn(String.format("'settings' field set default value"));
 		}
-		if(user.getCreatedBy()==null) {
-			user.setCreatedBy(LocalDate.now());
-			log.warn(String.format("'createdBy' field set default value: '%s'",user.getCreatedBy()));
+	}
+	private static void playlistsCheck(UserEntity user) {
+		if(user.getPlaylists() == null) {
+			user.setPlaylists( Arrays.asList(PlayListBuilder.defaultPlaylist()) );
+			log.warn(String.format("'playlist' field set default value"));
 		}
-		return user;
-		
+	}
+	private static void activeCheck(UserEntity user) {
+		if(user.isActive()==false) {
+			user.setActive(true);
+			log.warn(String.format("'enabled' field set default value: '%s'",user.isActive()));
+		}
 	}
 }

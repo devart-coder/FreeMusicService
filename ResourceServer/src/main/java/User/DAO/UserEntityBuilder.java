@@ -1,6 +1,7 @@
 package User.DAO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -50,6 +51,14 @@ public class UserEntityBuilder {
 	}
 	public UserEntityBuilder setSettings(UserSettings properties) {
 		this.user.setSettings(properties);
+		return this;
+	}
+	public UserEntityBuilder setLastEntity(LocalDateTime localDateTime) {
+		this.user.setLastEntry(localDateTime);
+		return this;
+	}
+	public UserEntityBuilder setOnline(boolean online) {
+		this.user.setOnline(online);
 		return this;
 	}
 	public UserEntity build() throws Exception {
