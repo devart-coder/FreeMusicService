@@ -1,6 +1,7 @@
 package User.DAO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,9 +11,12 @@ import org.springframework.stereotype.Component;
 
 import Playlist.DAO.PlayListBuilder;
 import Playlist.DAO.PlayListEntity;
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import User.Check.UserCheck;
 import User.DAO.Settings.UserSettings;
 import User.DAO.Settings.UserSettingsBuilder;
+import User.Exceptions.PasswordNotValidException;
+import User.Exceptions.UsernameNotValidException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +56,21 @@ public class UserEntityBuilder {
 		this.user.setSettings(properties);
 		return this;
 	}
-	public UserEntity build() throws Exception {
-		return UserCheck.filedsCheck(user);
+	public UserEntityBuilder setLastEntity(LocalDateTime localDateTime) {
+		this.user.setLastEntry(localDateTime);
+		return this;
+	}
+	public UserEntityBuilder setOnline(boolean online) {
+		this.user.setOnline(online);
+		return this;
+	}
+	public UserEntityBuilder setActive(boolean online) {
+		this.user.setActive(online);
+		return this;
+	}
+	public UserEntity build() 
+			throws UsernameNotValidException, PasswordNotValidException, PlaylistNameIsNotValidException {
+		UserCheck.filedsCheck(user);
+		return user;
 	}
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import User.Check.UserCheck;
 import User.DAO.UserEntity;
 import User.ErrorMessanges.UserErrorMessanges;
@@ -31,16 +32,21 @@ public class UserService implements UserServiceDetails{
 	private PasswordEncoder encoder;
 	
 	@Override
-	public UserEntity create(UserEntity user) throws UserDuplicateException,UsernameNotValidException,PasswordNotValidException {
+	public UserEntity create(UserEntity user) 
+		throws UserDuplicateException 
+			,UsernameNotValidException 
+			,PasswordNotValidException
+			,PlaylistNameIsNotValidException 
+	{
 		UserCheck.notNull(user);
 		UserCheck.filedsCheck(user);
-		log.warn( repos.findByUsername(user.getUsername()).toString() );
-		if(repos.findByUsername(user.getUsername()).isPresent())
-			throw new UserDuplicateException("User with name '%s' exists.".formatted(user.getUsername()));
 
+		if(repos.findByUsername(user.getUsername()).isPresent()) 
+			throw new UserDuplicateException("User with name '%s' exists.".formatted(user.getUsername()));
+		
 		user.setPassword(encoder.encode(user.getPassword()));
 		var newUser = repos.save(user);
-		log.info("User with id '%d' created.".formatted(newUser.getId()));
+		log.info("User with id {%d} created.",newUser.getId());
 		return newUser;
 	}
 	
@@ -113,8 +119,8 @@ public class UserService implements UserServiceDetails{
 			user.setRole(newUser.getRole());
 			log.warn("'Role' was update.");
 		}
-		if(Objects.nonNull(newUser.isEnabled()) && user.isEnabled()!=newUser.isEnabled()) {
-			user.setEnabled(newUser.isEnabled());
+		if(Objects.nonNull(newUser.isActive()) && user.isActive()!=newUser.isActive()) {
+			user.setActive(newUser.isActive());
 			log.warn("'Enable' was update.");
 		}
 		if(Objects.nonNull(newUser.getPlaylists()) && Objects.deepEquals(user.getPlaylists(), newUser.getPlaylists()) == false) {

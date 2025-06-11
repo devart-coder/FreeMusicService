@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import Email.EmailProperties;
 import Email.Mail;
 import Email.Service.EmailService;
+import Playlist.Check.PlaylistCheck;
 import User.DAO.UserEntity;
 import User.Exceptions.PasswordNotValidException;
 import User.Exceptions.UserDuplicateException;
@@ -54,14 +55,22 @@ public class UserAPI {
 	@Autowired
 	private EmailProperties emailProperties;
 	
+	protected static final String dateTimePattern = "HH:mm:ss dd-MMM-uuu";
+	protected static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);
+	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)  
 	public UserEntity userCreation( @RequestBody UserEntity user) throws Exception{
 		var newUser = userService.create(user);
 		var mail = new Mail();
 		mail.setDestinations(emailProperties.getDestinations());
 		mail.setSubject( "New user was registered." );
-		mail.setText("* User with id %d and name '%s' was created at '%s'.\n* UsersOnline: %d\n* AllUsers: %d\n"
-			.formatted(newUser.getId(),newUser.getUsername(),newUser.getCreatedBy().format(DateTimeFormatter.ofPattern("dd MMM uuuu")), /*TODO::OnlineNeddRealize*/ 1l, userService.findAll().size() ));
+		mail.setText("* User [\"id\":%d,\"name\":\"%s\"] was created at '%s'.\nAll users: %d\n"
+			.formatted(
+				newUser.getId()
+				,newUser.getUsername()
+				,newUser.getCreatedBy().format(formatter)
+				,userService.findAll().size() )
+		);
 		emailService.sendSimpleMessage(mail);
 		return newUser;
 	}

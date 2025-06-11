@@ -56,7 +56,9 @@ public class PlayListService implements PlayListDetails {
 				.stream()
 				.filter(p->p.getName().equals(playlistName));
 		}
-		private PlayListEntity defaultPlaylist () {
+		private PlayListEntity defaultPlaylist () 
+//			throws PlaylistNameIsNotValidException
+		{
 				return 
 					user
 					.getPlaylists()
@@ -150,7 +152,8 @@ public class PlayListService implements PlayListDetails {
 								.PLAYLIST_NOT_FOUND_WITH_ID
 								.formatted(playlistId)));
 		}
-		public void  setDefaultPlayListAsMain() {
+		public void  setDefaultPlayListAsMain() 
+		{
 			if(PlaylistCheck.isNull(user))
 				return;
 			playlistService.updateMainByEntity(true, defaultPlaylist());
@@ -215,11 +218,6 @@ public class PlayListService implements PlayListDetails {
 		updateMainById(newMain, playlist.getId());
 	}
 
-	@Override
-	public void updateSizeByEntity(Long newSize, PlayListEntity playlist) {
-		playlist.setSize(newSize);
-		updateSizeById(newSize, playlist.getId());
-	}
 
 	@Override
 	public void updateNameById(String newName, Long playlistId) {
@@ -240,15 +238,6 @@ public class PlayListService implements PlayListDetails {
 	}
 
 	@Override
-	public void updateSizeById(Long newSize, Long playlistId) {
-		try {
-			playListRepos.updateSizeById(newSize, playlistId);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
-
-	@Override
 	public void updateMainByName(Boolean newMain, String name) {
 		try {
 			playListRepos.updateMainByName(newMain, name);
@@ -256,16 +245,6 @@ public class PlayListService implements PlayListDetails {
 			log.error(e.getMessage());
 		}
 	}
-
-	@Override
-	public void updateSizeByName(Long newSize, String name) {
-		try {
-			playListRepos.updateSizeByName(newSize, name);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
-
 	// Delete
 	@Override
 	public void delete(PlayListEntity playlist)throws PlayListNotFoundException {
@@ -301,8 +280,8 @@ public class PlayListService implements PlayListDetails {
 			dest.setMain(source.getMain());
 		if(Objects.nonNull(source.getName()) && source.getName().equalsIgnoreCase(dest.getName())==false)
 			dest.setName(source.getName());
-		if(Objects.nonNull(source.getSize()) && Objects.equals(source.getSize(), dest.getSize())==false)
-			dest.setSize(source.getSize());
+		if(Objects.nonNull(source.getTracks()) && Objects.equals(source.getTracks(), dest.getTracks())==false)
+			dest.setTracks(source.getTracks());
 	}
 	
 	
