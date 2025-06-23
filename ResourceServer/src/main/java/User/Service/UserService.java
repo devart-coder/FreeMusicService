@@ -97,12 +97,12 @@ public class UserService implements UserServiceDetails{
 		repos.deleteById(user_id);
 	}
 
-	public UserEntity updateByUsername(String username, UserEntity newUser) 
+	public UserEntity updateByUserId(Long user_id, UserEntity newUser) 
 			throws UsernameNotValidException, PasswordNotValidException, UserNotFoundException {
 		var user = repos
-				.findByUsername(username)
+				.findById(user_id)
 				.orElseThrow(
-					() -> new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_NAME.formatted(username)) );
+					() -> new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_ID.formatted(user_id)) );
 
 		//'Id' and 'CreatedBy' fiels not updateable.
 		if(Objects.nonNull(newUser.getUsername()) && user.getUsername().equalsIgnoreCase(newUser.getUsername())==false) {
@@ -121,7 +121,11 @@ public class UserService implements UserServiceDetails{
 		}
 		if(Objects.nonNull(newUser.isActive()) && user.isActive()!=newUser.isActive()) {
 			user.setActive(newUser.isActive());
-			log.warn("'Enable' was update.");
+			log.warn("'Active' was update.");
+		}
+		if(Objects.nonNull(newUser.isOnline()) && user.isOnline()!=newUser.isOnline()) {
+			user.setOnline(newUser.isOnline());
+			log.warn("'Online' was update.");
 		}
 		if(Objects.nonNull(newUser.getPlaylists()) && Objects.deepEquals(user.getPlaylists(), newUser.getPlaylists()) == false) {
 			user.setPlaylists(newUser.getPlaylists());
@@ -130,6 +134,10 @@ public class UserService implements UserServiceDetails{
 		if(Objects.nonNull(newUser.getSettings()) && Objects.deepEquals( user.getSettings(), newUser.getSettings())==false) { 
 			user.setSettings(newUser.getSettings());
 			log.warn("'Settings' was update.");
+		}
+		if(Objects.nonNull(newUser.getLastEntry()) && Objects.deepEquals( user.getLastEntry(), newUser.getLastEntry())==false) { 
+			user.setLastEntry(newUser.getLastEntry());
+			log.warn("'LastEntry' was update.");
 		}
 		return repos.save(user);
 	}

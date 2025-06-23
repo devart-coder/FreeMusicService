@@ -1,6 +1,10 @@
 package User.DAO.Settings;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
+import java.util.Random;
 
 import User.DAO.UserEntity;
 import lombok.AccessLevel;
@@ -28,9 +32,22 @@ public class UserSettingsBuilder {
 		return this;
 	}
 	public UserSettings build() {
-		if(this.settings.getImagePath()==null) {
-			settings.setImagePath(Paths.get(defaultPath).toAbsolutePath().toString());
-			log.warn(String.format("'image_path' field set default value: '%s'",settings.getImagePath()));
+		String fileName="";
+		log.warn("{}",Objects.equals( this.settings.getImagePath(), null ) ? "Y":"N");
+		if(Objects.equals( this.settings.getImagePath(), null )) {
+			var path = Paths.get(defaultPath).toAbsolutePath();
+			try (var fs = Files.list(path)){
+				var array = fs.toArray(String[]::new);
+				var size = array.length;
+				var random =new Random(size);
+				var l = random.nextInt();
+				fileName = array[l];
+				log.warn(fileName);
+				settings.setImagePath(Paths.get(defaultPath).toAbsolutePath()+fileName);
+				log.warn(String.format("'image_path' field set default value: '%s'",settings.getImagePath()));
+			}catch(Exception e) {
+				
+			}
 		}
 		return settings;
 	}

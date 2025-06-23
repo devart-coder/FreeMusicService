@@ -13,12 +13,5 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 class ResourseServiceApplicationTests {
-	@Autowired
-	private MockMvc mock;
-	@Test
-	void contextLoads() throws Exception {
-//		mock.perform(get("/api/demo").with(jwt()))
-//		.andExpect(status().isOk());
-	}
 
 }
