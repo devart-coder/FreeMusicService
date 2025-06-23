@@ -3,18 +3,25 @@ package Controllers;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClient;
 
 import FMSMain.TokenHeader;
+import Handlers.ResponseExceptionHandlerFactory;
 import Playlist.DAO.PlayListEntity;
 import User.DAO.UserEntity;
 import lombok.NoArgsConstructor;
@@ -47,7 +54,8 @@ public class BasePage {
 	protected String getUserName() {
 		return user.getUsername();
 	}
-
+	
+	
 	// TODO::RealizeForAdminOnly
 	@ModelAttribute("background")
 	public String backgroundName() {

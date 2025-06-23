@@ -61,6 +61,7 @@ public class UserAPI {
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)  
 	public UserEntity userCreation( @RequestBody UserEntity user) throws Exception{
 		var newUser = userService.create(user);
+
 		var mail = new Mail();
 		mail.setDestinations(emailProperties.getDestinations());
 		mail.setSubject( "New user was registered." );
@@ -86,15 +87,23 @@ public class UserAPI {
 		return userService.findAll();
 	}
 	
-	@PutMapping(value = "{username}",consumes = MediaType.APPLICATION_JSON_VALUE)
-	public UserEntity userUpdate(@PathVariable String username, @RequestBody UserEntity newUser) throws Exception {
-		return userService.updateByUsername(username,newUser);
+	@PutMapping(value = "{user_id}",consumes = MediaType.APPLICATION_JSON_VALUE)
+	public UserEntity userUpdate(@PathVariable Long user_id, @RequestBody UserEntity newUser) throws Exception {
+		log.warn("User:Update:PathVariable {}", user_id);
+		log.warn("User:Update:Body {}", newUser.toString());
+		return userService.updateByUserId(user_id,newUser);
 	}	
 	
 	@DeleteMapping("{user_id}")
 //	@PreFilter("hasRole(\"ADMIN\")")
-	public void userDelete(@PathVariable Long user_id) throws Exception{
+	public void userDelete(@PathVariable Long user_id) 
+		throws Exception
+	{
 		userService.deleteById(user_id);
+		var mail = new Mail();
+		mail.setDestinations(emailProperties.getDestinations());
+		mail.setSubject( "New user was registered." );
+		mail.setText("* User with [\"id\":%d] was deleted."
+			.formatted(user_id));
 	}
-	
 }
