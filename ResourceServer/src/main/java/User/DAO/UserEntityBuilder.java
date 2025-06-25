@@ -2,6 +2,7 @@ package User.DAO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserEntityBuilder {
 	private UserEntity user=new UserEntity();
+	protected static final String dateTimePattern = "HH:mm:ss dd-MMM-uuu";
+	public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
 	
 	public static UserEntityBuilder builder() {
 		return new UserEntityBuilder();
@@ -57,7 +60,7 @@ public class UserEntityBuilder {
 		return this;
 	}
 	public UserEntityBuilder setLastEntity(LocalDateTime localDateTime) {
-		this.user.setLastEntry(localDateTime);
+		this.user.setLastEntry(localDateTime.format(dateTimeFormatter));
 		return this;
 	}
 	public UserEntityBuilder setOnline(boolean online) {

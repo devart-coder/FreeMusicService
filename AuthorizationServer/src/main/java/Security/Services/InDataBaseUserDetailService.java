@@ -1,31 +1,28 @@
 package Security.Services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClient;
 
 import Security.SecureUser;
-import User.Exceptions.UserNotFoundException;
-import User.Service.Interfaces.UserServiceDetails;
-//import User.Exceptions.UserNotFoundException;
-//import User.Service.Interfaces.UserServiceDetails;
+import User.DAO.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class InDataBaseUserDetailService implements UserDetailsService {
-	@Autowired
-	private UserServiceDetails userService; 
+//	@Autowired
+//	private UserServiceDetails userService; 
 	@Override
 	public SecureUser loadUserByUsername(String username){
-		try {
-			return new SecureUser(userService.findOnceByName(username));
-		} catch (UserNotFoundException e) {
-			log.error(e.getMessage());
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		return null;
+		var user = RestClient
+		.builder()
+		.baseUrl("http://localhost:7070")
+		.build()
+		.get()
+		.uri("/api/users/"+username)
+		.retrieve()
+		.body(UserEntity.class);
+		log.info("UserDetailService:Find: {}",user);
+		return new SecureUser(user);
 	}
 }

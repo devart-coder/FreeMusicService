@@ -34,6 +34,7 @@ import Email.Mail;
 import Email.Service.EmailService;
 import Playlist.Check.PlaylistCheck;
 import User.DAO.UserEntity;
+import User.DAO.UserEntityBuilder;
 import User.Exceptions.PasswordNotValidException;
 import User.Exceptions.UserDuplicateException;
 import User.Exceptions.UserNotFoundException;
@@ -55,8 +56,7 @@ public class UserAPI {
 	@Autowired
 	private EmailProperties emailProperties;
 	
-	protected static final String dateTimePattern = "HH:mm:ss dd-MMM-uuu";
-	protected static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimePattern);
+	
 	
 	@PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)  
 	public UserEntity userCreation( @RequestBody UserEntity user) throws Exception{
@@ -69,7 +69,7 @@ public class UserAPI {
 			.formatted(
 				newUser.getId()
 				,newUser.getUsername()
-				,newUser.getCreatedBy().format(formatter)
+				,newUser.getCreatedBy()
 				,userService.findAll().size() )
 		);
 		emailService.sendSimpleMessage(mail);
@@ -86,11 +86,14 @@ public class UserAPI {
 	public List<UserEntity> allUsersInfo() throws Exception{
 		return userService.findAll();
 	}
-	
+
 	@PutMapping(value = "{user_id}",consumes = MediaType.APPLICATION_JSON_VALUE)
-	public UserEntity userUpdate(@PathVariable Long user_id, @RequestBody UserEntity newUser) throws Exception {
-		log.warn("User:Update:PathVariable {}", user_id);
-		log.warn("User:Update:Body {}", newUser.toString());
+	public UserEntity userUpdate(
+			@PathVariable Long user_id,
+			@RequestBody UserEntity newUser)
+				throws Exception 
+	{
+		log.info("UserAPI:Put:Body {}", newUser.toString());
 		return userService.updateByUserId(user_id,newUser);
 	}	
 	

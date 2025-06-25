@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalUserExceptionsHandler {
 	private final String ERROR_MESSAGE = "ErrorMessage";
 	private ResponseEntity<Map<String,String>> local ( HttpStatus status, Exception u ){
-		log.error(ERROR_MESSAGE,u.getMessage());
+		log.error(ERROR_MESSAGE+": {}",u.getMessage());
 		return ResponseEntity
 				.status(status)
 				.body( Map.of( ERROR_MESSAGE,u.getMessage() ) );

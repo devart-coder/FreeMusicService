@@ -20,29 +20,26 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
+@Entity(name = "user_settings")
 @Table(name = "user_settings")
+@Getter
+@ToString
 public class UserSettings implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Getter
 	private Long id;
 
 	@Column(name = "email",nullable = true)
-	@Getter
 	@Setter
 	private String email;
 	
 	@Column(name = "phone",nullable = true)
 	@Setter
-	@Getter
 	private String phoneNumber;
 	
-	@Column(name = "avatar_path",nullable = false)
-	@ColumnDefault(value = "''")
-	@Getter
+	@Column(nullable = false)
 	@Setter
 	private String imagePath;
 

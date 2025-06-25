@@ -1,5 +1,6 @@
 package User.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import User.Check.UserCheck;
 import User.DAO.UserEntity;
+import User.DAO.UserEntityBuilder;
 import User.ErrorMessanges.UserErrorMessanges;
 import User.Exceptions.PasswordNotValidException;
 import User.Exceptions.UserDuplicateException;
@@ -33,10 +35,7 @@ public class UserService implements UserServiceDetails{
 	
 	@Override
 	public UserEntity create(UserEntity user) 
-		throws UserDuplicateException 
-			,UsernameNotValidException 
-			,PasswordNotValidException
-			,PlaylistNameIsNotValidException 
+		throws Exception 
 	{
 		UserCheck.notNull(user);
 		UserCheck.filedsCheck(user);
@@ -104,7 +103,7 @@ public class UserService implements UserServiceDetails{
 				.orElseThrow(
 					() -> new UserNotFoundException(UserErrorMessanges.USER_NOT_FOUND_WITH_ID.formatted(user_id)) );
 
-		//'Id' and 'CreatedBy' fiels not updateable.
+		//'Id' and 'CreatedBy' fields not updateable.
 		if(Objects.nonNull(newUser.getUsername()) && user.getUsername().equalsIgnoreCase(newUser.getUsername())==false) {
 			UserCheck.usernameIsValid(newUser.getUsername());
 			user.setUsername(newUser.getUsername());
@@ -135,10 +134,24 @@ public class UserService implements UserServiceDetails{
 			user.setSettings(newUser.getSettings());
 			log.warn("'Settings' was update.");
 		}
-		if(Objects.nonNull(newUser.getLastEntry()) && Objects.deepEquals( user.getLastEntry(), newUser.getLastEntry())==false) { 
+		log.warn("Check:LastEntry: {}",newUser.getLastEntry() == null ? "Null" : newUser.getLastEntry());
+		if(newUser.getLastEntry()!=null && user.getLastEntry()!=newUser.getLastEntry() ) {
+			log.warn("Check:LastEntry: {}",newUser.getLastEntry() == null ? "Null" : newUser.getLastEntry());
 			user.setLastEntry(newUser.getLastEntry());
-			log.warn("'LastEntry' was update.");
+			log.warn("'LastEntry' was update to: {}",user.getLastEntry());
 		}
 		return repos.save(user);
+	}
+
+	@Override
+	public UserEntity update(UserEntity user) throws UsernameNotValidException, PasswordNotValidException, PlaylistNameIsNotValidException {
+		UserCheck.notNull(user);
+		UserCheck.filedsCheck(user);
+
+		var option=repos.findById(user.getId());
+		if(option.isPresent()) 
+			return repos.save(user);
+		else 	
+			return null;
 	}
 }

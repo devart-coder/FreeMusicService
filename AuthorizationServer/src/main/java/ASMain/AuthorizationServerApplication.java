@@ -43,18 +43,16 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
+import User.Repository.UserRepository;
+
 @SpringBootApplication
 @Configuration
 @ComponentScan(basePackages = {
 		"User"
 		,"Playlist"
 		,"Security"})
-@EnableJpaRepositories(basePackages = {
-		"User",
-		"Playlist"})
-@EntityScan(basePackages = {
-		"User.DAO"
-		,"Playlist.DAO"})
+@EnableJpaRepositories(basePackages =  {"User","Playlist"})
+@EntityScan(basePackages = { "User","Playlist"})
 public class AuthorizationServerApplication {
 
 	public static void main(String[] args) {
