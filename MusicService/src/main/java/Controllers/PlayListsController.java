@@ -5,27 +5,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.ApplicationContextFactory;
-import org.springframework.boot.web.servlet.filter.ApplicationContextHeaderFilter;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.annotation.SessionScope;
-
 import Handlers.ResponseExceptionHandlerFactory;
-import Playlist.DAO.PlayListBuilder;
 import Playlist.DAO.PlayListEntity;
 import lombok.extern.slf4j.Slf4j;
 

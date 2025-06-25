@@ -2,9 +2,11 @@ package User.DAO.Settings;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Stream;
 
 import User.DAO.UserEntity;
 import lombok.AccessLevel;
@@ -14,8 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Slf4j
 public class UserSettingsBuilder {
+	private final String defaultPath = "src/main/resources/static/images/icons/avatar/"; 
+	
 	private UserSettings settings = new UserSettings();
-	private final String defaultPath = "src/main/resources/static/images/icons/UserAvatar/"; 
+
 	public static UserSettingsBuilder builder() {
 		return new UserSettingsBuilder();
 	}
@@ -32,21 +36,15 @@ public class UserSettingsBuilder {
 		return this;
 	}
 	public UserSettings build() {
-		String fileName="";
-		log.warn("{}",Objects.equals( this.settings.getImagePath(), null ) ? "Y":"N");
-		if(Objects.equals( this.settings.getImagePath(), null )) {
+		if(Objects.equals( this.settings.getImagePath(), null ) || settings.getImagePath().equals(null)) {
 			var path = Paths.get(defaultPath).toAbsolutePath();
 			try (var fs = Files.list(path)){
-				var array = fs.toArray(String[]::new);
-				var size = array.length;
-				var random =new Random(size);
-				var l = random.nextInt();
-				fileName = array[l];
-				log.warn(fileName);
-				settings.setImagePath(Paths.get(defaultPath).toAbsolutePath()+fileName);
+				var array = fs.toList();
+				var s =new Random().nextInt(array.size());
+				settings.setImagePath(array.get(s).toAbsolutePath().toString());
 				log.warn(String.format("'image_path' field set default value: '%s'",settings.getImagePath()));
 			}catch(Exception e) {
-				
+				log.error(e.getMessage());
 			}
 		}
 		return settings;

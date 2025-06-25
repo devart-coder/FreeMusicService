@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+	<!-- <head th:insert="~{shared/page :: head}"> -->
+	<body>
+	<!-- <header th:replace="~{shared/page :: header}"> -->
+		<div class="">
+			<ul>
+					<span>ZaycevFM</span>
+				<li th:each="station : ${stations}">
+					<ul>
+						<a th:text="${station.key}">NoName</a>
+						<audio controls pause th:src="@{'https://abs.zaycev.fm/'+${station.value}}">
+					</ul>
+				</li>
+					<span>JangoFM</span>
+				<li>
+				</li>
+			</ul>
+		</div>
+	</body>
+</html>

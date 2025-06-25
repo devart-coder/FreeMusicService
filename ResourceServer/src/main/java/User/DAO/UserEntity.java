@@ -77,10 +77,10 @@ public class UserEntity {
 
 	@Setter
 	@Column
-	private LocalDateTime lastEntry;
+	private String lastEntry;
 	
 	@Setter
 	@Column(nullable = false,updatable = false)
-	@ColumnDefault(value = "now()")
-	private LocalDateTime createdBy;
+//	@ColumnDefault(value = "now()")
+	private String createdBy;
 }

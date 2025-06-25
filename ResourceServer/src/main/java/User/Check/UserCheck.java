@@ -10,6 +10,7 @@ import Playlist.DAO.PlayListBuilder;
 import Playlist.Exceptions.PlaylistNameIsNotValidException;
 import SharedChecks.SharedCheck;
 import User.DAO.UserEntity;
+import User.DAO.UserEntityBuilder;
 import User.DAO.Settings.UserSettingsBuilder;
 import User.ErrorMessanges.UserErrorMessanges;
 import User.Exceptions.PasswordNotValidException;
@@ -48,15 +49,15 @@ public class UserCheck extends SharedCheck{
 	}
 	private static void createdByCheck(UserEntity user) {
 		if(user.getCreatedBy()==null) {
-			log.error(LocalDateTime.now().toString());
-			user.setCreatedBy( LocalDateTime.now() );
+			user.setCreatedBy( LocalDateTime.now().format(UserEntityBuilder.dateTimeFormatter) );
 			log.warn(String.format("'createdBy' field set default value: '%s'",user.getCreatedBy()));
 		}
 	}
 	private static void settingsCheck(UserEntity user) {
 		if(user.getSettings()==null) {
-			user.setSettings(UserSettingsBuilder.builder().build());
-			log.warn(String.format("'settings' field set default value"));
+			var u = UserSettingsBuilder.builder().build();
+			user.setSettings(u);
+			log.warn("'settings' field set default value: {}",u);
 		}
 	}
 	private static void playlistsCheck(UserEntity user) 

@@ -9,10 +9,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import User.DAO.UserEntity;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @RequiredArgsConstructor
+@ToString
 public class SecureUser implements UserDetails {
-	private static final long serialVersionUID = -8826382408543735707L;
 	private final UserEntity user;
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -25,10 +26,6 @@ public class SecureUser implements UserDetails {
 	@Override
 	public String getUsername() {
 		return user.getUsername();
-	}
-	@Override
-	public String toString() {
-		return "SecureUser [user=" + user + "]";
 	}
 	public Long getId() {
 		return user.getId();
